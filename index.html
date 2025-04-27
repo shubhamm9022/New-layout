@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hexa Watch Style</title>
+
+  <!-- Poppins Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome (for search icon) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    /* RESET */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #0d0d0d;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(13, 13, 13, 0.5);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 30px;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      height: 30px;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 600;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      width: 0;
+      height: 2px;
+      background: white;
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      transition: 0.3s;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Search Icon */
+    .search-icon {
+      font-size: 20px;
+      color: white;
+      cursor: pointer;
+      margin-left: 20px;
+      transition: 0.3s;
+    }
+
+    .search-box {
+      position: absolute;
+      top: 100%;
+      right: 30px;
+      background: rgba(20, 20, 20, 0.95);
+      padding: 12px 15px;
+      border-radius: 12px;
+      margin-top: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.05);
+    }
+
+    .search-box.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .search-box input {
+      width: 220px;
+      padding: 10px 15px;
+      background: #101010;
+      border: 1px solid #2c2c2c;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .search-box input::placeholder {
+      color: #888;
+      font-weight: 500;
+    }
+
+    .search-box input:focus {
+      border-color: #555;
+      background: #181818;
+    }
+
+    /* HAMBURGER */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      margin-left: 20px;
+    }
+
+    .hamburger span {
+      width: 25px;
+      height: 3px;
+      background: white;
+      border-radius: 3px;
+      transition: all 0.4s;
+    }
+
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        background: rgba(0, 0, 0, 0.95);
+        flex-direction: column;
+        align-items: flex-start;
+        width: 200px;
+        padding: 20px;
+        gap: 15px;
+        transform: translateX(100%);
+        transition: transform 0.4s ease;
+      }
+      nav.active {
+        transform: translateX(0);
+      }
+
+      .hamburger {
+        display: flex;
+      }
+    }
+
+    /* MOVIE CARDS */
+    main {
+      padding-top: 90px; /* give space for fixed header */
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      justify-items: center;
+      padding: 90px 20px 20px;
+      color: white;
+    }
+
+    .movie-card {
+      position: relative;
+      width: 100%;
+      max-width: 180px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+      transition: transform 0.4s, box-shadow 0.4s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .movie-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+    }
+
+    .poster-wrapper {
+      position: relative;
+      width: 100%;
+      height: 270px;
+      background: #2a2a2a;
+      overflow: hidden;
+    }
+
+    .movie-poster {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s;
+      opacity: 0;
+    }
+
+    .movie-poster.loaded {
+      opacity: 1;
+    }
+
+    .rating-star {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 20px;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      backdrop-filter: blur(4px);
+    }
+
+    .rating-star img {
+      width: 14px;
+      height: 14px;
+    }
+
+    .movie-info {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 60px;
+    }
+
+    .title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3em;
+      max-height: 2.6em;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .tag {
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: #333;
+    }
+
+    .tag.hd { background: #4CAF50; }
+    .tag.cam { background: #FF5722; }
+    .tag.fhd { background: #2196F3; }
+    .tag._4k { background: #9C27B0; }
+
+    @media (max-width: 600px) {
+      main {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* LOADER */
+    .loader {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 6px solid #1a1a1a;
+      border-top: 6px solid white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      z-index: 2000;
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+  </style>
+
+</head>
+<body>
+
+<!-- Header Start -->
+<header>
+  <a href="#" class="logo">
+    <img src="your-logo-url.png" alt="Logo" class="logo-img">
+  </a>
+
+  <nav id="menu">
+    <a href="#">Home</a>
+    <a href="#">Movies</a>
+    <a href="#">Series</a>
+    <a href="#">Trending</a>
+  </nav>
+
+  <div class="right-section" style="display: flex; align-items: center;">
+    <i class="fas fa-search search-icon" id="search-icon"></i>
+    <div class="search-box" id="search-box">
+      <input type="text" placeholder="Search movies, series...">
+    </div>
+
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</header>
+<!-- Header End -->
+
+<!-- Loader -->
+<div class="loader" id="loader"></div>
+
+<!-- Movie Cards -->
+<main id="movies-container">
+</main>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const menu = document.getElementById('menu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    menu.classList.toggle('active');
+  });
+
+  const searchIcon = document.getElementById('search-icon');
+  const searchBox = document.getElementById('search-box');
+  searchIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    searchBox.classList.toggle('active');
+  });
+  document.addEventListener('click', (e) => {
+    if (!searchBox.contains(e.target) && !searchIcon.contains(e.target)) {
+      searchBox.classList.remove('active');
+    }
+  });
+
+  // MOVIES FETCH
+  const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
+  const moviesContainer = document.getElementById('movies-container');
+  const loader = document.getElementById('loader');
+
+  const qualityOptions = [
+    { text: 'HD', class: 'hd' },
+    { text: 'CAM', class: 'cam' },
+    { text: 'FHD', class: 'fhd' },
+    { text: '4K', class: '_4k' }
+  ];
+
+  const starImageUrl = 'https://i.postimg.cc/ZqbHmT4p/1000133487-removebg-preview-1.png';
+
+  async function fetchMovies() {
+    const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`);
+    const data = await response.json();
+
+    data.results.forEach(movie => {
+      const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://via.placeholder.com/180x270?text=No+Image';
+      const title = movie.title || movie.name || 'No Title';
+      const releaseDate = movie.release_date || movie.first_air_date || '';
+      const formattedDate = formatDate(releaseDate);
+      const type = movie.media_type === 'movie' ? 'Movie' : 'Series';
+      const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
+
+      const randomQuality = qualityOptions[Math.floor(Math.random() * qualityOptions.length)];
+
+      const card = document.createElement('div');
+      card.className = 'movie-card';
+
+      card.innerHTML = `
+        <div class="poster-wrapper">
+          <img class="movie-poster" src="${posterPath}" alt="${title}">
+          <div class="rating-star">
+            <img src="${starImageUrl}" alt="star">
+            ${rating}
+          </div>
+        </div>
+        <div class="movie-info">
+          <div class="title">${title}</div>
+          <div class="tags">
+            <div class="tag">${formattedDate}</div>
+            <div class="tag ${randomQuality.class}">${randomQuality.text}</div>
+            <div class="tag">${type}</div>
+          </div>
+        </div>
+      `;
+
+      moviesContainer.appendChild(card);
+
+      const poster = card.querySelector('.movie-poster');
+      poster.onload = () => {
+        poster.classList.add('loaded');
+      };
+    });
+
+    loader.style.display = 'none'; // hide loader after loading
+  }
+
+  function formatDate(dateString) {
+    if (!dateString) return 'Unknown';
+    const date = new Date(dateString);
+    const options = { month: 'short', day: '2-digit', year: '2-digit' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+  fetchMovies();
+</script>
+
+</body>
+</html>
