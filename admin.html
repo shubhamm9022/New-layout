@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - HEXA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      background: #0d0d0d; 
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      padding: 20px;
+    }
+    
+    .admin-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    h1 {
+      color: white;
+      margin-bottom: 30px;
+      text-align: center;
+      background: linear-gradient(90deg, #ff4d4d, #f9cb28);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .form-container {
+      background: rgba(30, 30, 30, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 10px;
+      background: rgba(40, 40, 40, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      color: white;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    button {
+      background: linear-gradient(90deg, #ff4d4d, #f9cb28);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+    
+    button:hover {
+      opacity: 0.9;
+    }
+    
+    .download-links-container {
+      margin-top: 15px;
+    }
+    
+    .download-link {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .download-link input {
+      flex: 1;
+    }
+    
+    .add-link-btn {
+      background: #2196F3;
+      margin-bottom: 15px;
+    }
+    
+    .movies-list {
+      margin-top: 30px;
+    }
+    
+    .movie-item {
+      background: rgba(30, 30, 30, 0.8);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .movie-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .movie-title {
+      font-weight: 600;
+      color: #f9cb28;
+    }
+    
+    .movie-id {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+    }
+    
+    .movie-links {
+      margin-top: 10px;
+    }
+    
+    .link-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .link-type {
+      font-weight: 600;
+      color: #4CAF50;
+    }
+    
+    .delete-btn {
+      background: #FF5722;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+    
+    .message {
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 15px;
+      text-align: center;
+      display: none;
+    }
+    
+    .success {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4CAF50;
+      border: 1px solid #4CAF50;
+    }
+    
+    .error {
+      background: rgba(244, 67, 54, 0.2);
+      color: #FF5722;
+      border: 1px solid #FF5722;
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <h1>HEXA MOVIES ADMIN PANEL</h1>
+    
+    <div id="message" class="message"></div>
+    
+    <div class="form-container">
+      <h2>Add New Movie</h2>
+      <form id="movie-form">
+        <div class="form-group">
+          <label for="movie-id">Movie ID (from TMDb)</label>
+          <input type="number" id="movie-id" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="movie-title">Movie Title</label>
+          <input type="text" id="movie-title" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="stream-link">Stream Link</label>
+          <input type="url" id="stream-link" required>
+        </div>
+        
+        <div class="download-links-container">
+          <h3>Download Links</h3>
+          <div id="download-links">
+            <div class="download-link">
+              <select class="quality-select">
+                <option value="HD">HD</option>
+                <option value="FHD">FHD</option>
+                <option value="4K">4K</option>
+                <option value="CAM">CAM</option>
+              </select>
+              <input type="url" class="download-url" placeholder="Download URL" required>
+            </div>
+          </div>
+          <button type="button" class="add-link-btn" id="add-link-btn">
+            <i class="fas fa-plus"></i> Add Another Quality
+          </button>
+        </div>
+        
+        <button type="submit">Add Movie</button>
+      </form>
+    </div>
+    
+    <div class="movies-list">
+      <h2>Current Movies</h2>
+      <div id="movies-container"></div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const movieForm = document.getElementById('movie-form');
+      const addLinkBtn = document.getElementById('add-link-btn');
+      const moviesContainer = document.getElementById('movies-container');
+      const messageDiv = document.getElementById('message');
+      
+      // Add another download link field
+      addLinkBtn.addEventListener('click', function() {
+        const newLink = document.createElement('div');
+        newLink.className = 'download-link';
+        newLink.innerHTML = `
+          <select class="quality-select">
+            <option value="HD">HD</option>
+            <option value="FHD">FHD</option>
+            <option value="4K">4K</option>
+            <option value="CAM">CAM</option>
+          </select>
+          <input type="url" class="download-url" placeholder="Download URL" required>
+          <button type="button" class="delete-btn remove-link-btn">Remove</button>
+        `;
+        document.getElementById('download-links').appendChild(newLink);
+        
+        // Add event listener to the new remove button
+        newLink.querySelector('.remove-link-btn').addEventListener('click', function() {
+          newLink.remove();
+        });
+      });
+      
+      // Form submission
+      movieForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const movieId = document.getElementById('movie-id').value;
+        const movieTitle = document.getElementById('movie-title').value;
+        const streamLink = document.getElementById('stream-link').value;
+        
+        // Collect download links
+        const downloadLinks = {};
+        const linkElements = document.querySelectorAll('.download-link');
+        linkElements.forEach(link => {
+          const quality = link.querySelector('.quality-select').value;
+          const url = link.querySelector('.download-url').value;
+          downloadLinks[quality] = url;
+        });
+        
+        // Create movie object
+        const newMovie = {
+          id: parseInt(movieId),
+          title: movieTitle,
+          stream_link: streamLink,
+          download_links: downloadLinks
+        };
+        
+        // Add to JSON (in a real app, this would be a server request)
+        addMovieToJSON(newMovie);
+      });
+      
+      // Load existing movies
+      loadMovies();
+      
+      function showMessage(text, isSuccess) {
+        messageDiv.textContent = text;
+        messageDiv.className = `message ${isSuccess ? 'success' : 'error'}`;
+        messageDiv.style.display = 'block';
+        
+        setTimeout(() => {
+          messageDiv.style.display = 'none';
+        }, 3000);
+      }
+      
+      function loadMovies() {
+        fetch('movies.json')
+          .then(response => response.json())
+          .then(data => {
+            displayMovies(data.movies);
+          })
+          .catch(error => {
+            console.error('Error loading movies:', error);
+            showMessage('Error loading movies', false);
+          });
+      }
+      
+      function displayMovies(movies) {
+        moviesContainer.innerHTML = '';
+        
+        if (movies.length === 0) {
+          moviesContainer.innerHTML = '<p>No movies found. Add some using the form above.</p>';
+          return;
+        }
+        
+        movies.forEach(movie => {
+          const movieElement = document.createElement('div');
+          movieElement.className = 'movie-item';
+          
+          let linksHTML = '';
+          for (const [quality, url] of Object.entries(movie.download_links)) {
+            linksHTML += `
+              <div class="link-item">
+                <span class="link-type">${quality}</span>
+                <span>${url}</span>
+                <button class="delete-btn" data-id="${movie.id}" data-quality="${quality}">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            `;
+          }
+          
+          movieElement.innerHTML = `
+            <div class="movie-header">
+              <span class="movie-title">${movie.title}</span>
+              <span class="movie-id">ID: ${movie.id}</span>
+            </div>
+            <div class="movie-links">
+              <div class="link-item">
+                <span class="link-type">Stream</span>
+                <span>${movie.stream_link}</span>
+                <button class="delete-btn" data-id="${movie.id}" data-quality="stream">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+              ${linksHTML}
+            </div>
+          `;
+          
+          moviesContainer.appendChild(movieElement);
+        });
+        
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const movieId = this.getAttribute('data-id');
+            const quality = this.getAttribute('data-quality');
+            
+            if (confirm(`Are you sure you want to delete this ${quality === 'stream' ? 'stream link' : quality + ' download link'}?`)) {
+              deleteLinkFromJSON(movieId, quality);
+            }
+          });
+        });
+      }
+      
+      function addMovieToJSON(newMovie) {
+        fetch('movies.json')
+          .then(response => response.json())
+          .then(data => {
+            // Check if movie already exists
+            const existingIndex = data.movies.findIndex(m => m.id === newMovie.id);
+            
+            if (existingIndex >= 0) {
+              // Update existing movie
+              data.movies[existingIndex] = newMovie;
+              showMessage('Movie updated successfully!', true);
+            } else {
+              // Add new movie
+              data.movies.push(newMovie);
+              showMessage('Movie added successfully!', true);
+            }
+            
+            // In a real app, you would send this to your server
+            // For this demo, we'll just update the display
+            displayMovies(data.movies);
+            
+            // Reset form
+            movieForm.reset();
+            document.getElementById('download-links').innerHTML = `
+              <div class="download-link">
+                <select class="quality-select">
+                  <option value="HD">HD</option>
+                  <option value="FHD">FHD</option>
+                  <option value="4K">4K</option>
+                  <option value="CAM">CAM</option>
+                </select>
+                <input type="url" class="download-url" placeholder="Download URL" required>
+              </div>
+            `;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showMessage('Error saving movie', false);
+          });
+      }
+      
+      function deleteLinkFromJSON(movieId, quality) {
+        fetch('movies.json')
+          .then(response => response.json())
+          .then(data => {
+            const movieIndex = data.movies.findIndex(m => m.id === parseInt(movieId));
+            
+            if (movieIndex >= 0) {
+              if (quality === 'stream') {
+                delete data.movies[movieIndex].stream_link;
+              } else {
+                delete data.movies[movieIndex].download_links[quality];
+                
+                // If no download links left, remove the entire movie
+                if (Object.keys(data.movies[movieIndex].download_links).length === 0) {
+                  data.movies.splice(movieIndex, 1);
+                }
+              }
+              
+              // In a real app, you would send this to your server
+              displayMovies(data.movies);
+              showMessage('Link deleted successfully!', true);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showMessage('Error deleting link', false);
+          });
+      }
+    });
+  </script>
+</body>
+</html>
