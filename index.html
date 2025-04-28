@@ -608,7 +608,7 @@
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
           </svg>
         </div>
-        <span class="current breadcrumb-latest">Latest Releases</span>
+        <span class="current breadcrumb-latest">Available Content</span>
       </li>
     </ol>
   </nav>
@@ -616,7 +616,7 @@
   <!-- Latest Releases Section -->
   <div class="section-title">
     <i class="fas fa-bolt"></i>
-    <h2>Latest Releases</h2>
+    <h2>Available Content</h2>
   </div>
 
   <!-- Loader -->
@@ -638,7 +638,7 @@
 </div>
 
 <script>
-  // Header functionality
+  // Header functionality (unchanged)
   const hamburger = document.getElementById('hamburger');
   const menu = document.getElementById('menu');
   const searchIcon = document.getElementById('search-icon');
@@ -646,13 +646,11 @@
   const searchInput = searchBox.querySelector('input');
   const navLinks = document.querySelectorAll('nav a');
   
-  // Mobile menu toggle
   hamburger.addEventListener('click', () => {
     hamburger.classList.toggle('active');
     menu.classList.toggle('active');
   });
   
-  // Search box toggle
   searchIcon.addEventListener('click', (e) => {
     e.stopPropagation();
     searchBox.classList.toggle('active');
@@ -661,20 +659,16 @@
     }
   });
   
-  // Close search when clicking outside
   document.addEventListener('click', (e) => {
     if (!searchBox.contains(e.target) && !searchIcon.contains(e.target)) {
       searchBox.classList.remove('active');
     }
   });
   
-  // Active nav link
   navLinks.forEach(link => {
     link.addEventListener('click', () => {
       navLinks.forEach(l => l.classList.remove('active'));
       link.classList.add('active');
-      
-      // Close mobile menu when a link is clicked
       if (menu.classList.contains('active')) {
         menu.classList.remove('active');
         hamburger.classList.remove('active');
@@ -682,39 +676,30 @@
     });
   });
   
-  // Breadcrumb functionality
+  // Breadcrumb functionality (unchanged)
   const breadcrumbHome = document.querySelector('.breadcrumb-home');
   const breadcrumbMovies = document.querySelector('.breadcrumb-movies');
   const breadcrumbLatest = document.querySelector('.breadcrumb-latest');
   
   breadcrumbHome.addEventListener('click', (e) => {
     e.preventDefault();
-    // Update active nav link
     navLinks.forEach(l => l.classList.remove('active'));
     document.querySelector('nav a[href="#"]').classList.add('active');
-    // Here you would typically load the home content
-    console.log('Home breadcrumb clicked');
   });
   
   breadcrumbMovies.addEventListener('click', (e) => {
     e.preventDefault();
-    // Update active nav link
     navLinks.forEach(l => l.classList.remove('active'));
     document.querySelector('nav a:nth-child(2)').classList.add('active');
-    // Here you would typically load the movies content
-    console.log('Movies breadcrumb clicked');
   });
   
   breadcrumbLatest.addEventListener('click', (e) => {
     e.preventDefault();
-    // Update active nav link
     navLinks.forEach(l => l.classList.remove('active'));
     document.querySelector('nav a:nth-child(2)').classList.add('active');
-    // Here you would typically load the latest releases content
-    console.log('Latest Releases breadcrumb clicked');
   });
   
-  // Movie fetching and pagination
+  // Modified movie/TV series fetching
   const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
   const moviesContainer = document.getElementById('movies-container');
   const loader = document.getElementById('loader');
@@ -723,152 +708,159 @@
   const prevBtn = document.querySelector('.prev-btn');
   const nextBtn = document.querySelector('.next-btn');
   
-  const qualityOptions = [
-    { text: 'HD', class: 'hd' },
-    { text: 'CAM', class: 'cam' },
-    { text: 'FHD', class: 'fhd' },
-    { text: '4K', class: '_4k' }
-  ];
-  
   const starImageUrl = 'https://i.postimg.cc/ZqbHmT4p/1000133487-removebg-preview-1.png';
-  let allMovies = [];
+  let allMedia = []; // Changed from allMovies to allMedia
   let currentPage = 1;
   const moviesPerPage = 20;
   let totalPages = 1;
 
-  async function fetchMovies() {
+  async function fetchMedia() { // Renamed from fetchMovies
     try {
       loader.style.display = 'block';
-      const response = await fetch(`https://api.themoviedb.org/3/trending/all/day?api_key=${apiKey}`);
-      const data = await response.json();
-      allMovies = data.results;
-      totalPages = Math.ceil(allMovies.length / moviesPerPage);
-      displayMovies();
+      
+      // 1. Load your custom content from JSON
+      const response = await fetch('movies.json');
+      const yourContent = await response.json();
+      
+      // 2. Fetch details for each item from TMDb
+      allMedia = await Promise.all(
+        yourContent.movies.map(async item => {
+          try {
+            const endpoint = item.type === 'tv' 
+              ? `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}`
+              : `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}`;
+            
+            const tmdbResponse = await fetch(endpoint);
+            const tmdbData = await tmdbResponse.json();
+            
+            return {
+              ...tmdbData,
+              media_type: item.type || 'movie', // Ensure type is set
+              stream_link: item.stream_link,
+              download_links: item.download_links || {}
+            };
+          } catch (error) {
+            console.error(`Error fetching ${item.type} ${item.id}:`, error);
+            return null;
+          }
+        })
+      );
+      
+      // Filter out failed fetches
+      allMedia = allMedia.filter(item => item !== null);
+      
+      totalPages = Math.ceil(allMedia.length / moviesPerPage);
+      displayMedia(); // Renamed from displayMovies
       setupPagination();
     } catch (error) {
-      console.error('Error fetching movies:', error);
-      moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">Failed to load movies. Please try again later.</p>';
+      console.error('Error loading content:', error);
+      moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">Failed to load content. Please try again later.</p>';
     } finally {
       loader.style.display = 'none';
     }
   }
 
-  async function displayMovies(filteredMovies = allMovies) {
-  moviesContainer.innerHTML = '';
-  
-  const startIndex = (currentPage - 1) * moviesPerPage;
-  const endIndex = startIndex + moviesPerPage;
-  const moviesToDisplay = filteredMovies.slice(startIndex, endIndex);
-  
-  // Fetch local movie data
-  const localMovies = await fetchLocalMovies();
-  
-  if (moviesToDisplay.length === 0) {
-    moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No movies found matching your search.</p>';
-    return;
-  }
-  
-  moviesToDisplay.forEach(movie => {
-    const posterPath = movie.poster_path 
-      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` 
-      : 'https://via.placeholder.com/180x270?text=No+Image';
+  function displayMedia(filteredMedia = allMedia) { // Renamed from displayMovies
+    moviesContainer.innerHTML = '';
     
-    const title = movie.title || movie.name || 'No Title';
-    const releaseDate = movie.release_date || movie.first_air_date || '';
-    const formattedDate = formatDate(releaseDate);
-    const type = movie.media_type === 'movie' ? 'Movie' : 'Series';
-    const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
-    const randomQuality = qualityOptions[Math.floor(Math.random() * qualityOptions.length)];
+    const startIndex = (currentPage - 1) * moviesPerPage;
+    const endIndex = startIndex + moviesPerPage;
+    const mediaToDisplay = filteredMedia.slice(startIndex, endIndex);
     
-    // Find matching local movie data
-    const localMovie = localMovies.find(m => m.id === movie.id);
+    if (mediaToDisplay.length === 0) {
+      moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No content available. Check back later.</p>';
+      return;
+    }
     
-    const card = document.createElement('div');
-    card.className = 'movie-card';
-    card.innerHTML = `
-      <div class="poster-wrapper">
-        <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')">
-        <div class="rating-star">
-          <img src="${starImageUrl}" alt="star">
-          ${rating}
+    mediaToDisplay.forEach(media => {
+      const posterPath = media.poster_path || media.backdrop_path
+        ? `https://image.tmdb.org/t/p/w500${media.poster_path || media.backdrop_path}` 
+        : 'https://via.placeholder.com/180x270?text=No+Image';
+      
+      const title = media.title || media.name || 'No Title';
+      const releaseDate = media.release_date || media.first_air_date || '';
+      const formattedDate = formatDate(releaseDate);
+      const type = media.media_type === 'movie' ? 'Movie' : 'Series';
+      const rating = media.vote_average ? media.vote_average.toFixed(1) : 'N/A';
+      
+      const card = document.createElement('div');
+      card.className = 'movie-card';
+      card.innerHTML = `
+        <div class="poster-wrapper">
+          <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')">
+          <div class="rating-star">
+            <img src="${starImageUrl}" alt="star">
+            ${rating}
+          </div>
         </div>
-      </div>
-      <div class="movie-info">
-        <div class="title">${title}</div>
-        <div class="tags">
-          <div class="tag">${formattedDate}</div>
-          <div class="tag ${randomQuality.class}">${randomQuality.text}</div>
-          <div class="tag">${type}</div>
+        <div class="movie-info">
+          <div class="title">${title}</div>
+          <div class="tags">
+            <div class="tag">${formattedDate}</div>
+            ${media.download_links ? Object.keys(media.download_links)
+              .map(quality => `<div class="tag ${quality.toLowerCase()}">${quality}</div>`)
+              .join('') : ''}
+            <div class="tag">${type}</div>
+          </div>
         </div>
-      </div>
-    `;
-    
-    card.addEventListener('click', () => {
-      if (localMovie) {
-        // Store movie data in session storage to access on details page
-        sessionStorage.setItem('currentMovie', JSON.stringify({
-          ...movie,
-          stream_link: localMovie.stream_link,
-          download_links: localMovie.download_links
+      `;
+      
+      card.addEventListener('click', () => {
+        sessionStorage.setItem('currentMedia', JSON.stringify({
+          id: media.id,
+          type: media.media_type,
+          title: title,
+          poster: posterPath,
+          stream_link: media.stream_link,
+          download_links: media.download_links
         }));
-        
-        const type = movie.media_type === 'tv' ? 'tv' : 'movie';
-        window.location.href = `movie-details.html?id=${movie.id}&type=${type}`;
-      } else {
-        alert('This movie is not available for streaming yet.');
-      }
+        window.location.href = `details.html?id=${media.id}&type=${media.media_type}`;
+      });
+      
+      moviesContainer.appendChild(card);
     });
-    
-    moviesContainer.appendChild(card);
-  });
   }
 
   function formatDate(dateString) {
     if (!dateString) return 'Unknown';
     const date = new Date(dateString);
-    const options = { month: 'short', day: '2-digit', year: '2-digit' };
-    return date.toLocaleDateString('en-US', options);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
   }
 
   function setupPagination() {
     pageNumbers.innerHTML = '';
-    
-    // Show only up to 5 page buttons
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, currentPage + 2);
     
-    if (currentPage <= 3) {
-      endPage = Math.min(5, totalPages);
-    } else if (currentPage >= totalPages - 2) {
-      startPage = Math.max(totalPages - 4, 1);
-    }
+    if (currentPage <= 3) endPage = Math.min(5, totalPages);
+    if (currentPage >= totalPages - 2) startPage = Math.max(totalPages - 4, 1);
     
-    // Previous button
     prevBtn.classList.toggle('disabled', currentPage === 1);
     
-    // Page numbers
     for (let i = startPage; i <= endPage; i++) {
       const pageBtn = document.createElement('button');
       pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
       pageBtn.textContent = i;
       pageBtn.addEventListener('click', () => {
         currentPage = i;
-        displayMovies();
+        displayMedia();
         setupPagination();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
       pageNumbers.appendChild(pageBtn);
     }
     
-    // Next button
     nextBtn.classList.toggle('disabled', currentPage === totalPages);
   }
   
-  // Pagination button events
   prevBtn.addEventListener('click', () => {
     if (currentPage > 1) {
       currentPage--;
-      displayMovies();
+      displayMedia();
       setupPagination();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -877,37 +869,27 @@
   nextBtn.addEventListener('click', () => {
     if (currentPage < totalPages) {
       currentPage++;
-      displayMovies();
+      displayMedia();
       setupPagination();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   });
 
-  // Search functionality
   searchInput.addEventListener('input', () => {
     const query = searchInput.value.toLowerCase();
-    const filteredMovies = allMovies.filter(movie => {
-      const title = (movie.title || movie.name || '').toLowerCase();
+    const filteredMedia = allMedia.filter(media => {
+      const title = (media.title || media.name || '').toLowerCase();
       return title.includes(query);
     });
     
-    totalPages = Math.ceil(filteredMovies.length / moviesPerPage);
+    totalPages = Math.ceil(filteredMedia.length / moviesPerPage);
     currentPage = 1;
-    displayMovies(filteredMovies);
+    displayMedia(filteredMedia);
     setupPagination();
   });
-async function fetchLocalMovies() {
-  try {
-    const response = await fetch('movies.json');
-    const data = await response.json();
-    return data.movies;
-  } catch (error) {
-    console.error('Error fetching local movies:', error);
-    return [];
-  }
-}
-  // Initialize the page
-  fetchMovies();
+
+  // Initialize
+  fetchMedia();
 </script>
 </body>
 </html>
