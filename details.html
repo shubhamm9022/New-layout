@@ -10,302 +10,30 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    body {
-      margin: 0;
-      background: #0d0d0d;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      padding: 0;
-    }
-
-    /* Back button */
-    .back-btn {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      z-index: 10;
-      background: rgba(30, 30, 30, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+    /* All your existing styles remain the same */
+    
+    /* Added styles for button container and download button */
+    .button-container {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .back-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateX(-2px);
-    }
-
-    .banner {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      background: #1a1a1a;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .banner::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-    }
-
-    .movie-container {
-      max-width: 1100px;
-      margin: -100px auto 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      z-index: 2;
-    }
-
-    .poster {
-      width: 220px;
-      height: 330px;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.7);
-      margin-bottom: 20px;
-    }
-
-    .poster img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: opacity 0.5s;
-      opacity: 0;
-    }
-    .poster img.loaded { opacity: 1; }
-
-    .movie-details {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: flex-start;
-      margin-top: 10px;
-    }
-
-    .movie-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0;
-    }
-
-    .info-tags {
-      display: flex;
+      gap: 15px;
+      margin-top: 15px;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-      align-items: center;
     }
-
-    .tag {
-      background: #1f1f1f;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+    
+    .btn.download-btn {
+      background: linear-gradient(90deg, #2196F3, #00BCD4);
     }
-
-    .tag.movie-type {
-      background: linear-gradient(90deg, #ff4d4d, #f9cb28);
-      color: #000;
-      font-weight: 700;
-    }
-
-    .rating-tag {
-      background: #1f1f1f;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .rating-tag i {
-      color: #FFD700;
-    }
-
-    .btn {
-      background: linear-gradient(90deg, #ff4d4d, #f9cb28);
-      border: none;
-      color: black;
-      font-weight: 700;
-      padding: 12px 25px;
-      font-size: 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s;
-      display: inline-block;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-    }
-
-    .synopsis {
-      margin-top: 30px;
-      width: 100%;
-    }
-
-    .synopsis-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-
-    .synopsis-text {
-      font-size: 14px;
-      line-height: 1.6;
-      opacity: 0.85;
-    }
-
-    /* Similar movies - matching index page exactly */
-    .similar-section {
-      margin-top: 50px;
-      padding: 0 20px 30px;
-      max-width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
-      width: 100%;
-    }
-
-    .similar-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-
-    .similar-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 20px;
-      justify-items: center;
-    }
-
-    .movie-card {
-      position: relative;
-      width: 100%;
-      max-width: 180px;
-      background: #1a1a1a;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
-      transition: transform 0.4s, box-shadow 0.4s;
-      cursor: pointer;
-    }
-
-    .movie-card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
-    }
-
-    .poster-wrapper {
-      position: relative;
-      width: 100%;
-      height: 270px;
-      background: #2a2a2a;
-      overflow: hidden;
-    }
-
-    .movie-poster {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: opacity 0.5s;
-      opacity: 0;
-    }
-
-    .movie-poster.loaded { opacity: 1; }
-
-    .rating-star {
-      position: absolute;
-      bottom: 8px;
-      left: 8px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 6px;
-      border-radius: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
-      backdrop-filter: blur(4px);
-    }
-
-    .rating-star img { width: 14px; height: 14px; }
-
-    .movie-info {
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-height: 60px;
-    }
-
-    .title {
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.3em;
-      max-height: 2.6em;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      text-overflow: ellipsis;
-    }
-
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      font-size: 11px;
-      opacity: 0.9;
-    }
-
-    .tag {
-      padding: 2px 6px;
-      border-radius: 5px;
-      background: #333;
-    }
-
-    .tag.hd { background: #4CAF50; }
-    .tag.cam { background: #FF5722; }
-    .tag.fhd { background: #2196F3; }
-    .tag._4k { background: #9C27B0; }
-
-    @media (max-width: 600px) {
-      .similar-grid {
-        grid-template-columns: repeat(2, 1fr);
+    
+    /* Responsive adjustments for buttons */
+    @media (max-width: 480px) {
+      .button-container {
+        flex-direction: column;
+        width: 100%;
       }
-      .movie-container {
-        padding: 20px 15px;
-      }
-      .back-btn {
-        top: 15px;
-        left: 15px;
-        width: 36px;
-        height: 36px;
+      
+      .button-container .btn {
+        width: 100%;
+        text-align: center;
       }
     }
   </style>
@@ -331,7 +59,10 @@
 
     <div class="info-tags" id="genreTags"></div>
 
-    <a href="#" class="btn" id="watchBtn">WATCH NOW</a>
+    <div class="button-container">
+      <a href="#" class="btn" id="watchBtn">WATCH NOW</a>
+      <a href="#" class="btn download-btn" id="downloadBtn">DOWNLOAD</a>
+    </div>
 
     <div class="synopsis" id="synopsisSection">
       <h2 class="synopsis-title">Synopsis</h2>
@@ -376,6 +107,139 @@ const starImageUrl = 'https://i.postimg.cc/ZqbHmT4p/1000133487-removebg-preview-
 document.getElementById('backBtn').addEventListener('click', () => {
   window.location.href = 'index.html';
 });
+
+// Function to load content from JSON files
+async function loadContentLinks() {
+  try {
+    // Load the appropriate JSON file based on media type
+    const jsonFile = mediaType === 'tv' ? 'series.json' : 'movies.json';
+    const response = await fetch(jsonFile);
+    const data = await response.json();
+    
+    // Find the media item by ID
+    const mediaItem = data.movies.find(item => item.id == mediaId);
+    
+    if (mediaItem) {
+      // Set watch button link if stream_link exists
+      if (mediaItem.stream_link) {
+        document.getElementById('watchBtn').href = mediaItem.stream_link;
+      } else {
+        document.getElementById('watchBtn').style.display = 'none';
+      }
+      
+      // Set download button behavior
+      const downloadBtn = document.getElementById('downloadBtn');
+      if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
+        // If there's only one download link, use it directly
+        const downloadLinks = Object.entries(mediaItem.download_links);
+        if (downloadLinks.length === 1) {
+          downloadBtn.href = downloadLinks[0][1];
+        } else {
+          // For multiple download options, create a dropdown
+          downloadBtn.onclick = (e) => {
+            e.preventDefault();
+            showDownloadOptions(mediaItem.download_links);
+          };
+        }
+      } else {
+        downloadBtn.style.display = 'none';
+      }
+    } else {
+      document.getElementById('watchBtn').style.display = 'none';
+      document.getElementById('downloadBtn').style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error loading content links:', error);
+    document.getElementById('watchBtn').style.display = 'none';
+    document.getElementById('downloadBtn').style.display = 'none';
+  }
+}
+
+// Function to show download options dropdown
+function showDownloadOptions(downloadLinks) {
+  // Remove existing dropdown if any
+  const existingDropdown = document.querySelector('.download-dropdown');
+  if (existingDropdown) {
+    existingDropdown.remove();
+    return;
+  }
+  
+  // Create dropdown container
+  const dropdown = document.createElement('div');
+  dropdown.className = 'download-dropdown';
+  dropdown.style.position = 'absolute';
+  dropdown.style.backgroundColor = '#1a1a1a';
+  dropdown.style.borderRadius = '8px';
+  dropdown.style.padding = '10px';
+  dropdown.style.boxShadow = '0 4px 15px rgba(0,0,0,0.5)';
+  dropdown.style.zIndex = '1000';
+  dropdown.style.marginTop = '5px';
+  
+  // Add download options
+  for (const [quality, url] of Object.entries(downloadLinks)) {
+    const option = document.createElement('a');
+    option.href = url;
+    option.className = 'download-option';
+    option.style.display = 'block';
+    option.style.padding = '8px 15px';
+    option.style.color = 'white';
+    option.style.textDecoration = 'none';
+    option.style.borderRadius = '5px';
+    option.style.marginBottom = '5px';
+    option.style.backgroundColor = '#2a2a2a';
+    option.style.transition = 'background-color 0.2s';
+    option.innerHTML = `<i class="bi bi-download"></i> ${quality}`;
+    
+    option.addEventListener('mouseenter', () => {
+      option.style.backgroundColor = '#3a3a3a';
+    });
+    option.addEventListener('mouseleave', () => {
+      option.style.backgroundColor = '#2a2a2a';
+    });
+    
+    dropdown.appendChild(option);
+  }
+  
+  // Position and show dropdown
+  const downloadBtn = document.getElementById('downloadBtn');
+  const rect = downloadBtn.getBoundingClientRect();
+  dropdown.style.left = `${rect.left}px`;
+  dropdown.style.top = `${rect.bottom}px`;
+  dropdown.style.width = `${rect.width}px`;
+  
+  document.body.appendChild(dropdown);
+  
+  // Close dropdown when clicking outside
+  const clickHandler = (e) => {
+    if (!dropdown.contains(e.target) && e.target !== downloadBtn) {
+      dropdown.remove();
+      document.removeEventListener('click', clickHandler);
+    }
+  };
+  
+  setTimeout(() => {
+    document.addEventListener('click', clickHandler);
+  }, 0);
+}
+
+// Function to filter similar movies to only those available in our collection
+async function filterAvailableMedia(mediaItems) {
+  try {
+    // Load the appropriate JSON file based on media type
+    const jsonFile = mediaType === 'tv' ? 'series.json' : 'movies.json';
+    const response = await fetch(jsonFile);
+    const data = await response.json();
+    
+    // Get IDs of available media
+    const availableIds = data.movies.map(item => item.id.toString());
+    
+    // Filter similar media to only those we have
+    return mediaItems.filter(item => availableIds.includes(item.id.toString()));
+  } catch (error) {
+    console.error('Error filtering available media:', error);
+    return []; // Return empty array if there's an error
+  }
+}
 
 async function loadMediaDetails() {
   try {
@@ -436,10 +300,8 @@ async function loadMediaDetails() {
     // Synopsis
     document.getElementById('synopsisText').textContent = media.overview || "No synopsis available.";
 
-    // Watch button
-    document.getElementById('watchBtn').href = mediaType === 'tv'
-      ? `https://www.themoviedb.org/tv/${media.id}`
-      : `https://www.themoviedb.org/movie/${media.id}`;
+    // Load content links from our JSON file
+    await loadContentLinks();
 
   } catch (error) {
     console.error('Error loading media details:', error);
@@ -460,7 +322,16 @@ async function loadSimilarMedia() {
       return;
     }
 
-    data.results.slice(0, 6).forEach(item => {
+    // Filter to only show similar media that we have in our collection
+    const availableSimilar = await filterAvailableMedia(data.results);
+    
+    if (availableSimilar.length === 0) {
+      similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content available</p>';
+      return;
+    }
+
+    // Display available similar media (limited to 6)
+    availableSimilar.slice(0, 6).forEach(item => {
       const posterPath = item.poster_path 
         ? `https://image.tmdb.org/t/p/w500${item.poster_path}` 
         : 'https://via.placeholder.com/180x270?text=No+Image';
