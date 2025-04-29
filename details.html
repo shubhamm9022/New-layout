@@ -11,7 +11,304 @@
 
   <style>
     /* All your existing styles remain the same */
-    
+      <style>
+    body {
+      margin: 0;
+      background: #0d0d0d;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      padding: 0;
+    }
+
+    /* Back button */
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(-2px);
+    }
+
+    .banner {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      background: #1a1a1a;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .banner::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+    }
+
+    .movie-container {
+      max-width: 1100px;
+      margin: -100px auto 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .poster {
+      width: 220px;
+      height: 330px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+      margin-bottom: 20px;
+    }
+
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s;
+      opacity: 0;
+    }
+    .poster img.loaded { opacity: 1; }
+
+    .movie-details {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 10px;
+    }
+
+    .movie-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .info-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    .tag {
+      background: #1f1f1f;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tag.movie-type {
+      background: linear-gradient(90deg, #ff4d4d, #f9cb28);
+      color: #000;
+      font-weight: 700;
+    }
+
+    .rating-tag {
+      background: #1f1f1f;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .rating-tag i {
+      color: #FFD700;
+    }
+
+    .btn {
+      background: linear-gradient(90deg, #ff4d4d, #f9cb28);
+      border: none;
+      color: black;
+      font-weight: 700;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .synopsis {
+      margin-top: 30px;
+      width: 100%;
+    }
+
+    .synopsis-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .synopsis-text {
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0.85;
+    }
+
+    /* Similar movies - matching index page exactly */
+    .similar-section {
+      margin-top: 50px;
+      padding: 0 20px 30px;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
+
+    .similar-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .similar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      justify-items: center;
+    }
+
+    .movie-card {
+      position: relative;
+      width: 100%;
+      max-width: 180px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+      transition: transform 0.4s, box-shadow 0.4s;
+      cursor: pointer;
+    }
+
+    .movie-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+    }
+
+    .poster-wrapper {
+      position: relative;
+      width: 100%;
+      height: 270px;
+      background: #2a2a2a;
+      overflow: hidden;
+    }
+
+    .movie-poster {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s;
+      opacity: 0;
+    }
+
+    .movie-poster.loaded { opacity: 1; }
+
+    .rating-star {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      backdrop-filter: blur(4px);
+    }
+
+    .rating-star img { width: 14px; height: 14px; }
+
+    .movie-info {
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 60px;
+    }
+
+    .title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3em;
+      max-height: 2.6em;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .tag {
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: #333;
+    }
+
+    .tag.hd { background: #4CAF50; }
+    .tag.cam { background: #FF5722; }
+    .tag.fhd { background: #2196F3; }
+    .tag._4k { background: #9C27B0; }
+    @media (max-width: 600px) {
+      .similar-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .movie-container {
+        padding: 20px 15px;
+      }
+      .back-btn {
+        top: 15px;
+        left: 15px;
+        width: 36px;
+        height: 36px;
+      }
+    }
     /* Added styles for button container and download button */
     .button-container {
       display: flex;
