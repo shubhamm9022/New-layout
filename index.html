@@ -893,8 +893,10 @@
         </div>
       `;
       
-      card.addEventListener('click', () => {
-  // Store the selected media details
+      card.addEventListener('click', (e) => {
+  e.preventDefault(); // Prevent default link behavior
+  
+  // 1. Store media data in sessionStorage (for details page)
   sessionStorage.setItem('currentMedia', JSON.stringify({
     id: media.id,
     type: media.media_type,
@@ -904,12 +906,27 @@
     download_links: media.download_links
   }));
 
-  // Show clean URL in the browser bar
-  history.pushState(null, '', `/${media.media_type}/${media.id}`);
+  // 2. Create a clean URL slug (e.g. "the-matrix-1999")
+  const slug = createSlug(title) + '-' + (media.release_date?.split('-')[0] || ''); 
+  
+  // 3. Update browser URL visibly (without reload)
+  const cleanUrl = `/${media.media_type === 'tv' ? 'series' : 'movie'}/${slug}-${media.id}`;
+  history.pushState({ id: media.id, type: media.media_type }, '', cleanUrl);
 
-  // Actually load the details page with query parameters (which your script uses)
+  // 4. Actually load the content (compatible with GitHub Pages)
   window.location.href = `details.html?id=${media.id}&type=${media.media_type}`;
 });
+
+// Helper function to create URL-friendly slugs
+function createSlug(text) {
+  return text.toString()
+    .toLowerCase()
+    .replace(/\s+/g, '-')      // Spaces to hyphens
+    .replace(/[^\w-]+/g, '')   // Remove non-word chars
+    .replace(/--+/g, '-')      // Replace multiple - with single
+    .replace(/^-+/, '')        // Trim - from start
+    .replace(/-+$/, '');       // Trim - from end
+}
       
       moviesContainer.appendChild(card);
     });
