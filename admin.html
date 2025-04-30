@@ -218,17 +218,236 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const movieForm = document.getElementById('movie-form');
-      const addLinkBtn = document.getElementById('add-link-btn');
-      const moviesContainer = document.getElementById('movies-container');
-      const messageDiv = document.getElementById('message');
+  document.addEventListener('DOMContentLoaded', function() {
+  const movieForm = document.getElementById('movie-form');
+  const addLinkBtn = document.getElementById('add-link-btn');
+  const moviesContainer = document.getElementById('movies-container');
+  const messageDiv = document.getElementById('message');
+  
+  // GitHub configuration
+  const githubConfig = {
+    repoOwner: 'shubhamm9022,
+    repoName: 'New-layout',
+    filePath: 'movies.json', // Path to your movies.json file
+    branch: 'main', // or 'master'
+    token: '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' // Keep this secure!
+  };
+
+  // Add another download link field
+  addLinkBtn.addEventListener('click', function() {
+    const newLink = document.createElement('div');
+    newLink.className = 'download-link';
+    newLink.innerHTML = `
+      <select class="quality-select">
+        <option value="HD">HD</option>
+        <option value="FHD">FHD</option>
+        <option value="4K">4K</option>
+        <option value="CAM">CAM</option>
+      </select>
+      <input type="url" class="download-url" placeholder="Download URL" required>
+      <button type="button" class="delete-btn remove-link-btn">Remove</button>
+    `;
+    document.getElementById('download-links').appendChild(newLink);
+    
+    // Add event listener to the new remove button
+    newLink.querySelector('.remove-link-btn').addEventListener('click', function() {
+      newLink.remove();
+    });
+  });
+  
+  // Form submission
+  movieForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const movieId = document.getElementById('movie-id').value;
+    const movieTitle = document.getElementById('movie-title').value;
+    const streamLink = document.getElementById('stream-link').value;
+    
+    // Collect download links
+    const downloadLinks = {};
+    const linkElements = document.querySelectorAll('.download-link');
+    linkElements.forEach(link => {
+      const quality = link.querySelector('.quality-select').value;
+      const url = link.querySelector('.download-url').value;
+      if (url) { // Only add if URL is provided
+        downloadLinks[quality] = url;
+      }
+    });
+    
+    // Create movie object
+    const newMovie = {
+      id: parseInt(movieId),
+      title: movieTitle,
+      stream_link: streamLink,
+      download_links: downloadLinks
+    };
+    
+    // Add to GitHub
+    addMovieToGitHub(newMovie);
+  });
+  
+  // Load existing movies
+  loadMoviesFromGitHub();
+  
+  function showMessage(text, isSuccess) {
+    messageDiv.textContent = text;
+    messageDiv.className = `message ${isSuccess ? 'success' : 'error'}`;
+    messageDiv.style.display = 'block';
+    
+    setTimeout(() => {
+      messageDiv.style.display = 'none';
+    }, 3000);
+  }
+  
+  async function loadMoviesFromGitHub() {
+    try {
+      const response = await fetch(
+        `https://api.github.com/repos/${githubConfig.repoOwner}/${githubConfig.repoName}/contents/${githubConfig.filePath}?ref=${githubConfig.branch}`,
+        {
+          headers: {
+            'Authorization': `token ${githubConfig.token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        }
+      );
       
-      // Add another download link field
-      addLinkBtn.addEventListener('click', function() {
-        const newLink = document.createElement('div');
-        newLink.className = 'download-link';
-        newLink.innerHTML = `
+      if (!response.ok) throw new Error('Failed to fetch movies');
+      
+      const data = await response.json();
+      const content = atob(data.content); // Decode base64 content
+      const moviesData = JSON.parse(content);
+      
+      displayMovies(moviesData.movies);
+    } catch (error) {
+      console.error('Error loading movies:', error);
+      showMessage('Error loading movies', false);
+    }
+  }
+  
+  function displayMovies(movies) {
+    moviesContainer.innerHTML = '';
+    
+    if (!movies || movies.length === 0) {
+      moviesContainer.innerHTML = '<p>No movies found. Add some using the form above.</p>';
+      return;
+    }
+    
+    movies.forEach(movie => {
+      const movieElement = document.createElement('div');
+      movieElement.className = 'movie-item';
+      
+      let linksHTML = '';
+      if (movie.download_links) {
+        for (const [quality, url] of Object.entries(movie.download_links)) {
+          linksHTML += `
+            <div class="link-item">
+              <span class="link-type">${quality}</span>
+              <span>${url}</span>
+              <button class="delete-btn" data-id="${movie.id}" data-quality="${quality}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          `;
+        }
+      }
+      
+      movieElement.innerHTML = `
+        <div class="movie-header">
+          <span class="movie-title">${movie.title}</span>
+          <span class="movie-id">ID: ${movie.id}</span>
+        </div>
+        <div class="movie-links">
+          <div class="link-item">
+            <span class="link-type">Stream</span>
+            <span>${movie.stream_link || 'No stream link'}</span>
+            <button class="delete-btn" data-id="${movie.id}" data-quality="stream">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          ${linksHTML}
+        </div>
+      `;
+      
+      moviesContainer.appendChild(movieElement);
+    });
+    
+    // Add event listeners to delete buttons
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const movieId = this.getAttribute('data-id');
+        const quality = this.getAttribute('data-quality');
+        
+        if (confirm(`Are you sure you want to delete this ${quality === 'stream' ? 'stream link' : quality + ' download link'}?`)) {
+          deleteLinkFromGitHub(movieId, quality);
+        }
+      });
+    });
+  }
+  
+  async function addMovieToGitHub(newMovie) {
+    try {
+      // First get the current content and SHA (needed for updates)
+      const getResponse = await fetch(
+        `https://api.github.com/repos/${githubConfig.repoOwner}/${githubConfig.repoName}/contents/${githubConfig.filePath}?ref=${githubConfig.branch}`,
+        {
+          headers: {
+            'Authorization': `token ${githubConfig.token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        }
+      );
+      
+      if (!getResponse.ok) throw new Error('Failed to fetch current movies');
+      
+      const getData = await getResponse.json();
+      const currentContent = atob(getData.content);
+      const currentData = JSON.parse(currentContent);
+      const currentSha = getData.sha;
+      
+      // Check if movie already exists
+      const existingIndex = currentData.movies.findIndex(m => m.id === newMovie.id);
+      
+      if (existingIndex >= 0) {
+        // Update existing movie
+        currentData.movies[existingIndex] = newMovie;
+        showMessage('Movie updated successfully!', true);
+      } else {
+        // Add new movie
+        currentData.movies.push(newMovie);
+        showMessage('Movie added successfully!', true);
+      }
+      
+      // Prepare the update
+      const updatedContent = JSON.stringify(currentData, null, 2);
+      const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
+      
+      const updateResponse = await fetch(
+        `https://api.github.com/repos/${githubConfig.repoOwner}/${githubConfig.repoName}/contents/${githubConfig.filePath}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${githubConfig.token}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `${existingIndex >= 0 ? 'Updated' : 'Added'} movie ${newMovie.id}`,
+            content: encodedContent,
+            sha: currentSha,
+            branch: githubConfig.branch
+          })
+        }
+      );
+      
+      if (!updateResponse.ok) throw new Error('Failed to update movies');
+      
+      // Reload movies
+      loadMoviesFromGitHub();
+      
+      // Reset form
+      movieForm.reset();
+      document.getElementById('download-links').innerHTML = `
+        <div class="download-link">
           <select class="quality-select">
             <option value="HD">HD</option>
             <option value="FHD">FHD</option>
@@ -236,198 +455,82 @@
             <option value="CAM">CAM</option>
           </select>
           <input type="url" class="download-url" placeholder="Download URL" required>
-          <button type="button" class="delete-btn remove-link-btn">Remove</button>
-        `;
-        document.getElementById('download-links').appendChild(newLink);
-        
-        // Add event listener to the new remove button
-        newLink.querySelector('.remove-link-btn').addEventListener('click', function() {
-          newLink.remove();
-        });
-      });
+        </div>
+      `;
+    } catch (error) {
+      console.error('Error:', error);
+      showMessage('Error saving movie', false);
+    }
+  }
+  
+  async function deleteLinkFromGitHub(movieId, quality) {
+    try {
+      // First get the current content and SHA
+      const getResponse = await fetch(
+        `https://api.github.com/repos/${githubConfig.repoOwner}/${githubConfig.repoName}/contents/${githubConfig.filePath}?ref=${githubConfig.branch}`,
+        {
+          headers: {
+            'Authorization': `token ${githubConfig.token}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        }
+      );
       
-      // Form submission
-      movieForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const movieId = document.getElementById('movie-id').value;
-        const movieTitle = document.getElementById('movie-title').value;
-        const streamLink = document.getElementById('stream-link').value;
-        
-        // Collect download links
-        const downloadLinks = {};
-        const linkElements = document.querySelectorAll('.download-link');
-        linkElements.forEach(link => {
-          const quality = link.querySelector('.quality-select').value;
-          const url = link.querySelector('.download-url').value;
-          downloadLinks[quality] = url;
-        });
-        
-        // Create movie object
-        const newMovie = {
-          id: parseInt(movieId),
-          title: movieTitle,
-          stream_link: streamLink,
-          download_links: downloadLinks
-        };
-        
-        // Add to JSON (in a real app, this would be a server request)
-        addMovieToJSON(newMovie);
-      });
+      if (!getResponse.ok) throw new Error('Failed to fetch current movies');
       
-      // Load existing movies
-      loadMovies();
+      const getData = await getResponse.json();
+      const currentContent = atob(getData.content);
+      const currentData = JSON.parse(currentContent);
+      const currentSha = getData.sha;
       
-      function showMessage(text, isSuccess) {
-        messageDiv.textContent = text;
-        messageDiv.className = `message ${isSuccess ? 'success' : 'error'}`;
-        messageDiv.style.display = 'block';
-        
-        setTimeout(() => {
-          messageDiv.style.display = 'none';
-        }, 3000);
-      }
+      const movieIndex = currentData.movies.findIndex(m => m.id === parseInt(movieId));
       
-      function loadMovies() {
-        fetch('movies.json')
-          .then(response => response.json())
-          .then(data => {
-            displayMovies(data.movies);
-          })
-          .catch(error => {
-            console.error('Error loading movies:', error);
-            showMessage('Error loading movies', false);
-          });
-      }
-      
-      function displayMovies(movies) {
-        moviesContainer.innerHTML = '';
-        
-        if (movies.length === 0) {
-          moviesContainer.innerHTML = '<p>No movies found. Add some using the form above.</p>';
-          return;
+      if (movieIndex >= 0) {
+        if (quality === 'stream') {
+          delete currentData.movies[movieIndex].stream_link;
+        } else {
+          delete currentData.movies[movieIndex].download_links[quality];
+          
+          // If no download links left, remove the entire movie
+          if (Object.keys(currentData.movies[movieIndex].download_links).length === 0) {
+            currentData.movies.splice(movieIndex, 1);
+          }
         }
         
-        movies.forEach(movie => {
-          const movieElement = document.createElement('div');
-          movieElement.className = 'movie-item';
-          
-          let linksHTML = '';
-          for (const [quality, url] of Object.entries(movie.download_links)) {
-            linksHTML += `
-              <div class="link-item">
-                <span class="link-type">${quality}</span>
-                <span>${url}</span>
-                <button class="delete-btn" data-id="${movie.id}" data-quality="${quality}">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-            `;
-          }
-          
-          movieElement.innerHTML = `
-            <div class="movie-header">
-              <span class="movie-title">${movie.title}</span>
-              <span class="movie-id">ID: ${movie.id}</span>
-            </div>
-            <div class="movie-links">
-              <div class="link-item">
-                <span class="link-type">Stream</span>
-                <span>${movie.stream_link}</span>
-                <button class="delete-btn" data-id="${movie.id}" data-quality="stream">
-                  <i class="fas fa-trash"></i>
-                </button>
-              </div>
-              ${linksHTML}
-            </div>
-          `;
-          
-          moviesContainer.appendChild(movieElement);
-        });
+        // Prepare the update
+        const updatedContent = JSON.stringify(currentData, null, 2);
+        const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
         
-        // Add event listeners to delete buttons
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const movieId = this.getAttribute('data-id');
-            const quality = this.getAttribute('data-quality');
-            
-            if (confirm(`Are you sure you want to delete this ${quality === 'stream' ? 'stream link' : quality + ' download link'}?`)) {
-              deleteLinkFromJSON(movieId, quality);
-            }
-          });
-        });
+        const updateResponse = await fetch(
+          `https://api.github.com/repos/${githubConfig.repoOwner}/${githubConfig.repoName}/contents/${githubConfig.filePath}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Authorization': `token ${githubConfig.token}`,
+              'Accept': 'application/vnd.github.v3+json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: `Deleted ${quality} link for movie ${movieId}`,
+              content: encodedContent,
+              sha: currentSha,
+              branch: githubConfig.branch
+            })
+          }
+        );
+        
+        if (!updateResponse.ok) throw new Error('Failed to update movies');
+        
+        // Reload movies
+        loadMoviesFromGitHub();
+        showMessage('Link deleted successfully!', true);
       }
-      
-      function addMovieToJSON(newMovie) {
-        fetch('movies.json')
-          .then(response => response.json())
-          .then(data => {
-            // Check if movie already exists
-            const existingIndex = data.movies.findIndex(m => m.id === newMovie.id);
-            
-            if (existingIndex >= 0) {
-              // Update existing movie
-              data.movies[existingIndex] = newMovie;
-              showMessage('Movie updated successfully!', true);
-            } else {
-              // Add new movie
-              data.movies.push(newMovie);
-              showMessage('Movie added successfully!', true);
-            }
-            
-            // In a real app, you would send this to your server
-            // For this demo, we'll just update the display
-            displayMovies(data.movies);
-            
-            // Reset form
-            movieForm.reset();
-            document.getElementById('download-links').innerHTML = `
-              <div class="download-link">
-                <select class="quality-select">
-                  <option value="HD">HD</option>
-                  <option value="FHD">FHD</option>
-                  <option value="4K">4K</option>
-                  <option value="CAM">CAM</option>
-                </select>
-                <input type="url" class="download-url" placeholder="Download URL" required>
-              </div>
-            `;
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            showMessage('Error saving movie', false);
-          });
-      }
-      
-      function deleteLinkFromJSON(movieId, quality) {
-        fetch('movies.json')
-          .then(response => response.json())
-          .then(data => {
-            const movieIndex = data.movies.findIndex(m => m.id === parseInt(movieId));
-            
-            if (movieIndex >= 0) {
-              if (quality === 'stream') {
-                delete data.movies[movieIndex].stream_link;
-              } else {
-                delete data.movies[movieIndex].download_links[quality];
-                
-                // If no download links left, remove the entire movie
-                if (Object.keys(data.movies[movieIndex].download_links).length === 0) {
-                  data.movies.splice(movieIndex, 1);
-                }
-              }
-              
-              // In a real app, you would send this to your server
-              displayMovies(data.movies);
-              showMessage('Link deleted successfully!', true);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            showMessage('Error deleting link', false);
-          });
-      }
-    });
+    } catch (error) {
+      console.error('Error:', error);
+      showMessage('Error deleting link', false);
+    }
+  }
+});
   </script>
 </body>
 </html>
