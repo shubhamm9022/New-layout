@@ -461,11 +461,10 @@
 </div>
 
 <script>
-// Function to parse both clean and traditional URLs
-function getMediaInfo() {
-  // 1. First try to parse clean URL (e.g., /movie/the-matrix-603)
-  const pathMatch = window.location.pathname.match(/\/(movie|series)\/[a-z0-9-]+-(\d+)$/);
-  
+// Replace const urlParams... with:
+function parseUrl() {
+  // Clean URL format: /movie/the-matrix-603
+  const pathMatch = window.location.pathname.match(/\/(movie|series)\/.+-(\d+)/);
   if (pathMatch) {
     return {
       id: pathMatch[2],
@@ -473,13 +472,15 @@ function getMediaInfo() {
     };
   }
 
-  // 2. Fallback to query parameters (?id=123&type=movie)
+  // Fallback to query params
   const urlParams = new URLSearchParams(window.location.search);
   return {
     id: urlParams.get('id'),
-    type: urlParams.get('type') || 'movie' // Default to 'movie' if type not specified
+    type: urlParams.get('type') || 'movie'
   };
 }
+
+const { id: mediaId, type: mediaType } = parseUrl();
 
 // Get media info from URL
 const { id: mediaId, type: mediaType } = getMediaInfo();
