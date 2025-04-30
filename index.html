@@ -893,41 +893,17 @@
         </div>
       `;
       
-      // Replace the existing click handler with:
-card.addEventListener('click', (e) => {
-  e.preventDefault();
-  
-  // Store data (unchanged from your original)
-  sessionStorage.setItem('currentMedia', JSON.stringify({
-    id: media.id,
-    type: media.media_type,
-    title: title,
-    poster: posterPath,
-    stream_link: media.stream_link,
-    download_links: media.download_links
-  }));
-
-  // Generate clean URL
-  const slug = title.toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w-]+/g, '');
-  const cleanUrl = `/${media.media_type === 'tv' ? 'series' : 'movie'}/${slug}-${media.id}`;
-
-  // Show clean URL + load content
-  history.pushState({}, '', cleanUrl);
-  window.location.href = `details.html?id=${media.id}&type=${media.media_type}`;
-});
-
-// Helper function to create URL-friendly slugs
-function createSlug(text) {
-  return text.toString()
-    .toLowerCase()
-    .replace(/\s+/g, '-')      // Spaces to hyphens
-    .replace(/[^\w-]+/g, '')   // Remove non-word chars
-    .replace(/--+/g, '-')      // Replace multiple - with single
-    .replace(/^-+/, '')        // Trim - from start
-    .replace(/-+$/, '');       // Trim - from end
-}
+      card.addEventListener('click', () => {
+        sessionStorage.setItem('currentMedia', JSON.stringify({
+          id: media.id,
+          type: media.media_type,
+          title: title,
+          poster: posterPath,
+          stream_link: media.stream_link,
+          download_links: media.download_links
+        }));
+        window.location.href = `details.html?id=${media.id}&type=${media.media_type}`;
+      });
       
       moviesContainer.appendChild(card);
     });
