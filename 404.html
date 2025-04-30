@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    (function() {
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      if (pathParts.length === 2) {
+        const [type, id] = pathParts;
+        const allowedTypes = ['movie', 'tv'];
+        if (allowedTypes.includes(type) && !isNaN(id)) {
+          window.location.replace(`/details.html?id=${id}&type=${type}`);
+          return;
+        }
+      }
+      // If format doesn't match, redirect to home
+      window.location.replace('/index.html');
+    })();
+  </script>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  Redirecting...
+</body>
+</html>
