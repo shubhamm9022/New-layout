@@ -461,9 +461,9 @@
 </div>
 
 <script>
-// Replace const urlParams... with:
+const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa'; // Replace with your actual TMDB API key
+
 function parseUrl() {
-  // Clean URL format: /movie/the-matrix-603
   const pathMatch = window.location.pathname.match(/\/(movie|series)\/.+-(\d+)/);
   if (pathMatch) {
     return {
@@ -472,7 +472,6 @@ function parseUrl() {
     };
   }
 
-  // Fallback to query params
   const urlParams = new URLSearchParams(window.location.search);
   return {
     id: urlParams.get('id'),
@@ -481,9 +480,6 @@ function parseUrl() {
 }
 
 const { id: mediaId, type: mediaType } = parseUrl();
-
-// Get media info from URL
-const { id: mediaId, type: mediaType } = getMediaInfo();
 
 // API endpoints (UNCHANGED - works with both URL types)
 const detailsUrl = mediaType === 'tv'
