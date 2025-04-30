@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <title>Redirecting...</title>
   <script>
-    (function () {
-      const parts = location.pathname.split('/').filter(Boolean);
-      const [type, id] = parts;
-
-      if ((type === 'movie' || type === 'tv') && id) {
-        window.location.replace(`/details.html?id=${id}&type=${type}`);
-      } else {
-        window.location.replace('/index.html');
-      }
-    })();
+    const path = window.location.pathname;
+    const match = path.match(/\/(movie|series)\/[a-z0-9-]+-(\d+)/);
+    
+    if (match) {
+      // Redirect to details.html with ID & type
+      const type = match[1] === 'series' ? 'tv' : 'movie';
+      window.location.href = `/details.html?id=${match[2]}&type=${type}`;
+    } else {
+      window.location.href = '/'; // Fallback to home
+    }
   </script>
 </head>
 <body>
-  <p style="color: white; text-align: center;">Redirecting...</p>
+  <p>Redirecting...</p>
 </body>
 </html>
