@@ -893,10 +893,11 @@
         </div>
       `;
       
-      card.addEventListener('click', (e) => {
-  e.preventDefault(); // Prevent default link behavior
+      // Replace the existing click handler with:
+card.addEventListener('click', (e) => {
+  e.preventDefault();
   
-  // 1. Store media data in sessionStorage (for details page)
+  // Store data (unchanged from your original)
   sessionStorage.setItem('currentMedia', JSON.stringify({
     id: media.id,
     type: media.media_type,
@@ -906,14 +907,14 @@
     download_links: media.download_links
   }));
 
-  // 2. Create a clean URL slug (e.g. "the-matrix-1999")
-  const slug = createSlug(title) + '-' + (media.release_date?.split('-')[0] || ''); 
-  
-  // 3. Update browser URL visibly (without reload)
+  // Generate clean URL
+  const slug = title.toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '');
   const cleanUrl = `/${media.media_type === 'tv' ? 'series' : 'movie'}/${slug}-${media.id}`;
-  history.pushState({ id: media.id, type: media.media_type }, '', cleanUrl);
 
-  // 4. Actually load the content (compatible with GitHub Pages)
+  // Show clean URL + load content
+  history.pushState({}, '', cleanUrl);
   window.location.href = `details.html?id=${media.id}&type=${media.media_type}`;
 });
 
