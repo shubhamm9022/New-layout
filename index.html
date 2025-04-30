@@ -3,11 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hexa Watch Style</title>
+  
+  <!-- Primary Meta Tags -->
+  <title>Hexa Watch Style - Stream Latest Movies & TV Shows in HD Quality</title>
+  <meta name="description" content="Watch and download the latest movies and TV series in HD, FHD, and 4K quality. Stream trending content with high ratings and multiple quality options.">
+  <meta name="keywords" content="stream movies, watch TV series, HD movies, FHD content, 4K movies, latest releases, trending shows, movie downloads">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/">
+  <meta property="og:title" content="Hexa Watch Style - Stream Latest Movies & TV Shows in HD Quality">
+  <meta property="og:description" content="Watch and download the latest movies and TV series in HD, FHD, and 4K quality. Stream trending content with high ratings and multiple quality options.">
+  <meta property="og:image" content="https://i.postimg.cc/kDrLbYDJ/New-Project-94-8-E81-A64.png">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://yourdomain.com/">
+  <meta property="twitter:title" content="Hexa Watch Style - Stream Latest Movies & TV Shows in HD Quality">
+  <meta property="twitter:description" content="Watch and download the latest movies and TV series in HD, FHD, and 4K quality. Stream trending content with high ratings and multiple quality options.">
+  <meta property="twitter:image" content="https://i.postimg.cc/kDrLbYDJ/New-Project-94-8-E81-A64.png">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://yourdomain.com/" />
+  
+  <!-- Favicon -->
+  <link rel="icon" href="https://i.postimg.cc/kDrLbYDJ/New-Project-94-8-E81-A64.png" type="image/png">
+  
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/site.webmanifest">
+  
+  <!-- Theme Color -->
+  <meta name="theme-color" content="#0d0d0d">
+  
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="https://i.postimg.cc/kDrLbYDJ/New-Project-94-8-E81-A64.png">
+  
   <!-- Poppins Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Hexa Watch Style",
+      "url": "https://yourdomain.com/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://yourdomain.com/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+  
   <style>
     /* RESET & BASE STYLES */
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -557,8 +607,8 @@
 <!-- Header Start -->
 <header>
   <a href="#" class="logo">
-    <img src="https://i.postimg.cc/kDrLbYDJ/New-Project-94-8-E81-A64.png" alt="Logo" class="logo-img">
-    <span class="logo-text"></span>
+    <img src="https://i.postimg.cc/kDrLbYDJ/New-Project-94-8-E81-A64.png" alt="Hexa Watch Style Logo" class="logo-img">
+    <span class="logo-text">Hexa Watch Style</span>
   </a>
   
   <nav id="menu">
@@ -568,11 +618,11 @@
   </nav>
   
   <div class="right-section">
-    <i class="fas fa-search search-icon" id="search-icon"></i>
+    <i class="fas fa-search search-icon" id="search-icon" aria-label="Search"></i>
     <div class="search-box" id="search-box">
-      <input type="text" placeholder="Search movies, series...">
+      <input type="text" placeholder="Search movies, series..." aria-label="Search movies and TV series">
     </div>
-    <div class="hamburger" id="hamburger">
+    <div class="hamburger" id="hamburger" aria-label="Menu">
       <span></span>
       <span></span>
       <span></span>
@@ -585,30 +635,37 @@
 <div class="content-wrapper">
   <!-- Breadcrumb -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
-    <ol>
-      <li class="inline-flex items-center">
-        <a href="#" class="breadcrumb-home">
+    <ol itemscope itemtype="https://schema.org/BreadcrumbList">
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="inline-flex items-center">
+        <a href="#" class="breadcrumb-home" itemprop="item">
           <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
           </svg>
-          Home
+          <span itemprop="name">Home</span>
         </a>
+        <meta itemprop="position" content="1" />
       </li>
-      <li>
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
         <div class="separator">
           <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
           </svg>
         </div>
-        <a href="#" class="breadcrumb-movies">Movies</a>
+        <a href="#" class="breadcrumb-movies" itemprop="item">
+          <span itemprop="name">Movies</span>
+        </a>
+        <meta itemprop="position" content="2" />
       </li>
-      <li aria-current="page">
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" aria-current="page">
         <div class="separator">
           <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
           </svg>
         </div>
-        <span class="current breadcrumb-latest">Available Content</span>
+        <span class="current breadcrumb-latest" itemprop="item">
+          <span itemprop="name">Available Content</span>
+        </span>
+        <meta itemprop="position" content="3" />
       </li>
     </ol>
   </nav>
@@ -616,22 +673,22 @@
   <!-- Latest Releases Section -->
   <div class="section-title">
     <i class="fas fa-bolt"></i>
-    <h2>Available Content</h2>
+    <h1>Available Content</h1>
   </div>
 
   <!-- Loader -->
   <div class="loader" id="loader"></div>
 
   <!-- Movie Cards Grid -->
-  <div class="movies-grid" id="movies-container"></div>
+  <div class="movies-grid" id="movies-container" role="list"></div>
 
   <!-- Pagination -->
   <div class="pagination" id="pagination">
-    <button class="page-btn prev-btn disabled">
+    <button class="page-btn prev-btn disabled" aria-label="Previous page">
       <i class="fas fa-chevron-left"></i>
     </button>
-    <div class="page-numbers" id="page-numbers"></div>
-    <button class="page-btn next-btn">
+    <div class="page-numbers" id="page-numbers" role="navigation" aria-label="Pagination"></div>
+    <button class="page-btn next-btn" aria-label="Next page">
       <i class="fas fa-chevron-right"></i>
     </button>
   </div>
@@ -722,6 +779,9 @@
       const response = await fetch('movies.json');
       const yourContent = await response.json();
       
+      // Generate structured data for all media items
+      generateStructuredData(yourContent.movies);
+      
       // 2. Fetch details for each item from TMDb
       allMedia = await Promise.all(
         yourContent.movies.map(async item => {
@@ -760,6 +820,30 @@
     }
   }
 
+  function generateStructuredData(mediaItems) {
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": mediaItems.map((item, index) => ({
+        "@type": "ListItem",
+        "position": index + 1,
+        "item": {
+          "@type": item.type === 'tv' ? 'TVSeries' : 'Movie',
+          "name": item.title || item.name,
+          "url": `https://yourdomain.com/details.html?id=${item.id}&type=${item.type}`,
+          "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://via.placeholder.com/180x270?text=No+Image',
+          "description": item.overview || 'No description available',
+          "dateCreated": item.release_date || item.first_air_date
+        }
+      }))
+    };
+    
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+  }
+
   function displayMedia(filteredMedia = allMedia) { // Renamed from displayMovies
     moviesContainer.innerHTML = '';
     
@@ -772,7 +856,7 @@
       return;
     }
     
-    mediaToDisplay.forEach(media => {
+    mediaToDisplay.forEach((media, index) => {
       const posterPath = media.poster_path || media.backdrop_path
         ? `https://image.tmdb.org/t/p/w500${media.poster_path || media.backdrop_path}` 
         : 'https://via.placeholder.com/180x270?text=No+Image';
@@ -785,23 +869,27 @@
       
       const card = document.createElement('div');
       card.className = 'movie-card';
+      card.setAttribute('role', 'listitem');
+      card.setAttribute('itemscope', '');
+      card.setAttribute('itemtype', media.media_type === 'movie' ? 'https://schema.org/Movie' : 'https://schema.org/TVSeries');
       card.innerHTML = `
         <div class="poster-wrapper">
-          <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')">
+          <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')" itemprop="image">
           <div class="rating-star">
             <img src="${starImageUrl}" alt="star">
             ${rating}
           </div>
         </div>
         <div class="movie-info">
-          <div class="title">${title}</div>
+          <div class="title" itemprop="name">${title}</div>
           <div class="tags">
-            <div class="tag">${formattedDate}</div>
+            <div class="tag" itemprop="dateCreated">${formattedDate}</div>
             ${media.download_links ? Object.keys(media.download_links)
               .map(quality => `<div class="tag ${quality.toLowerCase()}">${quality}</div>`)
               .join('') : ''}
             <div class="tag">${type}</div>
           </div>
+          <meta itemprop="description" content="${media.overview || 'No description available'}">
         </div>
       `;
       
@@ -845,6 +933,7 @@
       const pageBtn = document.createElement('button');
       pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
       pageBtn.textContent = i;
+      pageBtn.setAttribute('aria-label', `Page ${i}`);
       pageBtn.addEventListener('click', () => {
         currentPage = i;
         displayMedia();
@@ -889,7 +978,24 @@
   });
 
   // Initialize
-  fetchMedia();
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchMedia();
+    
+    // Track search queries for analytics
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get('q');
+  if (searchQuery) {
+      searchInput.value = searchQuery.toLowerCase();
+      const filteredMedia = allMedia.filter(media => {
+        const title = (media.title || media.name || '').toLowerCase();
+        return title.includes(searchQuery.toLowerCase());
+      });
+      totalPages = Math.ceil(filteredMedia.length / moviesPerPage);
+      currentPage = 1;
+      displayMedia(filteredMedia);
+      setupPagination();
+    }
+  });
 </script>
 </body>
 </html>
