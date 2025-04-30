@@ -4,11 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Movie Details</title>
-
-  <!-- Poppins Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
   <style>
     body {
       margin: 0;
@@ -20,7 +17,7 @@
 
     /* Back button */
     .back-btn {
-      position: absolute;
+      position: fixed;
       top: 20px;
       left: 20px;
       z-index: 10;
@@ -35,6 +32,8 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.3s;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
     }
 
     .back-btn:hover {
@@ -45,7 +44,9 @@
     .banner {
       position: relative;
       width: 100%;
-      height: 300px;
+      height: 50vh;
+      max-height: 400px;
+      min-height: 300px;
       background: #1a1a1a;
       background-size: cover;
       background-position: center;
@@ -56,7 +57,7 @@
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8));
     }
 
     .movie-container {
@@ -77,6 +78,7 @@
       overflow: hidden;
       box-shadow: 0 8px 20px rgba(0,0,0,0.7);
       margin-bottom: 20px;
+      position: relative;
     }
 
     .poster img {
@@ -101,6 +103,7 @@
       font-size: 24px;
       font-weight: 700;
       margin: 0;
+      line-height: 1.2;
     }
 
     .info-tags {
@@ -120,6 +123,7 @@
       display: flex;
       align-items: center;
       gap: 4px;
+      white-space: nowrap;
     }
 
     .tag.movie-type {
@@ -154,12 +158,28 @@
       cursor: pointer;
       text-decoration: none;
       transition: all 0.3s;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 150px;
+    }
+
+    .btn.download-btn {
+      background: linear-gradient(90deg, #2196F3, #00BCD4);
     }
 
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .button-container {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+      width: 100%;
+      flex-wrap: wrap;
     }
 
     .synopsis {
@@ -294,18 +314,111 @@
     .tag.fhd { background: #2196F3; }
     .tag._4k { background: #9C27B0; }
 
-    @media (max-width: 600px) {
-      .similar-grid {
-        grid-template-columns: repeat(2, 1fr);
+    /* Download options dropdown */
+    .download-dropdown {
+      position: absolute;
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      z-index: 1000;
+      margin-top: 5px;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .download-option {
+      display: block;
+      padding: 8px 15px;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      background: #2a2a2a;
+      transition: background-color 0.2s;
+      font-size: 14px;
+    }
+
+    .download-option:hover {
+      background: #3a3a3a;
+    }
+
+    .download-option i {
+      margin-right: 8px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .banner {
+        height: 40vh;
       }
+      
       .movie-container {
+        margin-top: -80px;
         padding: 20px 15px;
       }
+      
+      .poster {
+        width: 180px;
+        height: 270px;
+      }
+      
+      .movie-title {
+        font-size: 20px;
+      }
+      
+      .button-container {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+      
+      .similar-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      
       .back-btn {
         top: 15px;
         left: 15px;
         width: 36px;
         height: 36px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .banner {
+        height: 35vh;
+      }
+      
+      .poster {
+        width: 150px;
+        height: 225px;
+      }
+      
+      .movie-title {
+        font-size: 18px;
+      }
+      
+      .info-tags {
+        gap: 6px;
+      }
+      
+      .tag {
+        font-size: 11px;
+        padding: 4px 10px;
+      }
+      
+      .similar-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
+      
+      .poster-wrapper {
+        height: 200px;
       }
     }
   </style>
@@ -331,7 +444,10 @@
 
     <div class="info-tags" id="genreTags"></div>
 
-    <a href="#" class="btn" id="watchBtn">WATCH NOW</a>
+    <div class="button-container">
+      <a href="#" class="btn" id="watchBtn"><i class="bi bi-play-fill"></i> WATCH NOW</a>
+      <a href="#" class="btn download-btn" id="downloadBtn"><i class="bi bi-download"></i> DOWNLOAD</a>
+    </div>
 
     <div class="synopsis" id="synopsisSection">
       <h2 class="synopsis-title">Synopsis</h2>
@@ -349,10 +465,10 @@
 <script>
 const urlParams = new URLSearchParams(window.location.search);
 const mediaId = urlParams.get('id');
-const mediaType = urlParams.get('type') || 'movie'; // Default to movie if not specified
+const mediaType = urlParams.get('type') || 'movie';
 const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
 
-// Set API endpoints based on media type
+// API endpoints
 const detailsUrl = mediaType === 'tv'
   ? `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US`
   : `https://api.themoviedb.org/3/movie/${mediaId}?api_key=${apiKey}&language=en-US`;
@@ -361,25 +477,134 @@ const similarUrl = mediaType === 'tv'
   ? `https://api.themoviedb.org/3/tv/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`
   : `https://api.themoviedb.org/3/movie/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`;
 
-// Quality options matching index page
-const qualityOptions = [
-  { text: 'HD', class: 'hd' },
-  { text: 'CAM', class: 'cam' },
-  { text: 'FHD', class: 'fhd' },
-  { text: '4K', class: '_4k' }
-];
-
-// Star image URL matching index page
+// Star image URL
 const starImageUrl = 'https://i.postimg.cc/ZqbHmT4p/1000133487-removebg-preview-1.png';
 
 // Back button functionality
 document.getElementById('backBtn').addEventListener('click', () => {
-  window.location.href = 'index.html';
+  window.location.href = document.referrer.includes(window.location.hostname) 
+    ? document.referrer 
+    : 'index.html';
 });
+
+// Load content from JSON files
+async function loadContentLinks() {
+  try {
+    const jsonFile = mediaType === 'tv' ? 'series.json' : 'movies.json';
+    const response = await fetch(jsonFile);
+    if (!response.ok) throw new Error('Failed to load content');
+    
+    const data = await response.json();
+    const mediaItem = data.movies.find(item => item.id == mediaId);
+    
+    if (!mediaItem) {
+      document.getElementById('watchBtn').style.display = 'none';
+      document.getElementById('downloadBtn').style.display = 'none';
+      return;
+    }
+
+    // Set watch button
+    const watchBtn = document.getElementById('watchBtn');
+    if (mediaItem.stream_link) {
+      watchBtn.href = mediaItem.stream_link;
+      watchBtn.target = '_blank';
+    } else {
+      watchBtn.style.display = 'none';
+    }
+
+    // Set download button
+    const downloadBtn = document.getElementById('downloadBtn');
+    if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
+      const downloadLinks = Object.entries(mediaItem.download_links);
+      
+      if (downloadLinks.length === 1) {
+        // Single download link
+        downloadBtn.href = downloadLinks[0][1];
+        downloadBtn.target = '_blank';
+      } else {
+        // Multiple download options
+        downloadBtn.onclick = (e) => {
+          e.preventDefault();
+          showDownloadOptions(mediaItem.download_links);
+        };
+      }
+    } else {
+      downloadBtn.style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error loading content links:', error);
+    document.getElementById('watchBtn').style.display = 'none';
+    document.getElementById('downloadBtn').style.display = 'none';
+  }
+}
+
+// Show download options dropdown
+function showDownloadOptions(downloadLinks) {
+  // Remove existing dropdown if any
+  const existingDropdown = document.querySelector('.download-dropdown');
+  if (existingDropdown) {
+    existingDropdown.remove();
+    return;
+  }
+  
+  // Create dropdown
+  const dropdown = document.createElement('div');
+  dropdown.className = 'download-dropdown';
+  
+  // Add download options
+  for (const [quality, url] of Object.entries(downloadLinks)) {
+    const option = document.createElement('a');
+    option.href = url;
+    option.className = 'download-option';
+    option.target = '_blank';
+    option.innerHTML = `<i class="bi bi-download"></i> ${quality}`;
+    dropdown.appendChild(option);
+  }
+  
+  // Position dropdown
+  const downloadBtn = document.getElementById('downloadBtn');
+  const rect = downloadBtn.getBoundingClientRect();
+  
+  dropdown.style.left = `${rect.left}px`;
+  dropdown.style.top = `${rect.bottom + window.scrollY + 5}px`;
+  dropdown.style.width = `${rect.width}px`;
+  
+  document.body.appendChild(dropdown);
+  
+  // Close dropdown when clicking outside
+  const clickHandler = (e) => {
+    if (!dropdown.contains(e.target) && e.target !== downloadBtn) {
+      dropdown.remove();
+      document.removeEventListener('click', clickHandler);
+    }
+  };
+  
+  setTimeout(() => {
+    document.addEventListener('click', clickHandler);
+  }, 0);
+}
+
+// Filter similar media to only show available content
+async function filterAvailableMedia(mediaItems) {
+  try {
+    const jsonFile = mediaType === 'tv' ? 'series.json' : 'movies.json';
+    const response = await fetch(jsonFile);
+    if (!response.ok) return mediaItems.slice(0, 6); // Fallback if can't load JSON
+    
+    const data = await response.json();
+    const availableIds = data.movies.map(item => item.id.toString());
+    return mediaItems.filter(item => availableIds.includes(item.id.toString()));
+  } catch (error) {
+    console.error('Error filtering available media:', error);
+    return mediaItems.slice(0, 6); // Fallback to first 6 items
+  }
+}
 
 async function loadMediaDetails() {
   try {
     const response = await fetch(detailsUrl);
+    if (!response.ok) throw new Error('Failed to fetch details');
+    
     const media = await response.json();
 
     // Set banner
@@ -436,21 +661,23 @@ async function loadMediaDetails() {
     // Synopsis
     document.getElementById('synopsisText').textContent = media.overview || "No synopsis available.";
 
-    // Watch button
-    document.getElementById('watchBtn').href = mediaType === 'tv'
-      ? `https://www.themoviedb.org/tv/${media.id}`
-      : `https://www.themoviedb.org/movie/${media.id}`;
+    // Load content links from JSON
+    await loadContentLinks();
 
   } catch (error) {
     console.error('Error loading media details:', error);
     document.getElementById('title').textContent = 'Error loading content';
     document.getElementById('synopsisText').textContent = 'Failed to load details. Please try again later.';
+    document.getElementById('watchBtn').style.display = 'none';
+    document.getElementById('downloadBtn').style.display = 'none';
   }
 }
 
 async function loadSimilarMedia() {
   try {
     const response = await fetch(similarUrl);
+    if (!response.ok) throw new Error('Failed to fetch similar content');
+    
     const data = await response.json();
     const similarContainer = document.getElementById('similarMovies');
     similarContainer.innerHTML = '';
@@ -460,7 +687,16 @@ async function loadSimilarMedia() {
       return;
     }
 
-    data.results.slice(0, 6).forEach(item => {
+    // Filter to only show available content
+    const availableSimilar = await filterAvailableMedia(data.results);
+    
+    if (availableSimilar.length === 0) {
+      similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content available</p>';
+      return;
+    }
+
+    // Display available similar media
+    availableSimilar.slice(0, 6).forEach(item => {
       const posterPath = item.poster_path 
         ? `https://image.tmdb.org/t/p/w500${item.poster_path}` 
         : 'https://via.placeholder.com/180x270?text=No+Image';
@@ -470,7 +706,6 @@ async function loadSimilarMedia() {
       const formattedDate = formatDate(releaseDate);
       const type = mediaType === 'tv' ? 'Series' : 'Movie';
       const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
-      const randomQuality = qualityOptions[Math.floor(Math.random() * qualityOptions.length)];
       
       const card = document.createElement('div');
       card.className = 'movie-card';
@@ -486,13 +721,11 @@ async function loadSimilarMedia() {
           <div class="title">${title}</div>
           <div class="tags">
             <div class="tag">${formattedDate}</div>
-            <div class="tag ${randomQuality.class}">${randomQuality.text}</div>
             <div class="tag">${type}</div>
           </div>
         </div>
       `;
       
-      // Add click event to redirect to the similar movie's details page
       card.addEventListener('click', () => {
         window.location.href = `movie-detail.html?id=${item.id}&type=${mediaType}`;
       });
@@ -506,19 +739,23 @@ async function loadSimilarMedia() {
   }
 }
 
-// Helper function to format date (matches index page)
 function formatDate(dateString) {
   if (!dateString) return 'Unknown';
   const date = new Date(dateString);
-  const options = { month: 'short', day: '2-digit', year: '2-digit' };
-  return date.toLocaleDateString('en-US', options);
+  return date.toLocaleDateString('en-US', { 
+    month: 'short', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
 }
 
-// Load content when page loads
+// Initialize
 document.addEventListener('DOMContentLoaded', () => {
   if (!mediaId) {
     document.getElementById('title').textContent = 'No content selected';
     document.getElementById('synopsisText').textContent = 'Please go back and select a movie or TV show.';
+    document.getElementById('watchBtn').style.display = 'none';
+    document.getElementById('downloadBtn').style.display = 'none';
     return;
   }
   
