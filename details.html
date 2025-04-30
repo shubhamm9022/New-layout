@@ -461,27 +461,12 @@
 </div>
 
 <script>
-const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa'; // Replace with your actual TMDB API key
+const urlParams = new URLSearchParams(window.location.search);
+const mediaId = urlParams.get('id');
+const mediaType = urlParams.get('type') || 'movie';
+const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
 
-function parseUrl() {
-  const pathMatch = window.location.pathname.match(/\/(movie|series)\/.+-(\d+)/);
-  if (pathMatch) {
-    return {
-      id: pathMatch[2],
-      type: pathMatch[1] === 'series' ? 'tv' : 'movie'
-    };
-  }
-
-  const urlParams = new URLSearchParams(window.location.search);
-  return {
-    id: urlParams.get('id'),
-    type: urlParams.get('type') || 'movie'
-  };
-}
-
-const { id: mediaId, type: mediaType } = parseUrl();
-
-// API endpoints (UNCHANGED - works with both URL types)
+// API endpoints
 const detailsUrl = mediaType === 'tv'
   ? `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US`
   : `https://api.themoviedb.org/3/movie/${mediaId}?api_key=${apiKey}&language=en-US`;
@@ -489,6 +474,7 @@ const detailsUrl = mediaType === 'tv'
 const similarUrl = mediaType === 'tv'
   ? `https://api.themoviedb.org/3/tv/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`
   : `https://api.themoviedb.org/3/movie/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`;
+
 // Star image URL
 const starImageUrl = 'https://i.postimg.cc/ZqbHmT4p/1000133487-removebg-preview-1.png';
 
@@ -738,17 +724,9 @@ async function loadSimilarMedia() {
         </div>
       `;
       
-      // Inside loadSimilarMedia() where similar cards are created
-card.addEventListener('click', (e) => {
-  e.preventDefault();
-  
-  const slug = createSlug(item.title || item.name) + '-' + (item.release_date?.split('-')[0] || '');
-  const cleanUrl = `/${mediaType === 'tv' ? 'series' : 'movie'}/${slug}-${item.id}`;
-  
-  // Update URL and load content
-  history.pushState({}, '', cleanUrl);
-  window.location.href = `details.html?id=${item.id}&type=${mediaType}`;
-});
+      card.addEventListener('click', () => {
+        window.location.href = `movie-detail.html?id=${item.id}&type=${mediaType}`;
+      });
       
       similarContainer.appendChild(card);
     });
