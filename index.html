@@ -162,7 +162,21 @@ body {
       align-items: center;
       gap: 20px;
     }
-    
+    .telegram-icon {
+  font-size: 18px;
+  color: #29a9ea;
+  transition: all 0.3s ease;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.telegram-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
     .search-icon {
       font-size: 16px;
       color: rgba(255, 255, 255, 0.8);
@@ -629,6 +643,12 @@ body {
   
   <div class="right-section">
     <i class="fas fa-search search-icon" id="search-icon" aria-label="Search"></i>
+    <div class="right-section">
+  <i class="fas fa-search search-icon" id="search-icon" aria-label="Search"></i>
+  <a href="https://t.me/movievaultHQ" target="_blank" class="telegram-icon" aria-label="Telegram">
+    <i class="fab fa-telegram-plane"></i>
+  </a>
+    </div>
     <div class="search-box" id="search-box">
       <input type="text" placeholder="Search movies, series..." aria-label="Search movies and TV series">
     </div>
