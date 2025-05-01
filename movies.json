@@ -15,13 +15,15 @@
       "stream_link": "https://smoothpre.com/file/tgt8db4bl3ni",
       "download_links": {
         "HD": "https://example.com/download/hd/wakanda-forever"
-      },
-      {"id": 343668,
-       "title": "Kingsman: The Golden Circle",
-       "stream_link": "https://gplinks.co/fKjlgwW",
-       "download_link": {
-          "FHD": "https://gplinks.co/fKjlgwW"
-       }
+      }
+    },
+    {
+      "id": 343668,
+      "title": "Kingsman: The Golden Circle",
+      "stream_link": "https://gplinks.co/fKjlgwW",
+      "download_links": {
+        "FHD": "https://gplinks.co/fKjlgwW"
+      }
     }
   ]
 }
