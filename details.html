@@ -747,9 +747,10 @@ async function loadSimilarMedia() {
         </div>
       `;
       
-      card.addEventListener('click', () => {
-  // Use clean URL for similar content links
-  window.location.href = `/${mediaType}/${item.id}`;
+      // Replace the card click handler with:
+card.addEventListener('click', () => {
+  // Use clean URL format
+  window.location.href = `/${media.media_type}/${media.id}`;
 });
       
       similarContainer.appendChild(card);
