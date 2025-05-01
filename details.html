@@ -463,28 +463,10 @@
 </div>
 
 <script>
-// Get media details from URL path
-const pathSegments = window.location.pathname.split('/').filter(Boolean);
-let mediaId, mediaType;
-
-// Check for clean URL format: /movie/123 or /tv/456
-if (pathSegments.length >= 2 && !isNaN(pathSegments[pathSegments.length - 1])) {
-  mediaType = pathSegments[pathSegments.length - 2]; // 'movie' or 'tv'
-  mediaId = pathSegments[pathSegments.length - 1];   // ID number
-} 
-// Fallback to query parameters if clean URL not found
-else {
-  const urlParams = new URLSearchParams(window.location.search);
-  mediaId = urlParams.get('id');
-  mediaType = urlParams.get('type') || 'movie';
-}
-
-// Validate media type
-if (mediaType !== 'movie' && mediaType !== 'tv') {
-  mediaType = 'movie'; // Default to movie if invalid type
-}
+const pathParts = window.location.pathname.split('/');
+const mediaId = pathParts[pathParts.length - 1];
+const mediaType = 'movie'; // or dynamically detect if needed
 const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
-// Redirect to clean URL if coming from old format
 
 // API endpoints
 const detailsUrl = mediaType === 'tv'
@@ -500,12 +482,9 @@ const starImageUrl = 'https://i.postimg.cc/ZqbHmT4p/1000133487-removebg-preview-
 
 // Back button functionality
 document.getElementById('backBtn').addEventListener('click', () => {
-  // Try to go back to the clean URL version of the index page
-  if (document.referrer.includes(window.location.hostname)) {
-    window.history.back();
-  } else {
-    window.location.href = '/'; // Go to root/index page
-  }
+  window.location.href = document.referrer.includes(window.location.hostname) 
+    ? document.referrer 
+    : 'index.html';
 });
 
 // Load content from JSON files
@@ -747,11 +726,9 @@ async function loadSimilarMedia() {
         </div>
       `;
       
-      // Replace the card click handler with:
-card.addEventListener('click', () => {
-  // Use clean URL format
-  window.location.href = `/${media.media_type}/${media.id}`;
-});
+      card.addEventListener('click', () => {
+        window.location.href = `movie-detail.html?id=${item.id}&type=${mediaType}`;
+      });
       
       similarContainer.appendChild(card);
     });
