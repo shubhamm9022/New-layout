@@ -485,9 +485,7 @@ if (mediaType !== 'movie' && mediaType !== 'tv') {
 }
 const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
 // Redirect to clean URL if coming from old format
-if (window.location.search.includes('id=') && !window.location.pathname.includes(mediaType)) {
-  window.history.replaceState({}, '', `/${mediaType}/${mediaId}`);
-}
+
 // API endpoints
 const detailsUrl = mediaType === 'tv'
   ? `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US`
