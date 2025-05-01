@@ -66,7 +66,17 @@
       font-family: 'Poppins', sans-serif;
       color: white;
     }
-    
+    img, video {
+  pointer-events: none;
+  user-drag: none;
+  -webkit-user-drag: none;
+}
+
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
     /* HEADER */
     header {
       position: fixed;
@@ -996,6 +1006,18 @@
       setupPagination();
     }
   });
+  // Disable right-click
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  // Block F12, Ctrl+Shift+I/J/C
+  document.onkeydown = function(e) {
+    if (e.key === "F12" || 
+       (e.ctrlKey && e.shiftKey && 
+        (e.key === "I" || e.key === "J" || e.key === "C"))) {
+      e.preventDefault();
+      return false;
+    }
+  };
 </script>
 </body>
 </html>
