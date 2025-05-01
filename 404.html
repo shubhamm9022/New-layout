@@ -5,8 +5,7 @@
   <title>Redirecting...</title>
   <script>
     const pathParts = window.location.pathname.split('/').filter(Boolean);
-    const base = '/New-layout'; // Keep this matching your repo name
-
+    const base = '/New-layout';
     if (pathParts.length === 2 && (pathParts[0] === 'movie' || pathParts[0] === 'tv')) {
       const [type, id] = pathParts;
       window.location.href = `${base}/details.html#/${type}/${id}`;
