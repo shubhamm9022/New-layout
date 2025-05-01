@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script>
+    // Parse the URL path
+    const path = window.location.pathname.split('/');
+    const mediaType = path[path.length - 2]; // 'movie' or 'tv'
+    const mediaId = path[path.length - 1];   // ID number
+    
+    // Redirect to details page with parameters
+    if (mediaType && mediaId) {
+      window.location.href = `details.html?id=${mediaId}&type=${mediaType}`;
+    } else {
+      window.location.href = 'index.html';
+    }
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
