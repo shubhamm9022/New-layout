@@ -1,0 +1,9 @@
+defaults:
+  - scope:
+      path: "assets/icons"
+    values:
+      cache-control: "public, max-age=31536000, immutable"
+  - scope:
+      path: "assets/manifest"
+    values:
+      cache-control: "public, max-age=31536000"
