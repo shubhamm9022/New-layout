@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Redirecting...</title>
   <script>
-    const path = window.location.pathname;
-    
     // Check if this is a movie/TV show URL
+    const path = window.location.pathname;
     const mediaMatch = path.match(/\/(movie|tv)\/(\d+)/);
     
     if (mediaMatch) {
-      // Redirect to our router
+      // Redirect to router with hash
       window.location.href = `/router.html#${mediaMatch[1]}/${mediaMatch[2]}`;
     } else {
       // Redirect to home for all other 404s
-      window.location.href = '/';
+      window.location.href = '/index.html';
     }
   </script>
 </head>
 <body>
-  <p>Redirecting...</p>
+  <p>Redirecting to content...</p>
 </body>
 </html>
