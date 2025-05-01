@@ -463,9 +463,9 @@
 </div>
 
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const mediaId = urlParams.get('id');
-const mediaType = urlParams.get('type') || 'movie';
+const pathParts = window.location.pathname.split('/');
+const mediaType = pathParts[1];  // movie or tv
+const mediaId = pathParts[2];    // actual ID
 const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
 
 // API endpoints
