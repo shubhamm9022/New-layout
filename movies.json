@@ -1,28 +1,13 @@
 {
   "movies": [
     {
-      "id": 299536,
-      "title": "Avengers: Infinity War",
-      "stream_link": "https://example.com/stream/avengers-infinity-war",
+      "id": 974573,
+      "title": "Another Simple Favor",
+      "stream_link": "https://gplinks.co/vlsAE1",
       "download_links": {
-        "HD": "https://example.com/download/hd/avengers-infinity-war",
-        "4K": "https://example.com/download/4k/avengers-infinity-war"
-      }
-    },
-    {
-      "id": 505642,
-      "title": "Black Panther: Wakanda Forever",
-      "stream_link": "https://smoothpre.com/file/tgt8db4bl3ni",
-      "download_links": {
-        "HD": "https://example.com/download/hd/wakanda-forever"
-      }
-    },
-    {
-      "id": 343668,
-      "title": "Kingsman: The Golden Circle",
-      "stream_link": "https://gplinks.co/fKjlgwW",
-      "download_links": {
-        "FHD": "https://gplinks.co/fKjlgwW"
+        "HD": "",
+        "FHD": "",
+        "4K": "https://gplinks.co/vlsAE1"
       }
     }
   ]
