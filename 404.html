@@ -1,22 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Redirecting...</title>
   <script>
-    const basePath = '/New-layout';
-    const pathParts = window.location.pathname.replace(basePath, '').split('/').filter(Boolean);
-
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const base = '/New-layout'; // IMPORTANT: change this if your repo name changes
     if (pathParts.length === 2 && (pathParts[0] === 'movie' || pathParts[0] === 'tv')) {
       const [type, id] = pathParts;
-      window.location.href = `${basePath}/details.html#/${type}/${id}`;
+      window.location.href = `${base}/details.html#/${type}/${id}`;
     } else {
-      window.location.href = basePath + '/';
+      window.location.href = base + '/';
     }
   </script>
 </head>
-<body style="background:#0d0d0d; color:white; display:flex; align-items:center; justify-content:center; height:100vh;">
+<body style="background:#000;color:white;text-align:center;padding:2rem;">
   <h2>Redirecting...</h2>
 </body>
 </html>
