@@ -3,11 +3,20 @@
 <head>
   <script>
     const path = window.location.pathname;
-    const match = path.match(/\/(movie|series)\/.+-(\d+)/);
-    window.location.href = match 
-      ? `/details.html?id=${match[2]}&type=${match[1] === 'series' ? 'tv' : 'movie'}`
-      : '/index.html';
+    
+    // Check if this is a movie/TV show URL
+    const mediaMatch = path.match(/\/(movie|tv)\/(\d+)/);
+    
+    if (mediaMatch) {
+      // Redirect to our router
+      window.location.href = `/router.html#${mediaMatch[1]}/${mediaMatch[2]}`;
+    } else {
+      // Redirect to home for all other 404s
+      window.location.href = '/';
+    }
   </script>
 </head>
-<body>Redirecting...</body>
+<body>
+  <p>Redirecting...</p>
+</body>
 </html>
