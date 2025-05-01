@@ -902,7 +902,7 @@
           stream_link: media.stream_link,
           download_links: media.download_links
         }));
-        window.location.href = `[].html/${media.media_type}/${media.id}`;
+        window.location.href = `[].html?id=${media.id}&type=${media.media_type}`;
       });
       
       moviesContainer.appendChild(card);
