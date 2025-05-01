@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Redirecting...</title>
+  <meta http-equiv="refresh" content="0">
   <script>
-    // Check if this is a movie/TV show URL
-    const path = window.location.pathname;
-    const mediaMatch = path.match(/\/(movie|tv)\/(\d+)/);
-    
-    if (mediaMatch) {
-      // Redirect to router with hash
-      window.location.href = `/router.html#${mediaMatch[1]}/${mediaMatch[2]}`;
+    // Extract path like /movie/123
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    if (pathParts.length === 2 && (pathParts[0] === 'movie' || pathParts[0] === 'tv')) {
+      const [type, id] = pathParts;
+      // Redirect to details.html with hash info
+      window.location.href = `/details.html#/${type}/${id}`;
     } else {
-      // Redirect to home for all other 404s
-      window.location.href = '/index.html';
+      // Fallback: go to home page
+      window.location.href = '/';
     }
   </script>
 </head>
 <body>
-  <p>Redirecting to content...</p>
+  <p style="color:white; background:black; text-align:center; padding:2rem;">Redirecting...</p>
 </body>
 </html>
