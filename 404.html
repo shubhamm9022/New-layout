@@ -4,21 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Redirecting...</title>
-  <meta http-equiv="refresh" content="0">
   <script>
-    // Extract path like /movie/123
-    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const basePath = '/New-layout';
+    const pathParts = window.location.pathname.replace(basePath, '').split('/').filter(Boolean);
+
     if (pathParts.length === 2 && (pathParts[0] === 'movie' || pathParts[0] === 'tv')) {
       const [type, id] = pathParts;
-      // Redirect to details.html with hash info
-      window.location.href = `/details.html#/${type}/${id}`;
+      window.location.href = `${basePath}/details.html#/${type}/${id}`;
     } else {
-      // Fallback: go to home page
-      window.location.href = '/';
+      window.location.href = basePath + '/';
     }
   </script>
 </head>
-<body>
-  <p style="color:white; background:black; text-align:center; padding:2rem;">Redirecting...</p>
+<body style="background:#0d0d0d; color:white; display:flex; align-items:center; justify-content:center; height:100vh;">
+  <h2>Redirecting...</h2>
 </body>
 </html>
