@@ -892,18 +892,18 @@
           <meta itemprop="description" content="${media.overview || 'No description available'}">
         </div>
       `;
-      // Replace this in your index.html file:
-card.addEventListener('click', () => {
-  sessionStorage.setItem('currentMedia', JSON.stringify({
-    id: media.id,
-    type: media.media_type,
-    title: title,
-    poster: posterPath,
-    stream_link: media.stream_link,
-    download_links: media.download_links
-  }));
-  window.location.href = `movie/${media.id}`;
-});
+      
+      card.addEventListener('click', () => {
+        sessionStorage.setItem('currentMedia', JSON.stringify({
+          id: media.id,
+          type: media.media_type,
+          title: title,
+          poster: posterPath,
+          stream_link: media.stream_link,
+          download_links: media.download_links
+        }));
+        window.location.href = `details.html?id=${media.id}&type=${media.media_type}`;
+      });
       
       moviesContainer.appendChild(card);
     });
