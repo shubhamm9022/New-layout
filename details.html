@@ -463,9 +463,7 @@
 </div>
 
 <script>
-const pathParts = window.location.pathname.split('/');
-const mediaType = pathParts[1];  // movie or tv
-const mediaId = pathParts[2];    // actual ID
+  const [mediaType, mediaId] = location.hash.replace('#/', '').split('/');
 const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
 
 // API endpoints
