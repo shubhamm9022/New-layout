@@ -463,11 +463,31 @@
 </div>
 
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const mediaId = urlParams.get('id');
-const mediaType = urlParams.get('type') || 'movie';
-const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
+// Get media details from URL path
+const pathSegments = window.location.pathname.split('/').filter(Boolean);
+let mediaId, mediaType;
 
+// Check for clean URL format: /movie/123 or /tv/456
+if (pathSegments.length >= 2 && !isNaN(pathSegments[pathSegments.length - 1])) {
+  mediaType = pathSegments[pathSegments.length - 2]; // 'movie' or 'tv'
+  mediaId = pathSegments[pathSegments.length - 1];   // ID number
+} 
+// Fallback to query parameters if clean URL not found
+else {
+  const urlParams = new URLSearchParams(window.location.search);
+  mediaId = urlParams.get('id');
+  mediaType = urlParams.get('type') || 'movie';
+}
+
+// Validate media type
+if (mediaType !== 'movie' && mediaType !== 'tv') {
+  mediaType = 'movie'; // Default to movie if invalid type
+}
+const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
+// Redirect to clean URL if coming from old format
+if (window.location.search.includes('id=') && !window.location.pathname.includes(mediaType)) {
+  window.history.replaceState({}, '', `/${mediaType}/${mediaId}`);
+}
 // API endpoints
 const detailsUrl = mediaType === 'tv'
   ? `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US`
@@ -482,9 +502,12 @@ const starImageUrl = 'https://i.postimg.cc/ZqbHmT4p/1000133487-removebg-preview-
 
 // Back button functionality
 document.getElementById('backBtn').addEventListener('click', () => {
-  window.location.href = document.referrer.includes(window.location.hostname) 
-    ? document.referrer 
-    : 'index.html';
+  // Try to go back to the clean URL version of the index page
+  if (document.referrer.includes(window.location.hostname)) {
+    window.history.back();
+  } else {
+    window.location.href = '/'; // Go to root/index page
+  }
 });
 
 // Load content from JSON files
@@ -727,8 +750,9 @@ async function loadSimilarMedia() {
       `;
       
       card.addEventListener('click', () => {
-        window.location.href = `movie-detail.html?id=${item.id}&type=${mediaType}`;
-      });
+  // Use clean URL for similar content links
+  window.location.href = `/${mediaType}/${item.id}`;
+});
       
       similarContainer.appendChild(card);
     });
