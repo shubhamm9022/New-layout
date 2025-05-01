@@ -8,6 +8,14 @@ def fetch_data(url):
     response = requests.get(url)
     return response.json()
 
+def clean_download_links(row):
+    download_links = {}
+    for quality, key in [("HD", "HD_download"), ("FHD", "FHD_download"), ("4K", "4K_download")]:
+        link = row.get(key, "").strip()
+        if link:
+            download_links[quality] = link
+    return download_links
+
 def create_movie_json():
     data = fetch_data(MOVIE_URL)
     movies = []
@@ -16,15 +24,11 @@ def create_movie_json():
             "id": int(row["id"]),
             "title": row["title"],
             "stream_link": row["stream_link"],
-            "download_links": {
-                "HD": row.get("HD_download", ""),
-                "FHD": row.get("FHD_download", ""),
-                "4K": row.get("4K_download", "")
-            }
+            "download_links": clean_download_links(row)
         }
-        movies.insert(0, movie)
-    with open("movies.json", "w") as f:
-        json.dump({"movies": movies}, f, indent=2)
+        movies.insert(0, movie)  # Latest first
+    with open("movies.json", "w", encoding="utf-8") as f:
+        json.dump({"movies": movies}, f, indent=2, ensure_ascii=False)
 
 def create_series_json():
     data = fetch_data(SERIES_URL)
@@ -34,15 +38,11 @@ def create_series_json():
             "id": int(row["id"]),
             "title": row["title"],
             "stream_link": row["stream_link"],
-            "download_links": {
-                "HD": row.get("HD_download", ""),
-                "FHD": row.get("FHD_download", ""),
-                "4K": row.get("4K_download", "")
-            }
+            "download_links": clean_download_links(row)
         }
-        series.insert(0, s)
-    with open("series.json", "w") as f:
-        json.dump({"series": series}, f, indent=2)
+        series.insert(0, s)  # Latest first
+    with open("series.json", "w", encoding="utf-8") as f:
+        json.dump({"series": series}, f, indent=2, ensure_ascii=False)
 
 create_movie_json()
 create_series_json()
