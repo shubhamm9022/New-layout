@@ -542,12 +542,25 @@ document.getElementById('backBtn').addEventListener('click', () => {
 // Load content from JSON files
 async function loadContentLinks() {
   try {
-    const jsonFile = mediaType === 'tv' ? 'series.json' : 'movies.json';
-    const response = await fetch(jsonFile);
-    if (!response.ok) throw new Error('Failed to load content');
+    // Load both movies and series JSON files
+    const [moviesResponse, seriesResponse] = await Promise.all([
+      fetch('movies.json'),
+      fetch('series.json')
+    ]);
     
-    const data = await response.json();
-    const mediaItem = data.movies.find(item => item.id == mediaId);
+    const [moviesData, seriesData] = await Promise.all([
+      moviesResponse.json(),
+      seriesResponse.json()
+    ]);
+    
+    // Combine both datasets
+    const combinedContent = [
+      ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
+      ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
+    ];
+    
+    // Find the current media item
+    const mediaItem = combinedContent.find(item => item.id == mediaId && item.type === mediaType);
     
     if (!mediaItem) {
       document.getElementById('watchBtn').style.display = 'none';
@@ -639,12 +652,24 @@ function showDownloadOptions(downloadLinks) {
 // Filter similar media to only show available content
 async function filterAvailableMedia(mediaItems) {
   try {
-    const jsonFile = mediaType === 'tv' ? 'series.json' : 'movies.json';
-    const response = await fetch(jsonFile);
-    if (!response.ok) return mediaItems.slice(0, 6); // Fallback if can't load JSON
+    // Load both movies and series JSON files
+    const [moviesResponse, seriesResponse] = await Promise.all([
+      fetch('movies.json'),
+      fetch('series.json')
+    ]);
     
-    const data = await response.json();
-    const availableIds = data.movies.map(item => item.id.toString());
+    const [moviesData, seriesData] = await Promise.all([
+      moviesResponse.json(),
+      seriesResponse.json()
+    ]);
+    
+    // Combine both datasets
+    const combinedContent = [
+      ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
+      ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
+    ];
+    
+    const availableIds = combinedContent.map(item => item.id.toString());
     return mediaItems.filter(item => availableIds.includes(item.id.toString()));
   } catch (error) {
     console.error('Error filtering available media:', error);
@@ -779,7 +804,7 @@ async function loadSimilarMedia() {
       `;
       
       card.addEventListener('click', () => {
-        window.location.href = `[].html?id=${item.id}&type=${mediaType}`;
+        window.location.href = `details.html?id=${item.id}&type=${mediaType}`;
       });
       
       similarContainer.appendChild(card);
@@ -814,18 +839,19 @@ document.addEventListener('DOMContentLoaded', () => {
   loadMediaDetails();
   loadSimilarMedia();
 });
-  // Disable right-click
-  document.addEventListener('contextmenu', e => e.preventDefault());
 
-  // Block F12, Ctrl+Shift+I/J/C
-  document.onkeydown = function(e) {
-    if (e.key === "F12" || 
-       (e.ctrlKey && e.shiftKey && 
-        (e.key === "I" || e.key === "J" || e.key === "C"))) {
-      e.preventDefault();
-      return false;
-    }
-  };
-</script>
+// Disable right-click
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// Block F12, Ctrl+Shift+I/J/C
+document.onkeydown = function(e) {
+  if (e.key === "F12" || 
+     (e.ctrlKey && e.shiftKey && 
+      (e.key === "I" || e.key === "J" || e.key === "C"))) {
+    e.preventDefault();
+    return false;
+  }
+};
+</script>          
 </body>
 </html>
