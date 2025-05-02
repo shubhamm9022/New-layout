@@ -15,6 +15,7 @@
   <meta property="og:title" content="Moviesvault - Stream Latest Movies & TV Shows in HD Quality">
   <meta property="og:description" content="Watch and download the latest movies and TV series in HD, FHD, and 4K quality. Stream trending content with high ratings and multiple quality options.">
   <meta property="og:image" content="https://i.postimg.cc/kDrLbYDJ/New-Project-94-8-E81-A64.png">
+  <meta property="og:site_name" content="MoviesVault">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
@@ -27,16 +28,10 @@
   <link rel="canonical" href="https://moviesvault.fun/" />
   
   <!-- Favicon -->
- <!-- In your <head> section -->
-<link rel="icon" href="/assets/icons/favicon.ico" type="image/x-icon">
-<link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
-<link rel="manifest" href="/assets/manifest/site.webmanifest">
-
-<!-- Replace with these mobile-optimized links -->
-<link rel="icon" href="assets/icons/favicon.ico">
-<link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="icon" href="assets/icons/favicon.ico">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="assets/manifest/site.webmanifest">
   
   <!-- Theme Color -->
   <meta name="theme-color" content="#0d0d0d">
@@ -44,17 +39,29 @@
   <!-- Apple Touch Icon -->
   <link rel="apple-touch-icon" href="https://i.postimg.cc/kDrLbYDJ/New-Project-94-8-E81-A64.png">
   
-  <!-- Poppins Font -->
+  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-  <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   
-  <!-- Structured Data -->
+  <!-- ====================== SCHEMA MARKUP ====================== -->
+  <!-- Organization Schema -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MoviesVault",
+      "url": "https://moviesvault.fun/",
+      "logo": "https://i.postimg.cc/kDrLbYDJ/New-Project-94-8-E81-A64.png",
+      "sameAs": ["https://t.me/movievaultHQ"]
+    }
+  </script>
+  
+  <!-- Website Schema -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "Moviesvault",
+      "name": "MoviesVault",
       "url": "https://moviesvault.fun/",
       "potentialAction": {
         "@type": "SearchAction",
@@ -64,6 +71,20 @@
     }
   </script>
   
+  <!-- WebPage Schema -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Latest HD Movies & TV Shows | MoviesVault",
+      "description": "Stream and download trending movies and TV series in HD, FHD, and 4K quality.",
+      "url": "https://moviesvault.fun/",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "MoviesVault"
+      }
+    }
+  </script>
   <style>
     /* RESET & BASE STYLES */
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -881,29 +902,46 @@ body {
     }
   }
 
-  function generateStructuredData(mediaItems) {
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "itemListElement": mediaItems.map((item, index) => ({
+function generateStructuredData(mediaItems) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": mediaItems.map((item, index) => {
+      const schema = {
         "@type": "ListItem",
         "position": index + 1,
         "item": {
           "@type": item.type === 'tv' ? 'TVSeries' : 'Movie',
           "name": item.title || item.name,
           "url": `https://moviesvault.fun/[].html?id=${item.id}&type=${item.type}`,
-          "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://via.placeholder.com/180x270?text=No+Image',
+          "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
           "description": item.overview || 'No description available',
-          "dateCreated": item.release_date || item.first_air_date
+          "datePublished": item.release_date || item.first_air_date,
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": item.vote_average?.toFixed(1) || "N/A",
+            "bestRating": "10",
+            "ratingCount": item.vote_count || 0
+          },
+          "genre": item.genres?.map(g => g.name) || []
         }
-      }))
-    };
-    
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    script.text = JSON.stringify(structuredData);
-    document.head.appendChild(script);
-  }
+      };
+
+      // Add VideoObject schema if streaming link exists
+      if (item.stream_link) {
+        schema.item.contentUrl = item.stream_link;
+        schema.item.embedUrl = item.stream_link;
+      }
+
+      return schema;
+    })
+  };
+
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.text = JSON.stringify(structuredData);
+  document.head.appendChild(script);
+}
 
   function displayMedia(filteredMedia = allMedia) {
     moviesContainer.innerHTML = '';
