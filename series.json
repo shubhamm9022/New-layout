@@ -1,8 +1,9 @@
 {
-  "tv": [
+  "series": [
     {
       "id": 200709,
-      "title": "Weak Hero",
+      "name": "Weak Hero",
+      "type": "tv",
       "stream_link": "https://gplinks.co/eqGf5I",
       "download_links": {
         "FHD": "https://gplinks.co/eqGf5I"
