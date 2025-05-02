@@ -819,40 +819,58 @@ body {
   const moviesPerPage = 20;
   let totalPages = 1;
 
-  async function fetchMedia() { // Renamed from fetchMovies
-    try {
-      loader.style.display = 'block';
-      
-      // 1. Load your custom content from JSON
-      const response = await fetch('movies.json');
-      const yourContent = await response.json();
-      
-      // Generate structured data for all media items
-      generateStructuredData(yourContent.movies);
-      
-      // 2. Fetch details for each item from TMDb
-      allMedia = await Promise.all(
-        yourContent.movies.map(async item => {
-          try {
-            const endpoint = item.type === 'tv' 
-              ? `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}`
-              : `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}`;
-            
-            const tmdbResponse = await fetch(endpoint);
-            const tmdbData = await tmdbResponse.json();
-            
-            return {
-              ...tmdbData,
-              media_type: item.type || 'movie', // Ensure type is set
-              stream_link: item.stream_link,
-              download_links: item.download_links || {}
-            };
-          } catch (error) {
-            console.error(`Error fetching ${item.type} ${item.id}:`, error);
-            return null;
-          }
-        })
-      );
+  async function fetchMedia() {
+  try {
+    loader.style.display = 'block';
+    
+    // 1. Load both movies and series JSON files
+    const [moviesResponse, seriesResponse] = await Promise.all([
+      fetch('movies.json'),
+      fetch('series.json')
+    ]);
+    
+    const [moviesData, seriesData] = await Promise.all([
+      moviesResponse.json(),
+      seriesResponse.json()
+    ]);
+    
+    // Combine both datasets
+    const combinedContent = {
+      movies: [...moviesData.movies, ...seriesData.series]
+    };
+    
+    // Generate structured data for all media items
+    generateStructuredData(combinedContent.movies);
+    
+    // 2. Fetch details for each item from TMDb
+    allMedia = await Promise.all(
+      combinedContent.movies.map(async item => {
+        try {
+          const endpoint = item.type === 'tv' 
+            ? `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}`
+            : `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}`;
+          
+          const tmdbResponse = await fetch(endpoint);
+          const tmdbData = await tmdbResponse.json();
+          
+          return {
+            ...tmdbData,
+            media_type: item.type || 'movie', // Ensure type is set
+            stream_link: item.stream_link,
+            download_links: item.download_links || {}
+          };
+        } catch (error) {
+          console.error(`Error fetching ${item.type} ${item.id}:`, error);
+          return null;
+        }
+      })
+    );
+    
+    // Rest of your existing code...
+  } catch (error) {
+    // Error handling
+  }
+  }
       
       // Filter out failed fetches
       allMedia = allMedia.filter(item => item !== null);
