@@ -804,7 +804,7 @@ body {
     document.querySelector('nav a:nth-child(2)').classList.add('active');
   });
   
-  // Modified movie/TV series fetching
+  // Updated movie/TV series fetching
   const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
   const moviesContainer = document.getElementById('movies-container');
   const loader = document.getElementById('loader');
@@ -814,69 +814,64 @@ body {
   const nextBtn = document.querySelector('.next-btn');
   
   const starImageUrl = 'star.png';
-  let allMedia = []; // Changed from allMovies to allMedia
+  let allMedia = [];
   let currentPage = 1;
   const moviesPerPage = 20;
   let totalPages = 1;
 
   async function fetchMedia() {
-  try {
-    loader.style.display = 'block';
-    
-    // 1. Load both movies and series JSON files
-    const [moviesResponse, seriesResponse] = await Promise.all([
-      fetch('movies.json'),
-      fetch('series.json')
-    ]);
-    
-    const [moviesData, seriesData] = await Promise.all([
-      moviesResponse.json(),
-      seriesResponse.json()
-    ]);
-    
-    // Combine both datasets
-    const combinedContent = {
-      movies: [...moviesData.movies, ...seriesData.series]
-    };
-    
-    // Generate structured data for all media items
-    generateStructuredData(combinedContent.movies);
-    
-    // 2. Fetch details for each item from TMDb
-    allMedia = await Promise.all(
-      combinedContent.movies.map(async item => {
-        try {
-          const endpoint = item.type === 'tv' 
-            ? `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}`
-            : `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}`;
-          
-          const tmdbResponse = await fetch(endpoint);
-          const tmdbData = await tmdbResponse.json();
-          
-          return {
-            ...tmdbData,
-            media_type: item.type || 'movie', // Ensure type is set
-            stream_link: item.stream_link,
-            download_links: item.download_links || {}
-          };
-        } catch (error) {
-          console.error(`Error fetching ${item.type} ${item.id}:`, error);
-          return null;
-        }
-      })
-    );
-    
-    // Rest of your existing code...
-  } catch (error) {
-    // Error handling
-  }
-  }
+    try {
+      loader.style.display = 'block';
+      
+      // Load both movies and series JSON files
+      const [moviesResponse, seriesResponse] = await Promise.all([
+        fetch('movies.json'),
+        fetch('series.json')
+      ]);
+      
+      const [moviesData, seriesData] = await Promise.all([
+        moviesResponse.json(),
+        seriesResponse.json()
+      ]);
+      
+      // Combine both datasets and ensure each item has a type
+      const combinedItems = [
+        ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
+        ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
+      ];
+      
+      // Generate structured data for all media items
+      generateStructuredData(combinedItems);
+      
+      // Fetch details for each item from TMDb
+      allMedia = await Promise.all(
+        combinedItems.map(async item => {
+          try {
+            const endpoint = item.type === 'tv' 
+              ? `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}`
+              : `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}`;
+            
+            const tmdbResponse = await fetch(endpoint);
+            const tmdbData = await tmdbResponse.json();
+            
+            return {
+              ...tmdbData,
+              media_type: item.type,
+              stream_link: item.stream_link,
+              download_links: item.download_links || {}
+            };
+          } catch (error) {
+            console.error(`Error fetching ${item.type} ${item.id}:`, error);
+            return null;
+          }
+        })
+      );
       
       // Filter out failed fetches
       allMedia = allMedia.filter(item => item !== null);
       
       totalPages = Math.ceil(allMedia.length / moviesPerPage);
-      displayMedia(); // Renamed from displayMovies
+      displayMedia();
       setupPagination();
     } catch (error) {
       console.error('Error loading content:', error);
@@ -910,7 +905,7 @@ body {
     document.head.appendChild(script);
   }
 
-  function displayMedia(filteredMedia = allMedia) { // Renamed from displayMovies
+  function displayMedia(filteredMedia = allMedia) {
     moviesContainer.innerHTML = '';
     
     const startIndex = (currentPage - 1) * moviesPerPage;
@@ -968,7 +963,7 @@ body {
           stream_link: media.stream_link,
           download_links: media.download_links
         }));
-        window.location.href = `[].html?id=${media.id}&type=${media.media_type}`;
+        window.location.href = `details.html?id=${media.id}&type=${media.media_type}`;
       });
       
       moviesContainer.appendChild(card);
@@ -1050,7 +1045,7 @@ body {
     // Track search queries for analytics
     const urlParams = new URLSearchParams(window.location.search);
     const searchQuery = urlParams.get('q');
-  if (searchQuery) {
+    if (searchQuery) {
       searchInput.value = searchQuery.toLowerCase();
       const filteredMedia = allMedia.filter(media => {
         const title = (media.title || media.name || '').toLowerCase();
@@ -1062,6 +1057,7 @@ body {
       setupPagination();
     }
   });
+
   // Disable right-click
   document.addEventListener('contextmenu', e => e.preventDefault());
 
