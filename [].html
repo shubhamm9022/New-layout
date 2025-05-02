@@ -763,7 +763,8 @@ async function loadSimilarMedia() {
       similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found</p>';
       return;
     }
-
+ console.log("TMDb Similar API Response:", data);
+console.log("Available Similar Content:", availableSimilar);
     // Filter to only show available content
     const availableSimilar = await filterAvailableMedia(data.results);
     
@@ -804,7 +805,7 @@ async function loadSimilarMedia() {
       `;
       
       card.addEventListener('click', () => {
-        window.location.href = `details.html?id=${item.id}&type=${mediaType}`;
+        window.location.href = `[].html?id=${item.id}&type=${mediaType}`;
       });
       
       similarContainer.appendChild(card);
