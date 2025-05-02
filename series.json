@@ -3,11 +3,20 @@
     {
       "id": 200709,
       "name": "Weak Hero",
-      "type": "tv",
       "stream_link": "https://gplinks.co/eqGf5I",
-      "download_links": {
-        "FHD": "https://gplinks.co/eqGf5I"
-      }
+      "download_links": { "FHD": "https://gplinks.co/eqGf5I" }
+    },
+    {
+      "id": 101058,  // Example: "All of Us Are Dead"
+      "name": "All of Us Are Dead",
+      "stream_link": "https://example.com/watch/101058",
+      "download_links": { "HD": "https://example.com/download/101058" }
+    },
+    {
+      "id": 93405,   // Example: "Squid Game"
+      "name": "Squid Game",
+      "stream_link": "https://example.com/watch/93405",
+      "download_links": { "4K": "https://example.com/download/93405" }
     }
   ]
 }
