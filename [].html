@@ -399,101 +399,20 @@ body {
       margin-right: 8px;
     }
 
-    /* Responsive adjustments - Optimized for mobile */
-    @media (max-width: 768px) {
+    /* Responsive adjustments */
+    @media (max-width: 750px) {
       .banner {
-        height: 35vh;
-        min-height: 250px;
+        height: 40vh;
       }
       
       .movie-container {
-        margin-top: -70px;
-        padding: 15px;
+        margin-top: -80px;
+        padding: 20px 15px;
       }
       
       .poster {
-        width: 180px;
-        height: 270px;
-        margin-bottom: 15px;
-      }
-      
-      .movie-title {
-        font-size: 22px;
-      }
-      
-      .info-tags {
-        gap: 6px;
-      }
-      
-      .tag, .rating-tag {
-        font-size: 11px;
-        padding: 4px 10px;
-      }
-      
-      .button-container {
-        flex-direction: row;
-        gap: 10px;
-        justify-content: center;
-      }
-      
-      .btn {
-        width: auto;
-        padding: 10px 15px;
-        font-size: 14px;
-        min-width: 120px;
-      }
-      
-      .synopsis {
-        margin-top: 20px;
-      }
-      
-      .synopsis-title {
-        font-size: 18px;
-      }
-      
-      .synopsis-text {
-        font-size: 13px;
-      }
-      
-      .similar-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-      }
-      
-      .poster-wrapper {
-        height: 220px;
-      }
-      
-      .movie-info {
-        min-height: 50px;
-      }
-      
-      .title {
-        font-size: 12px;
-      }
-      
-      .back-btn {
-        top: 12px;
-        left: 12px;
-        width: 34px;
-        height: 34px;
-        font-size: 16px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .banner {
-        height: 30vh;
-        min-height: 200px;
-      }
-      
-      .movie-container {
-        margin-top: -60px;
-      }
-      
-      .poster {
-        width: 150px;
-        height: 225px;
+        width: 220px;
+        height: 330px;
       }
       
       .movie-title {
@@ -502,16 +421,46 @@ body {
       
       .button-container {
         flex-direction: column;
-        gap: 8px;
       }
       
       .btn {
         width: 100%;
       }
       
+      .similar-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+      
+      .back-btn {
+        top: 15px;
+        left: 15px;
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    @media (max-width: 450px) {
+      .banner {
+        height: 35vh;
+      }
+      
+      .poster {
+        width: 220px;
+        height: 330px;
+      }
+      
+      .movie-title {
+        font-size: 18px;
+      }
+      
       .info-tags {
-        flex-wrap: wrap;
-        justify-content: center;
+        gap: 6px;
+      }
+      
+      .tag {
+        font-size: 11px;
+        padding: 4px 10px;
       }
       
       .similar-grid {
@@ -520,31 +469,7 @@ body {
       }
       
       .poster-wrapper {
-        height: 180px;
-      }
-      
-      .similar-title {
-        font-size: 18px;
-        margin-bottom: 15px;
-      }
-    }
-
-    @media (max-width: 360px) {
-      .poster {
-        width: 140px;
-        height: 210px;
-      }
-      
-      .movie-title {
-        font-size: 18px;
-      }
-      
-      .poster-wrapper {
-        height: 160px;
-      }
-      
-      .similar-grid {
-        grid-template-columns: 1fr;
+        height: 200px;
       }
     }
   </style>
