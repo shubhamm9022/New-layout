@@ -104,9 +104,30 @@
       -webkit-backdrop-filter: blur(5px);
     }
 
-    .back-btn:hover {
+    /* Home button */
+    .home-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
+    .back-btn:hover, .home-btn:hover {
       background: rgba(255, 255, 255, 0.1);
-      transform: translateX(-2px);
+      transform: translateY(-2px);
     }
 
     .banner {
@@ -517,12 +538,17 @@
         font-size: 0.7rem;
       }
 
-      .back-btn {
+      .back-btn, .home-btn {
         width: 32px;
         height: 32px;
         font-size: 14px;
         top: 10px;
+      }
+      .back-btn {
         left: 10px;
+      }
+      .home-btn {
+        right: 10px;
       }
     }
 
@@ -579,6 +605,9 @@
   <div class="back-btn" id="backBtn">
     <i class="bi bi-arrow-left"></i>
   </div>
+  <div class="home-btn" id="homeBtn">
+    <i class="bi bi-house-door"></i>
+  </div>
 </div>
 
 <div class="movie-container">
@@ -617,9 +646,6 @@ const mediaId = urlParams.get('id');
 const mediaType = urlParams.get('type') || 'movie';
 const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
 
-// Store navigation history
-let navigationHistory = JSON.parse(sessionStorage.getItem('movieHubNavigationHistory')) || [];
-
 // API endpoints
 const detailsUrl = mediaType === 'tv'
   ? `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US`
@@ -632,29 +658,22 @@ const similarUrl = mediaType === 'tv'
 // Star image URL
 const starImageUrl = 'star.png';
 
-// Back button functionality with history tracking
+// Back button functionality
 document.getElementById('backBtn').addEventListener('click', () => {
-  if (navigationHistory.length > 0) {
-    const previousPage = navigationHistory.pop();
-    sessionStorage.setItem('movieHubNavigationHistory', JSON.stringify(navigationHistory));
-    window.location.href = previousPage;
-  } else {
-    // Fallback if no history exists
-    window.location.href = document.referrer.includes(window.location.hostname) 
-      ? document.referrer 
-      : 'index.html';
-  }
+  window.location.href = document.referrer.includes(window.location.hostname) 
+    ? document.referrer 
+    : 'index.html';
 });
 
-// Add current page to history when coming from another movie detail page
-if (document.referrer.includes('[].html')) {
-  navigationHistory.push(document.referrer);
-  sessionStorage.setItem('movieHubNavigationHistory', JSON.stringify(navigationHistory));
-}
+// Home button functionality
+document.getElementById('homeBtn').addEventListener('click', () => {
+  window.location.href = 'index.html';
+});
 
 // Load content from JSON files
 async function loadContentLinks() {
   try {
+    // Load both movies and series JSON files
     const [moviesResponse, seriesResponse] = await Promise.all([
       fetch('movies.json'),
       fetch('series.json')
@@ -665,11 +684,13 @@ async function loadContentLinks() {
       seriesResponse.json()
     ]);
     
+    // Combine both datasets
     const combinedContent = [
       ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
       ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
     ];
     
+    // Find the current media item
     const mediaItem = combinedContent.find(item => item.id == mediaId && item.type === mediaType);
     
     if (!mediaItem) {
@@ -678,6 +699,7 @@ async function loadContentLinks() {
       return;
     }
 
+    // Set watch button
     const watchBtn = document.getElementById('watchBtn');
     if (mediaItem.stream_link) {
       watchBtn.href = mediaItem.stream_link;
@@ -686,14 +708,17 @@ async function loadContentLinks() {
       watchBtn.style.display = 'none';
     }
 
+    // Set download button
     const downloadBtn = document.getElementById('downloadBtn');
     if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
       const downloadLinks = Object.entries(mediaItem.download_links);
       
       if (downloadLinks.length === 1) {
+        // Single download link
         downloadBtn.href = downloadLinks[0][1];
         downloadBtn.target = '_blank';
       } else {
+        // Multiple download options
         downloadBtn.onclick = (e) => {
           e.preventDefault();
           showDownloadOptions(mediaItem.download_links);
@@ -709,17 +734,20 @@ async function loadContentLinks() {
   }
 }
 
-// Show download options dropdown (unchanged)
+// Show download options dropdown
 function showDownloadOptions(downloadLinks) {
+  // Remove existing dropdown if any
   const existingDropdown = document.querySelector('.download-dropdown');
   if (existingDropdown) {
     existingDropdown.remove();
     return;
   }
   
+  // Create dropdown
   const dropdown = document.createElement('div');
   dropdown.className = 'download-dropdown';
   
+  // Add download options
   for (const [quality, url] of Object.entries(downloadLinks)) {
     const option = document.createElement('a');
     option.href = url;
@@ -729,6 +757,7 @@ function showDownloadOptions(downloadLinks) {
     dropdown.appendChild(option);
   }
   
+  // Position dropdown
   const downloadBtn = document.getElementById('downloadBtn');
   const rect = downloadBtn.getBoundingClientRect();
   
@@ -738,6 +767,7 @@ function showDownloadOptions(downloadLinks) {
   
   document.body.appendChild(dropdown);
   
+  // Close dropdown when clicking outside
   const clickHandler = (e) => {
     if (!dropdown.contains(e.target) && e.target !== downloadBtn) {
       dropdown.remove();
@@ -750,9 +780,10 @@ function showDownloadOptions(downloadLinks) {
   }, 0);
 }
 
-// Filter similar media (unchanged)
+// Filter similar media to only show available content
 async function filterAvailableMedia(mediaItems) {
   try {
+    // Load both movies and series JSON files
     const [moviesResponse, seriesResponse] = await Promise.all([
       fetch('movies.json'),
       fetch('series.json')
@@ -763,6 +794,7 @@ async function filterAvailableMedia(mediaItems) {
       seriesResponse.json()
     ]);
     
+    // Combine both datasets
     const combinedContent = [
       ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
       ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
@@ -772,11 +804,10 @@ async function filterAvailableMedia(mediaItems) {
     return mediaItems.filter(item => availableIds.includes(item.id.toString()));
   } catch (error) {
     console.error('Error filtering available media:', error);
-    return mediaItems.slice(0, 6);
+    return mediaItems.slice(0, 6); // Fallback to first 6 items
   }
 }
 
-// Load media details (unchanged)
 async function loadMediaDetails() {
   try {
     const response = await fetch(detailsUrl);
@@ -784,6 +815,7 @@ async function loadMediaDetails() {
     
     const media = await response.json();
 
+    // Set banner
     const banner = document.getElementById('banner');
     if (media.backdrop_path) {
       banner.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${media.backdrop_path})`;
@@ -791,6 +823,7 @@ async function loadMediaDetails() {
       banner.style.backgroundImage = 'linear-gradient(to right, #1a1a1a, #2a2a2a)';
     }
 
+    // Set poster
     const poster = document.getElementById('poster');
     poster.src = media.poster_path 
       ? `https://image.tmdb.org/t/p/w500${media.poster_path}`
@@ -802,6 +835,7 @@ async function loadMediaDetails() {
 
     document.getElementById('title').textContent = mediaType === 'tv' ? media.name : media.title;
 
+    // Main tags
     const mainTags = document.getElementById('mainTags');
     mainTags.innerHTML = `
       <div class="tag movie-type">${mediaType === 'tv' ? 'TV Series' : 'Movie'}</div>
@@ -820,6 +854,7 @@ async function loadMediaDetails() {
       <div class="rating-tag"><i class="bi bi-star-fill"></i> ${media.vote_average ? media.vote_average.toFixed(1) : 'N/A'}</div>
     `;
 
+    // Genre tags
     const genreTags = document.getElementById('genreTags');
     genreTags.innerHTML = '';
     if (media.genres && media.genres.length) {
@@ -831,8 +866,10 @@ async function loadMediaDetails() {
       });
     }
 
+    // Synopsis
     document.getElementById('synopsisText').textContent = media.overview || "No synopsis available.";
 
+    // Load content links from JSON
     await loadContentLinks();
 
   } catch (error) {
@@ -844,7 +881,6 @@ async function loadMediaDetails() {
   }
 }
 
-// Load similar media with history tracking
 async function loadSimilarMedia() {
   try {
     const response = await fetch(similarUrl);
@@ -859,6 +895,7 @@ async function loadSimilarMedia() {
       return;
     }
 
+    // Filter to only show available content
     const availableSimilar = await filterAvailableMedia(data.results);
     
     if (availableSimilar.length === 0) {
@@ -866,6 +903,7 @@ async function loadSimilarMedia() {
       return;
     }
 
+    // Display available similar media
     availableSimilar.slice(0, 6).forEach(item => {
       const posterPath = item.poster_path 
         ? `https://image.tmdb.org/t/p/w500${item.poster_path}` 
@@ -897,9 +935,6 @@ async function loadSimilarMedia() {
       `;
       
       card.addEventListener('click', () => {
-        // Add current page to history before navigating
-        navigationHistory.push(window.location.href);
-        sessionStorage.setItem('movieHubNavigationHistory', JSON.stringify(navigationHistory));
         window.location.href = `[].html?id=${item.id}&type=${mediaType}`;
       });
       
