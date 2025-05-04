@@ -288,7 +288,7 @@
       opacity: 0.85;
     }
 
-    /* Similar movies */
+    /* Similar movies grid - optimized layout */
     .similar-section {
       margin-top: 50px;
       padding: 0 20px 30px;
@@ -504,6 +504,16 @@
         line-height: 1.5;
       }
 
+      .similar-section {
+        margin-top: 30px;
+        padding: 0 12px 20px;
+      }
+
+      .similar-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+      }
+
       .similar-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 15px;
@@ -512,15 +522,9 @@
       .poster-wrapper {
         height: 200px;
       }
-    }
-
-      .movie-card {
-        max-width: 100%;
-      }
-
 
       .movie-info {
-        padding: 6px;
+        padding: 8px;
       }
 
       .title {
@@ -545,16 +549,27 @@
       }
     }
 
+    @media (max-width: 480px) {
+      .similar-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+      }
+      
+      .poster-wrapper {
+        height: 180px;
+      }
+    }
+
     @media (max-width: 360px) {
       .poster {
         width: 130px;
         height: 195px;
       }
 
-     .similar-grid {
+      .similar-grid {
         grid-template-columns: repeat(2, 1fr);
       }
-    }
+
       .poster-wrapper {
         height: 160px;
       }
