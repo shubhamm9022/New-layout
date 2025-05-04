@@ -23,7 +23,7 @@
   <link rel="canonical" href="https://example.com/movie-details">
   
   <!-- Favicon -->
- <link rel="icon" href="assets/icons/favicon.ico">
+  <link rel="icon" href="assets/icons/favicon.ico">
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <link rel="manifest" href="assets/manifest/site.webmanifest">
@@ -48,24 +48,41 @@
   </script>
   
   <style>
+    :root {
+      --desktop-poster-width: 220px;
+      --desktop-poster-height: 330px;
+      --mobile-poster-width: 150px;
+      --mobile-poster-height: 225px;
+      --banner-height-desktop: 50vh;
+      --banner-height-mobile: 30vh;
+      --color-primary: linear-gradient(90deg, #ff4d4d, #f9cb28);
+      --color-secondary: linear-gradient(90deg, #2196F3, #00BCD4);
+      --bg-dark: #0d0d0d;
+      --bg-card: #1a1a1a;
+      --text-primary: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      background: #0d0d0d;
-      color: #fff;
+      background: var(--bg-dark);
+      color: var(--text-primary);
       font-family: 'Poppins', sans-serif;
       padding: 0;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
     }
-img, video {
-  pointer-events: none;
-  user-drag: none;
-  -webkit-user-drag: none;
-}
 
-body {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
+    img, video {
+      pointer-events: none;
+      user-drag: none;
+      -webkit-user-drag: none;
+    }
+
     /* Back button */
     .back-btn {
       position: fixed;
@@ -95,7 +112,7 @@ body {
     .banner {
       position: relative;
       width: 100%;
-      height: 50vh;
+      height: var(--banner-height-desktop);
       max-height: 400px;
       min-height: 300px;
       background: #1a1a1a;
@@ -123,8 +140,8 @@ body {
     }
 
     .poster {
-      width: 220px;
-      height: 330px;
+      width: var(--desktop-poster-width);
+      height: var(--desktop-poster-height);
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 8px 20px rgba(0,0,0,0.7);
@@ -178,7 +195,7 @@ body {
     }
 
     .tag.movie-type {
-      background: linear-gradient(90deg, #ff4d4d, #f9cb28);
+      background: var(--color-primary);
       color: #000;
       font-weight: 700;
     }
@@ -199,7 +216,7 @@ body {
     }
 
     .btn {
-      background: linear-gradient(90deg, #ff4d4d, #f9cb28);
+      background: var(--color-primary);
       border: none;
       color: black;
       font-weight: 700;
@@ -217,7 +234,7 @@ body {
     }
 
     .btn.download-btn {
-      background: linear-gradient(90deg, #2196F3, #00BCD4);
+      background: var(--color-secondary);
     }
 
     .btn:hover {
@@ -250,7 +267,7 @@ body {
       opacity: 0.85;
     }
 
-    /* Similar movies - matching index page exactly */
+    /* Similar movies */
     .similar-section {
       margin-top: 50px;
       padding: 0 20px 30px;
@@ -277,7 +294,7 @@ body {
       position: relative;
       width: 100%;
       max-width: 180px;
-      background: #1a1a1a;
+      background: var(--bg-card);
       border-radius: 10px;
       overflow: hidden;
       box-shadow: 0 8px 20px rgba(0,0,0,0.8);
@@ -368,7 +385,7 @@ body {
     /* Download options dropdown */
     .download-dropdown {
       position: absolute;
-      background: #1a1a1a;
+      background: var(--bg-card);
       border-radius: 8px;
       padding: 10px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.5);
@@ -399,77 +416,158 @@ body {
       margin-right: 8px;
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .banner {
-        height: 40vh;
+    /* Mobile Responsive Styles */
+    @media (max-width: 767px) {
+      body {
+        font-size: 14px;
       }
-      
+
+      .banner {
+        height: var(--banner-height-mobile);
+        min-height: 200px;
+        max-height: 250px;
+      }
+
       .movie-container {
         margin-top: -80px;
-        padding: 20px 15px;
+        padding: 12px;
       }
-      
+
       .poster {
-        width: 220px;
-        height: 330px;
+        width: var(--mobile-poster-width);
+        height: var(--mobile-poster-height);
+        margin-bottom: 12px;
       }
-      
+
       .movie-title {
-        font-size: 20px;
+        font-size: 1.5rem;
+        text-align: center;
+        margin-bottom: 8px;
       }
-      
+
+      .info-tags {
+        justify-content: center;
+        gap: 5px;
+        margin-bottom: 8px;
+      }
+
+      .tag, .rating-tag {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+      }
+
       .button-container {
         flex-direction: column;
+        gap: 8px;
+        margin: 12px 0;
       }
-      
+
       .btn {
-        width: 90%;
+        width: 100%;
+        padding: 10px;
+        font-size: 0.9rem;
       }
-      
+
+      .synopsis {
+        margin-top: 15px;
+      }
+
+      .synopsis-title {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+      }
+
+      .synopsis-text {
+        font-size: 0.85rem;
+        line-height: 1.5;
+      }
+
+      .similar-section {
+        margin-top: 30px;
+        padding: 0 12px 20px;
+      }
+
+      .similar-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+      }
+
       .similar-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
+        gap: 12px;
       }
-      
+
+      .movie-card {
+        max-width: 100%;
+      }
+
+      .poster-wrapper {
+        height: 180px;
+      }
+
+      .movie-info {
+        padding: 6px;
+      }
+
+      .title {
+        font-size: 0.8rem;
+      }
+
+      .tags {
+        font-size: 0.7rem;
+      }
+
       .back-btn {
-        top: 15px;
-        left: 15px;
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+        top: 10px;
+        left: 10px;
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 360px) {
+      .poster {
+        width: 130px;
+        height: 195px;
+      }
+
+      .similar-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .poster-wrapper {
+        height: 160px;
+      }
+    }
+
+    @media (min-width: 361px) and (max-width: 400px) {
+      .poster {
+        width: 140px;
+        height: 210px;
+      }
+    }
+
+    @media (min-width: 401px) and (max-width: 480px) {
+      .poster {
+        width: 160px;
+        height: 240px;
+      }
+      .banner {
+        height: 32vh;
+      }
+    }
+
+    @media (min-width: 481px) and (max-width: 767px) {
+      .poster {
+        width: 180px;
+        height: 270px;
+      }
       .banner {
         height: 35vh;
       }
-      
-      .poster {
-        width: 220px;
-        height: 330px;
-      }
-      
-      .movie-title {
-        font-size: 18px;
-      }
-      
-      .info-tags {
-        gap: 6px;
-      }
-      
-      .tag {
-        font-size: 11px;
-        padding: 4px 10px;
-      }
-      
       .similar-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-      }
-      
-      .poster-wrapper {
-        height: 200px;
+        grid-template-columns: repeat(3, 1fr);
       }
     }
   </style>
@@ -762,8 +860,7 @@ async function loadSimilarMedia() {
       similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found</p>';
       return;
     }
- console.log("TMDb Similar API Response:", data);
-console.log("Available Similar Content:", availableSimilar);
+
     // Filter to only show available content
     const availableSimilar = await filterAvailableMedia(data.results);
     
