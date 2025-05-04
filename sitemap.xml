@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://moviesvault.fun/</loc>
+    <lastmod>2025-05-04</lastmod>
+    <priority>1.00</priority>
+  </url>
+
+  <url>
+    <loc>https://moviesvault.fun/movie/animal-2023</loc>
+    <lastmod>2025-05-01</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://moviesvault.fun/movie/fighter-2024</loc>
+    <lastmod>2025-04-29</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+</urlset>
