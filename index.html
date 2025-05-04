@@ -312,6 +312,38 @@ body {
       padding: 20px;
     }
     
+    /* NOTICE BOX */
+    .notice-box {
+      background: rgba(30, 30, 30, 0.8);
+      border-left: 4px solid #f9cb28;
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .notice-icon {
+      color: #f9cb28;
+      font-size: 18px;
+      margin-top: 2px;
+    }
+    
+    .notice-content {
+      flex: 1;
+      font-size: 14px;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .notice-content strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+    
     /* BREADCRUMB - IMPROVED FOR MOBILE */
     .breadcrumb {
       display: flex;
@@ -608,6 +640,19 @@ body {
         padding: 15px;
       }
       
+      .notice-box {
+        padding: 10px 12px;
+        margin-bottom: 15px;
+      }
+      
+      .notice-icon {
+        font-size: 16px;
+      }
+      
+      .notice-content {
+        font-size: 13px;
+      }
+      
       .breadcrumb {
         padding: 10px 12px;
       }
@@ -693,6 +738,16 @@ body {
 
 <!-- Content Wrapper -->
 <div class="content-wrapper">
+  <!-- Notice Box -->
+  <div class="notice-box">
+    <div class="notice-icon">
+      <i class="fas fa-bullhorn"></i>
+    </div>
+    <div class="notice-content">
+      <strong>Important Notice:</strong> Our website is currently undergoing maintenance. Some features might be temporarily unavailable. We appreciate your patience and understanding.
+    </div>
+  </div>
+
   <!-- Breadcrumb -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol itemscope itemtype="https://schema.org/BreadcrumbList">
@@ -762,7 +817,7 @@ body {
   <p style="margin-top:10px;">© 2025 MoviesVault. All rights reserved.</p>
   <p style="margin-top:7px;">NOTE: This site does not store any files on its server. All contents are provided by non-affiliated third parties.</p>
   
-</footer>
+</footer
 <script>
   // Header functionality (unchanged)
   const hamburger = document.getElementById('hamburger');
