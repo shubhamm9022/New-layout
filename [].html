@@ -647,7 +647,7 @@ document.getElementById('backBtn').addEventListener('click', () => {
 });
 
 // Add current page to history when coming from another movie detail page
-if (document.referrer.includes('details.html')) {
+if (document.referrer.includes('[].html')) {
   navigationHistory.push(document.referrer);
   sessionStorage.setItem('movieHubNavigationHistory', JSON.stringify(navigationHistory));
 }
