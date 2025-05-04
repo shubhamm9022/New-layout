@@ -161,14 +161,14 @@
     }
 
     .poster {
-      width: var(--desktop-poster-width);
-      height: var(--desktop-poster-height);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.7);
-      margin-bottom: 20px;
-      position: relative;
-    }
+  width: 250px; /* Increased from 220px */
+  height: 375px; /* Increased from 330px (maintaining 2:3 aspect ratio) */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+  margin-bottom: 20px;
+  position: relative;
+}
 
     .poster img {
       width: 100%;
@@ -456,10 +456,10 @@
       }
 
       .poster {
-        width: var(--mobile-poster-width);
-        height: var(--mobile-poster-height);
-        margin-bottom: 12px;
-      }
+    width: 170px; /* Increased from 150px */
+    height: 255px; /* Increased from 225px */
+  }
+}
 
       .movie-title {
         font-size: 1.5rem;
@@ -562,8 +562,8 @@
 
     @media (max-width: 360px) {
       .poster {
-        width: 130px;
-        height: 195px;
+        width: 150px;
+        height: 225px;
       }
 
       .similar-grid {
@@ -577,15 +577,15 @@
 
     @media (min-width: 361px) and (max-width: 400px) {
       .poster {
-        width: 140px;
-        height: 210px;
+        width: 160px;
+        height: 240px;
       }
     }
 
     @media (min-width: 401px) and (max-width: 480px) {
       .poster {
-        width: 160px;
-        height: 240px;
+        width: 180px;
+        height: 270px;
       }
       .banner {
         height: 32vh;
@@ -594,8 +594,8 @@
 
     @media (min-width: 481px) and (max-width: 767px) {
       .poster {
-        width: 180px;
-        height: 270px;
+        width: 200px;
+        height: 300px;
       }
       .banner {
         height: 35vh;
