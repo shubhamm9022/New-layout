@@ -7,76 +7,116 @@
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #0f0f0f;
+      background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
       color: #fff;
-      padding: 20px;
+      padding: 30px;
+      background-attachment: fixed;
     }
+
     h1 {
       text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 40px;
       color: #00ffd0;
-      margin-bottom: 30px;
+      text-shadow: 0 0 10px rgba(0,255,200,0.4);
     }
+
     h2 {
-      border-left: 4px solid #00ffd0;
-      padding-left: 10px;
-      margin-top: 40px;
+      font-size: 2rem;
+      margin-top: 60px;
+      color: #fff;
+      border-left: 6px solid #00ffd0;
+      padding-left: 15px;
     }
+
     h3 {
-      margin-top: 20px;
-      color: #999;
-      margin-left: 10px;
+      margin-top: 30px;
+      margin-left: 12px;
+      color: #ccc;
+      font-size: 1.2rem;
     }
+
     .note {
-      background: #1a1a1a;
-      padding: 10px 15px;
-      border-left: 4px solid #ffcc00;
+      background: #1f1f1f;
+      padding: 15px 20px;
+      border-left: 5px solid #ffaa00;
+      border-radius: 8px;
       margin-bottom: 30px;
-      font-size: 14px;
+      font-size: 0.95rem;
+      box-shadow: 0 0 10px rgba(255,170,0,0.2);
     }
+
     .episode-block {
-      background: #1e1e1e;
-      margin: 15px 10px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,255,200,0.15);
+      background: rgba(255, 255, 255, 0.05);
+      margin: 20px 10px;
+      padding: 25px;
+      border-radius: 18px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0,255,200,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
     }
+
+    .episode-block:hover {
+      transform: scale(1.02);
+    }
+
     .episode-title {
       font-weight: bold;
-      font-size: 18px;
+      font-size: 20px;
       text-align: center;
-      margin-bottom: 15px;
-      color: #ccc;
+      margin-bottom: 20px;
+      color: #eee;
     }
+
     .btn {
       display: inline-block;
       text-decoration: none;
-      padding: 10px 20px;
-      margin: 5px 10px;
-      border-radius: 10px;
+      padding: 12px 20px;
+      margin: 8px 10px;
+      border-radius: 30px;
       font-weight: bold;
-      transition: all 0.3s ease;
+      transition: 0.3s ease;
       color: #fff;
+      box-shadow: 0 0 12px rgba(0,0,0,0.2);
     }
+
     .g-direct {
       background: linear-gradient(to right, #00c6ff, #00ff99);
     }
+
     .g-direct:hover {
-      background: linear-gradient(to right, #00a6dd, #00dd88);
+      background: linear-gradient(to right, #0099dd, #00cc88);
+      box-shadow: 0 0 12px rgba(0,255,200,0.5);
     }
+
     .filepress {
       background: linear-gradient(to right, #ffaa00, #cc6600);
     }
+
     .filepress:hover {
-      background: linear-gradient(to right, #e69a00, #a05200);
+      background: linear-gradient(to right, #ff9900, #b55300);
+      box-shadow: 0 0 12px rgba(255,160,0,0.5);
     }
+
     .footer-note {
-      margin-top: 40px;
-      font-size: 13px;
-      background: #1c1c1c;
-      padding: 15px;
-      border-radius: 8px;
-      border-left: 4px solid #0f0;
+      margin-top: 50px;
+      font-size: 0.9rem;
+      background: #161616;
+      padding: 18px;
+      border-radius: 10px;
+      border-left: 5px solid #0f0;
       color: #aaa;
+      box-shadow: 0 0 10px rgba(0,255,100,0.1);
+    }
+
+    @media (max-width: 600px) {
+      .btn {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -85,7 +125,7 @@
   <div class="note">Note: Use Download Manager like IDM or ADM for ⚡ instant download!</div>
   <div id="content"></div>
   <div class="footer-note">
-    Use ✅ Fast Server neodrive and filepress with direct cloud download.
+    Use ✅ Fast Server {V-Cloud} to download without G-Drive login. (Supports resume)
   </div>
 
   <script>
@@ -93,13 +133,13 @@
     const sheetName = 'Sheet3';
     const sheetID = '1Q948SR8n7RpMew5BWmL86dsJXC7ffj7OLTYbToc2Knc';
     const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?sheet=${sheetName}&tq=${query}`;
+    const anchor = location.hash.replace('#', '').toLowerCase().trim();
 
     fetch(url)
       .then(res => res.text())
       .then(text => {
         const json = JSON.parse(text.substring(47).slice(0, -2));
         const rows = json.table.rows;
-
         const data = {};
 
         rows.forEach(row => {
@@ -111,12 +151,20 @@
 
           if (!show || !season || !episode) return;
 
+          const showKey = show.toLowerCase().replace(/\s+/g, '-');
+          if (anchor && showKey !== anchor) return;
+
           if (!data[show]) data[show] = {};
           if (!data[show][season]) data[show][season] = {};
           data[show][season][episode] = { gDirect, filePress };
         });
 
         const container = document.getElementById('content');
+
+        if (Object.keys(data).length === 0) {
+          container.innerHTML = `<p style="color:#999;">No matching show found for: <b>${anchor}</b></p>`;
+          return;
+        }
 
         Object.keys(data).forEach(show => {
           const showTitle = document.createElement('h2');
@@ -132,7 +180,6 @@
 
             Object.keys(data[show][season]).forEach(ep => {
               const { gDirect, filePress } = data[show][season][ep];
-
               const block = document.createElement('div');
               block.className = 'episode-block';
 
@@ -146,7 +193,7 @@
                 btn1.href = gDirect;
                 btn1.className = 'btn g-direct';
                 btn1.target = '_blank';
-                btn1.textContent = '⚡ Neodrive (gdrive)';
+                btn1.textContent = '⚡ G-Direct [Instant]';
                 block.appendChild(btn1);
               }
 
@@ -155,7 +202,7 @@
                 btn2.href = filePress;
                 btn2.className = 'btn filepress';
                 btn2.target = '_blank';
-                btn2.textContent = 'Filepress';
+                btn2.textContent = 'Filepress [G-Drive]';
                 block.appendChild(btn2);
               }
 
