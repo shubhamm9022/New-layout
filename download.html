@@ -3,82 +3,79 @@
 <head>
   <meta charset="UTF-8">
   <title>TV Show Episodes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(145deg, #0a0a0a, #1a1a1a);
+      background: #121212;
       color: #fff;
-      padding: 30px;
-      background-attachment: fixed;
+      padding: 20px;
     }
 
     h1 {
       text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 40px;
+      font-size: 2rem;
+      margin-bottom: 25px;
       color: #00ffd0;
-      text-shadow: 0 0 10px rgba(0,255,200,0.4);
     }
 
     h2 {
-      font-size: 2rem;
-      margin-top: 60px;
-      color: #fff;
-      border-left: 6px solid #00ffd0;
-      padding-left: 15px;
+      font-size: 1.5rem;
+      margin-top: 40px;
+      border-left: 4px solid #00ffd0;
+      padding-left: 12px;
     }
 
     h3 {
-      margin-top: 30px;
-      margin-left: 12px;
+      margin-top: 25px;
+      margin-left: 8px;
       color: #ccc;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     .note {
-      background: #1f1f1f;
-      padding: 15px 20px;
-      border-left: 5px solid #ffaa00;
-      border-radius: 8px;
-      margin-bottom: 30px;
+      background: #1e1e1e;
+      padding: 12px 15px;
+      border-left: 4px solid #ffaa00;
+      border-radius: 10px;
       font-size: 0.95rem;
-      box-shadow: 0 0 10px rgba(255,170,0,0.2);
+      margin-bottom: 30px;
     }
 
     .episode-block {
-      background: rgba(255, 255, 255, 0.05);
+      background: #1a1a1a;
       margin: 20px 10px;
-      padding: 25px;
-      border-radius: 18px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(0,255,200,0.1);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: transform 0.3s ease;
-    }
-
-    .episode-block:hover {
-      transform: scale(1.02);
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 0 12px rgba(0, 255, 200, 0.07);
     }
 
     .episode-title {
-      font-weight: bold;
-      font-size: 20px;
+      font-weight: 600;
+      font-size: 1.2rem;
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       color: #eee;
     }
 
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
     .btn {
-      display: inline-block;
       text-decoration: none;
-      padding: 12px 20px;
-      margin: 8px 10px;
-      border-radius: 30px;
-      font-weight: bold;
-      transition: 0.3s ease;
+      text-align: center;
+      width: 90%;
+      padding: 12px;
+      font-weight: 600;
+      border-radius: 12px;
+      transition: 0.3s;
       color: #fff;
-      box-shadow: 0 0 12px rgba(0,0,0,0.2);
+      font-size: 0.95rem;
     }
 
     .g-direct {
@@ -86,8 +83,7 @@
     }
 
     .g-direct:hover {
-      background: linear-gradient(to right, #0099dd, #00cc88);
-      box-shadow: 0 0 12px rgba(0,255,200,0.5);
+      background: linear-gradient(to right, #00a6cc, #00cc88);
     }
 
     .filepress {
@@ -95,28 +91,17 @@
     }
 
     .filepress:hover {
-      background: linear-gradient(to right, #ff9900, #b55300);
-      box-shadow: 0 0 12px rgba(255,160,0,0.5);
+      background: linear-gradient(to right, #e69500, #a05200);
     }
 
     .footer-note {
-      margin-top: 50px;
-      font-size: 0.9rem;
-      background: #161616;
-      padding: 18px;
+      margin-top: 40px;
+      font-size: 0.85rem;
+      background: #181818;
+      padding: 15px;
       border-radius: 10px;
-      border-left: 5px solid #0f0;
+      border-left: 4px solid #00ff88;
       color: #aaa;
-      box-shadow: 0 0 10px rgba(0,255,100,0.1);
-    }
-
-    @media (max-width: 600px) {
-      .btn {
-        display: block;
-        width: 100%;
-        margin: 10px 0;
-        text-align: center;
-      }
     }
   </style>
 </head>
@@ -162,7 +147,7 @@
         const container = document.getElementById('content');
 
         if (Object.keys(data).length === 0) {
-          container.innerHTML = `<p style="color:#999;">No matching show found for: <b>${anchor}</b></p>`;
+          container.innerHTML = `<p style="color:#888;">No matching show found for: <b>${anchor}</b></p>`;
           return;
         }
 
@@ -188,13 +173,16 @@
               title.textContent = `Episode ${ep}`;
               block.appendChild(title);
 
+              const btnGroup = document.createElement('div');
+              btnGroup.className = 'btn-group';
+
               if (gDirect) {
                 const btn1 = document.createElement('a');
                 btn1.href = gDirect;
                 btn1.className = 'btn g-direct';
                 btn1.target = '_blank';
                 btn1.textContent = '⚡ G-Direct [Instant]';
-                block.appendChild(btn1);
+                btnGroup.appendChild(btn1);
               }
 
               if (filePress) {
@@ -203,9 +191,10 @@
                 btn2.className = 'btn filepress';
                 btn2.target = '_blank';
                 btn2.textContent = 'Filepress [G-Drive]';
-                block.appendChild(btn2);
+                btnGroup.appendChild(btn2);
               }
 
+              block.appendChild(btnGroup);
               container.appendChild(block);
             });
           });
