@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TV Show Episodes</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f0f0f;
+      color: #fff;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #00ffd0;
+      margin-bottom: 30px;
+    }
+    h2 {
+      border-left: 4px solid #00ffd0;
+      padding-left: 10px;
+      margin-top: 40px;
+    }
+    h3 {
+      margin-top: 20px;
+      color: #999;
+      margin-left: 10px;
+    }
+    .note {
+      background: #1a1a1a;
+      padding: 10px 15px;
+      border-left: 4px solid #ffcc00;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    .episode-block {
+      background: #1e1e1e;
+      margin: 15px 10px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,255,200,0.15);
+    }
+    .episode-title {
+      font-weight: bold;
+      font-size: 18px;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #ccc;
+    }
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      padding: 10px 20px;
+      margin: 5px 10px;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      color: #fff;
+    }
+    .g-direct {
+      background: linear-gradient(to right, #00c6ff, #00ff99);
+    }
+    .g-direct:hover {
+      background: linear-gradient(to right, #00a6dd, #00dd88);
+    }
+    .filepress {
+      background: linear-gradient(to right, #ffaa00, #cc6600);
+    }
+    .filepress:hover {
+      background: linear-gradient(to right, #e69a00, #a05200);
+    }
+    .footer-note {
+      margin-top: 40px;
+      font-size: 13px;
+      background: #1c1c1c;
+      padding: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #0f0;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <h1>Download Episodes</h1>
+  <div class="note">Note: Use Download Manager like IDM or ADM for ⚡ instant download!</div>
+  <div id="content"></div>
+  <div class="footer-note">
+    Use ✅ Fast Server neodrive and filepress with direct cloud download.
+  </div>
+
+  <script>
+    const query = encodeURIComponent('SELECT *');
+    const sheetName = 'Sheet3';
+    const sheetID = '1Q948SR8n7RpMew5BWmL86dsJXC7ffj7OLTYbToc2Knc';
+    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?sheet=${sheetName}&tq=${query}`;
+
+    fetch(url)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        const rows = json.table.rows;
+
+        const data = {};
+
+        rows.forEach(row => {
+          const show = row.c[0]?.v?.trim();
+          const season = row.c[1]?.v;
+          const episode = row.c[2]?.v;
+          const gDirect = row.c[3]?.v;
+          const filePress = row.c[4]?.v;
+
+          if (!show || !season || !episode) return;
+
+          if (!data[show]) data[show] = {};
+          if (!data[show][season]) data[show][season] = {};
+          data[show][season][episode] = { gDirect, filePress };
+        });
+
+        const container = document.getElementById('content');
+
+        Object.keys(data).forEach(show => {
+          const showTitle = document.createElement('h2');
+          const anchorId = show.toLowerCase().replace(/\s+/g, '-');
+          showTitle.id = anchorId;
+          showTitle.textContent = show;
+          container.appendChild(showTitle);
+
+          Object.keys(data[show]).forEach(season => {
+            const seasonLabel = document.createElement('h3');
+            seasonLabel.textContent = `Season ${season}`;
+            container.appendChild(seasonLabel);
+
+            Object.keys(data[show][season]).forEach(ep => {
+              const { gDirect, filePress } = data[show][season][ep];
+
+              const block = document.createElement('div');
+              block.className = 'episode-block';
+
+              const title = document.createElement('div');
+              title.className = 'episode-title';
+              title.textContent = `Episode ${ep}`;
+              block.appendChild(title);
+
+              if (gDirect) {
+                const btn1 = document.createElement('a');
+                btn1.href = gDirect;
+                btn1.className = 'btn g-direct';
+                btn1.target = '_blank';
+                btn1.textContent = '⚡ Neodrive (gdrive)';
+                block.appendChild(btn1);
+              }
+
+              if (filePress) {
+                const btn2 = document.createElement('a');
+                btn2.href = filePress;
+                btn2.className = 'btn filepress';
+                btn2.target = '_blank';
+                btn2.textContent = 'Filepress';
+                block.appendChild(btn2);
+              }
+
+              container.appendChild(block);
+            });
+          });
+        });
+      });
+  </script>
+</body>
+</html>
