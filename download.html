@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TV Show Episodes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stream Episodes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
       background: #121212;
-      color: #fff;
+      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
       padding: 20px;
     }
 
     h1 {
       text-align: center;
       font-size: 2rem;
-      margin-bottom: 25px;
       color: #00ffd0;
+      margin-bottom: 20px;
     }
 
     h2 {
@@ -34,172 +34,127 @@
       font-size: 1.1rem;
     }
 
-    .note {
-      background: #1e1e1e;
-      padding: 12px 15px;
-      border-left: 4px solid #ffaa00;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      margin-bottom: 30px;
-    }
-
-    .episode-block {
+    .episode-card {
       background: #1a1a1a;
-      margin: 20px 10px;
-      padding: 20px;
       border-radius: 14px;
-      box-shadow: 0 0 12px rgba(0, 255, 200, 0.07);
+      padding: 20px;
+      margin: 20px 10px;
+      box-shadow: 0 0 10px rgba(0, 255, 200, 0.07);
     }
 
     .episode-title {
+      font-size: 1.1rem;
       font-weight: 600;
-      font-size: 1.2rem;
+      margin-bottom: 12px;
       text-align: center;
-      margin-bottom: 15px;
-      color: #eee;
     }
 
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn {
-      text-decoration: none;
+    .stream-btn {
+      display: block;
       text-align: center;
-      width: 90%;
       padding: 12px;
-      font-weight: 600;
-      border-radius: 12px;
-      transition: 0.3s;
-      color: #fff;
-      font-size: 0.95rem;
-    }
-
-    .g-direct {
       background: linear-gradient(to right, #00c6ff, #00ff99);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: background 0.3s ease;
     }
 
-    .g-direct:hover {
+    .stream-btn:hover {
       background: linear-gradient(to right, #00a6cc, #00cc88);
     }
 
-    .filepress {
-      background: linear-gradient(to right, #ffaa00, #cc6600);
-    }
-
-    .filepress:hover {
-      background: linear-gradient(to right, #e69500, #a05200);
-    }
-
-    .footer-note {
-      margin-top: 40px;
-      font-size: 0.85rem;
+    .note {
+      font-size: 0.9rem;
       background: #181818;
       padding: 15px;
+      margin: 20px 0;
       border-radius: 10px;
-      border-left: 4px solid #00ff88;
-      color: #aaa;
+      border-left: 4px solid #ffaa00;
+      color: #bbb;
     }
   </style>
 </head>
 <body>
-  <h1>Download Episodes</h1>
-  <div class="note">Note: Use Download Manager like IDM or ADM for ⚡ instant download!</div>
-  <div id="content"></div>
-  <div class="footer-note">
-    Use ✅ Fast Server {V-Cloud} to download without G-Drive login. (Supports resume)
+  <h1>Stream Episodes</h1>
+  <div class="note">
+    Click on the episode to start streaming instantly. Best viewed in mobile or desktop browsers.
   </div>
+  <div id="content"></div>
 
-  <script>
-    const query = encodeURIComponent('SELECT *');
-    const sheetName = 'Sheet3';
-    const sheetID = '1Q948SR8n7RpMew5BWmL86dsJXC7ffj7OLTYbToc2Knc';
-    const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?sheet=${sheetName}&tq=${query}`;
-    const anchor = location.hash.replace('#', '').toLowerCase().trim();
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-    fetch(url)
-      .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.substring(47).slice(0, -2));
-        const rows = json.table.rows;
-        const data = {};
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
+      authDomain: "movievault-e650e.firebaseapp.com",
+      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
+      projectId: "movievault-e650e",
+      storageBucket: "movievault-e650e.appspot.com",
+      messagingSenderId: "61140580505",
+      appId: "1:61140580505:web:d3216ca8bd944662a22008"
+    };
 
-        rows.forEach(row => {
-          const show = row.c[0]?.v?.trim();
-          const season = row.c[1]?.v;
-          const episode = row.c[2]?.v;
-          const gDirect = row.c[3]?.v;
-          const filePress = row.c[4]?.v;
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-          if (!show || !season || !episode) return;
+    // Get show name from URL hash
+    const showName = decodeURIComponent(window.location.hash.substring(1)).trim();
+    document.getElementById('show-title').innerText = showName;
 
-          const showKey = show.toLowerCase().replace(/\s+/g, '-');
-          if (anchor && showKey !== anchor) return;
+    // Reference to show data
+    const dbRef = ref(db);
 
-          if (!data[show]) data[show] = {};
-          if (!data[show][season]) data[show][season] = {};
-          data[show][season][episode] = { gDirect, filePress };
-        });
+    get(child(dbRef, `shows/${showName}`)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const showData = snapshot.val();
+        const episodesDiv = document.getElementById('content');
 
-        const container = document.getElementById('content');
+        Object.entries(showData).forEach(([season, episodes]) => {
+          const seasonHeader = document.createElement('h2');
+          seasonHeader.textContent = season;
+          episodesDiv.appendChild(seasonHeader);
 
-        if (Object.keys(data).length === 0) {
-          container.innerHTML = `<p style="color:#888;">No matching show found for: <b>${anchor}</b></p>`;
-          return;
-        }
+          Object.entries(episodes).forEach(([epNum, links]) => {
+            const epDiv = document.createElement('div');
+            epDiv.className = 'episode-card';
+            epDiv.innerHTML = `<div class="episode-title">Episode ${epNum}</div>`;
 
-        Object.keys(data).forEach(show => {
-          const showTitle = document.createElement('h2');
-          const anchorId = show.toLowerCase().replace(/\s+/g, '-');
-          showTitle.id = anchorId;
-          showTitle.textContent = show;
-          container.appendChild(showTitle);
+            if (links.filepress) {
+              const filepressBtn = document.createElement('a');
+              filepressBtn.href = links.filepress;
+              filepressBtn.target = "_blank";
+              filepressBtn.className = 'stream-btn';
+              filepressBtn.innerText = "FilePress";
+              epDiv.appendChild(filepressBtn);
+            }
 
-          Object.keys(data[show]).forEach(season => {
-            const seasonLabel = document.createElement('h3');
-            seasonLabel.textContent = `Season ${season}`;
-            container.appendChild(seasonLabel);
+            if (links.neodrive) {
+              const neoBtn = document.createElement('a');
+              neoBtn.href = links.neodrive;
+              neoBtn.target = "_blank";
+              neoBtn.className = 'stream-btn';
+              neoBtn.innerText = "NeoDrive";
+              epDiv.appendChild(neoBtn);
+            }
 
-            Object.keys(data[show][season]).forEach(ep => {
-              const { gDirect, filePress } = data[show][season][ep];
-              const block = document.createElement('div');
-              block.className = 'episode-block';
-
-              const title = document.createElement('div');
-              title.className = 'episode-title';
-              title.textContent = `Episode ${ep}`;
-              block.appendChild(title);
-
-              const btnGroup = document.createElement('div');
-              btnGroup.className = 'btn-group';
-
-              if (gDirect) {
-                const btn1 = document.createElement('a');
-                btn1.href = gDirect;
-                btn1.className = 'btn g-direct';
-                btn1.target = '_blank';
-                btn1.textContent = '⚡ G-Direct [Instant]';
-                btnGroup.appendChild(btn1);
-              }
-
-              if (filePress) {
-                const btn2 = document.createElement('a');
-                btn2.href = filePress;
-                btn2.className = 'btn filepress';
-                btn2.target = '_blank';
-                btn2.textContent = 'Filepress [G-Drive]';
-                btnGroup.appendChild(btn2);
-              }
-
-              block.appendChild(btnGroup);
-              container.appendChild(block);
-            });
+            episodesDiv.appendChild(epDiv);
           });
         });
-      });
+
+      } else {
+        document.getElementById('content').innerText = "No data found for this show.";
+      }
+    }).catch((error) => {
+      console.error("Error fetching data:", error);
+    });
   </script>
 </body>
 </html>
