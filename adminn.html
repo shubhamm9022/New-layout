@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Upload Panel</title>
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    input, select {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      padding: 10px;
+      background: #00ffd0;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Upload New Episode</h2>
+
+  <input type="text" id="showName" placeholder="Show Name (e.g., Squid Game 1080p)">
+  <input type="text" id="season" placeholder="Season (e.g., 1)">
+  <input type="text" id="episode" placeholder="Episode (e.g., 2)">
+  <input type="text" id="filepress" placeholder="FilePress Link">
+  <input type="text" id="neodrive" placeholder="NeoDrive (Google Drive) Link">
+
+  <button onclick="uploadEpisode()">Upload Episode</button>
+
+  <p id="status"></p>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
+      authDomain: "movievault-e650e.firebaseapp.com",
+      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
+      projectId: "movievault-e650e",
+      storageBucket: "movievault-e650e.appspot.com",
+      messagingSenderId: "61140580505",
+      appId: "1:61140580505:web:d3216ca8bd944662a22008"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.uploadEpisode = function () {
+      const showName = document.getElementById("showName").value.trim();
+      const season = document.getElementById("season").value.trim();
+      const episode = document.getElementById("episode").value.trim();
+      const filepress = document.getElementById("filepress").value.trim();
+      const neodrive = document.getElementById("neodrive").value.trim();
+
+      if (!showName || !season || !episode || (!filepress && !neodrive)) {
+        alert("Fill all required fields");
+        return;
+      }
+
+      const path = `shows/${showName}/Season ${season}/${episode}`;
+      const episodeRef = ref(db, path);
+
+      const data = {};
+      if (filepress) data.filepress = filepress;
+      if (neodrive) data.neodrive = neodrive;
+
+      set(episodeRef, data)
+        .then(() => {
+          document.getElementById("status").textContent = "Uploaded successfully!";
+        })
+        .catch(error => {
+          document.getElementById("status").textContent = "Error: " + error.message;
+        });
+    };
+  </script>
+
+</body>
+</html>
