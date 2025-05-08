@@ -10,7 +10,7 @@ def fetch_data(url):
 
 def clean_download_links(row):
     download_links = {}
-    for quality, key in [("HD", "HD_download"), ("FHD", "FHD_download"), ("4K", "4K_download")]:
+    for quality, key in [("HD", "HD_download"), ("FHD", "FHD_download"), ("UHD", "UHD_download")]:
         link = row.get(key, "").strip()
         if link:
             download_links[quality] = link
