@@ -2,162 +2,83 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Watch TV Show</title>
+  <title>TV Show Watch Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    :root {
-      --primary: #4361ee;
-      --secondary: #3a0ca3;
-      --accent: #f72585;
-      --dark: #1a1a2e;
-      --darker: #16213e;
-      --light: #f8f9fa;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
     body {
-      background-color: var(--darker);
-      color: var(--light);
-      line-height: 1.6;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+      margin: 0;
       padding: 20px;
     }
-
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
     }
-
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-    }
-
     .show-title {
       font-size: 2.5rem;
-      margin-bottom: 15px;
-      background: linear-gradient(90deg, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #e50914;
+      margin-bottom: 30px;
+      text-align: center;
     }
-
-    .season-container {
+    .season {
       margin-bottom: 40px;
     }
-
     .season-title {
       font-size: 1.8rem;
-      color: var(--primary);
+      color: #4cc9f0;
       margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--primary);
+      border-bottom: 2px solid #4cc9f0;
+      padding-bottom: 5px;
     }
-
-    .episodes-grid {
+    .episodes {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
     }
-
-    .episode-card {
-      background: var(--dark);
+    .episode {
+      background-color: #1a1a2e;
+      padding: 15px;
       border-radius: 8px;
-      padding: 20px;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255,255,255,0.05);
     }
-
-    .episode-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-    }
-
     .episode-number {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 15px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #f72585;
     }
-
     .watch-btn {
       display: block;
       width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 10px;
+      background-color: #4361ee;
       color: white;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
       text-align: center;
       text-decoration: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      border-radius: 5px;
+      transition: background-color 0.3s;
     }
-
     .watch-btn:hover {
-      background: linear-gradient(135deg, var(--accent), #b5179e);
-      transform: translateY(-2px);
+      background-color: #3a0ca3;
     }
-
-    .loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 200px;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(255,255,255,0.1);
-      border-radius: 50%;
-      border-top: 4px solid var(--primary);
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
     @media (max-width: 768px) {
-      .episodes-grid {
+      .episodes {
         grid-template-columns: 1fr;
-      }
-
-      .show-title {
-        font-size: 2rem;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <h1 class="show-title" id="show-title">Loading Show...</h1>
-    </div>
-    <div id="seasons-container">
-      <div class="loading">
-        <div class="spinner"></div>
-      </div>
-    </div>
+    <h1 class="show-title" id="show-title"></h1>
+    <div id="seasons-container"></div>
   </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  
   <script>
-   // Import the functions you need from the SDKs you need
+    // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -179,84 +100,85 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-    function getShowIdFromUrl() {
-      const hash = window.location.hash;
-      if (hash.startsWith('#')) {
-        return hash.slice(1).toLowerCase().trim();
-      }
-      return null;
+
+    // Get show name from URL hash
+    function getShowNameFromUrl() {
+      const hash = window.location.hash.substring(1);
+      return hash ? decodeURIComponent(hash) : null;
     }
 
-    function slugToName(slug) {
-      return slug.split('-').map(word =>
-        word.charAt(0).toUpperCase() + word.slice(1)
-      ).join(' ');
-    }
-
-    function displayShow(showId, showData) {
-      const showTitle = document.getElementById('show-title');
+    // Display the show data
+    function displayShow(showName, showData) {
+      document.getElementById('show-title').textContent = showName;
       const seasonsContainer = document.getElementById('seasons-container');
-      showTitle.textContent = showData.name || slugToName(showId);
       seasonsContainer.innerHTML = '';
 
-      Object.keys(showData.seasons || {})
-        .sort((a, b) => parseInt(a) - parseInt(b))
-        .forEach(seasonNum => {
-          const seasonDiv = document.createElement('div');
-          seasonDiv.className = 'season-container';
+      // Sort seasons numerically
+      const seasons = Object.keys(showData.seasons)
+        .sort((a, b) => parseInt(a) - parseInt(b));
 
-          const seasonTitle = document.createElement('h2');
-          seasonTitle.className = 'season-title';
-          seasonTitle.textContent = `Season ${seasonNum}`;
-          seasonDiv.appendChild(seasonTitle);
-
-          const episodesGrid = document.createElement('div');
-          episodesGrid.className = 'episodes-grid';
-
-          Object.keys(showData.seasons[seasonNum].episodes || {})
-            .sort((a, b) => parseInt(a) - parseInt(b))
-            .forEach(episodeNum => {
-              const episode = showData.seasons[seasonNum].episodes[episodeNum];
-              const episodeCard = document.createElement('div');
-              episodeCard.className = 'episode-card';
-              episodeCard.innerHTML = `
-                <div class="episode-number">Episode ${episodeNum}</div>
-                <a href="${episode.link}" class="watch-btn" target="_blank">
-                  <i class="fas fa-play"></i> Watch Now
-                </a>
-              `;
-              episodesGrid.appendChild(episodeCard);
-            });
-
-          seasonDiv.appendChild(episodesGrid);
-          seasonsContainer.appendChild(seasonDiv);
+      seasons.forEach(seasonNum => {
+        const seasonDiv = document.createElement('div');
+        seasonDiv.className = 'season';
+        
+        // Season title
+        const seasonTitle = document.createElement('h2');
+        seasonTitle.className = 'season-title';
+        seasonTitle.textContent = `Season ${seasonNum}`;
+        seasonDiv.appendChild(seasonTitle);
+        
+        // Episodes container
+        const episodesDiv = document.createElement('div');
+        episodesDiv.className = 'episodes';
+        
+        // Sort episodes numerically
+        const episodes = Object.keys(showData.seasons[seasonNum].episodes)
+          .sort((a, b) => parseInt(a) - parseInt(b));
+        
+        episodes.forEach(episodeNum => {
+          const episodeLink = showData.seasons[seasonNum].episodes[episodeNum].link;
+          
+          const episodeElement = document.createElement('div');
+          episodeElement.className = 'episode';
+          episodeElement.innerHTML = `
+            <div class="episode-number">Episode ${episodeNum}</div>
+            <a href="${episodeLink}" class="watch-btn" target="_blank">Watch Now</a>
+          `;
+          
+          episodesDiv.appendChild(episodeElement);
         });
+        
+        seasonDiv.appendChild(episodesDiv);
+        seasonsContainer.appendChild(seasonDiv);
+      });
     }
 
+    // Load show data
     function loadShowData() {
-      const showId = getShowIdFromUrl();
-      const container = document.getElementById('seasons-container');
-
-      if (!showId) {
-        container.innerHTML = '<p>No show specified in URL.</p>';
+      const showName = getShowNameFromUrl();
+      if (!showName) {
+        document.getElementById('seasons-container').innerHTML = '<p>No show specified in URL</p>';
         return;
       }
 
-      database.ref(`shows/${showId}`).once('value')
+      database.ref(`shows/${showName}`).once('value')
         .then(snapshot => {
           if (snapshot.exists()) {
-            displayShow(showId, snapshot.val());
+            displayShow(showName, snapshot.val());
           } else {
-            container.innerHTML = '<p>Show not found.</p>';
+            document.getElementById('seasons-container').innerHTML = '<p>Show not found</p>';
           }
         })
         .catch(error => {
           console.error("Error loading show:", error);
-          container.innerHTML = '<p>Error loading show data.</p>';
+          document.getElementById('seasons-container').innerHTML = '<p>Error loading show</p>';
         });
     }
 
+    // Load data when page loads
     document.addEventListener('DOMContentLoaded', loadShowData);
+    
+    // Reload when hash changes
     window.addEventListener('hashchange', loadShowData);
   </script>
 </body>
