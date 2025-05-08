@@ -96,6 +96,7 @@
       background-color: var(--darker-color);
       color: var(--light-color);
       line-height: 1.6;
+      padding-top: 30px;
     }
 
     .container {
@@ -104,34 +105,11 @@
       padding: 20px;
     }
 
-    header {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      padding: 15px 0;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      margin-bottom: 30px;
-    }
-
-    .logo {
-      font-size: 24px;
-      font-weight: 700;
-      color: white;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .logo i {
-      color: white;
-      margin-right: 10px;
-      font-size: 28px;
-    }
-
     .note {
       background: linear-gradient(90deg, rgba(67, 97, 238, 0.1), transparent);
       border-left: 4px solid var(--primary-color);
       padding: 15px;
-      margin: 25px 0;
+      margin: 0 0 30px 0;
       border-radius: 0 8px 8px 0;
       font-size: 15px;
       color: var(--light-color);
@@ -145,7 +123,7 @@
 
     #show-title {
       font-size: 32px;
-      margin: 25px 0;
+      margin: 0 0 30px 0;
       color: var(--light-color);
       text-align: center;
       font-weight: 700;
@@ -289,6 +267,10 @@
     }
 
     @media (max-width: 768px) {
+      body {
+        padding-top: 20px;
+      }
+      
       .button-group {
         flex-direction: column;
         gap: 15px;
@@ -314,15 +296,6 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <a href="#" class="logo">
-        <i class="fas fa-film"></i>
-        <span>MovieVault</span>
-      </a>
-    </div>
-  </header>
-
   <div class="container">
     <div class="note">
       <i class="fas fa-info-circle"></i>
