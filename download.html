@@ -69,7 +69,7 @@
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .episode-card {
+    .movie-card, .episode-card {
       background-color: var(--dark-color);
       border-radius: 12px;
       padding: 25px;
@@ -79,12 +79,12 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .episode-card:hover {
+    .movie-card:hover, .episode-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
     }
 
-    .episode-card h2 {
+    .movie-card h2, .episode-card h2 {
       font-size: 22px;
       margin-bottom: 20px;
       color: var(--success-color);
@@ -93,10 +93,25 @@
       align-items: center;
     }
 
+    .movie-card h2::before {
+      content: "🎥";
+      margin-right: 10px;
+      font-size: 20px;
+    }
+
     .episode-card h2::before {
       content: "🎬";
       margin-right: 10px;
       font-size: 20px;
+    }
+
+    .season-title {
+      font-size: 26px;
+      margin: 30px 0 15px;
+      color: var(--warning-color);
+      font-weight: 600;
+      border-bottom: 2px solid var(--warning-color);
+      padding-bottom: 8px;
     }
 
     .button-group {
@@ -238,12 +253,16 @@
         padding: 12px 20px;
       }
       
-      .episode-card {
+      .movie-card, .episode-card {
         padding: 20px;
       }
       
       #show-title {
         font-size: 26px;
+      }
+      
+      .season-title {
+        font-size: 22px;
       }
       
       .note, .footer-note {
@@ -260,7 +279,7 @@
     </div>
 
     <h2 id="show-title">Loading...</h2>
-    <div id="episodes">
+    <div id="content">
       <div class="loading">
         <div class="spinner"></div>
       </div>
@@ -296,15 +315,34 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // Function to check if content is TV show (has seasons) or movie (direct links)
+    function isTVShow(data) {
+      // Check if the first property is "Season" or starts with numbers (like "1")
+      const firstKey = Object.keys(data)[0];
+      return /^season|^\d+$/i.test(firstKey);
+    }
+
+    // Function to create download buttons
+    function createButtons(links) {
+      let buttons = '';
+      if (links.filepress) {
+        buttons += `<a href="${links.filepress}" class="btn filepress" target="_blank"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
+      }
+      if (links.neodrive) {
+        buttons += `<a href="${links.neodrive}" class="btn gdirect" target="_blank"><i class="fas fa-bolt"></i> G-Direct [Instant]</a>`;
+      }
+      return buttons;
+    }
+
     // Function to load data
     async function loadData() {
       const showKey = decodeURIComponent(window.location.hash.slice(1));
       const title = document.getElementById("show-title");
-      const container = document.getElementById("episodes");
+      const container = document.getElementById("content");
 
       if (!showKey) {
-        title.innerText = "Show Not Found";
-        container.innerHTML = "<p style='color: #ccc; text-align: center;'>No show selected. Please navigate from the main page.</p>";
+        title.innerText = "Content Not Found";
+        container.innerHTML = "<p style='color: #ccc; text-align: center;'>No content selected. Please navigate from the main page.</p>";
         return;
       }
 
@@ -314,38 +352,47 @@
         const snapshot = await get(child(ref(db), `shows/${showKey}`));
         
         if (!snapshot.exists()) {
-          container.innerHTML = "<p style='color: #ccc; text-align: center;'>Show not found in database.</p>";
+          container.innerHTML = "<p style='color: #ccc; text-align: center;'>Content not found in database.</p>";
           return;
         }
 
         const data = snapshot.val();
-        let episodesHTML = '';
+        let contentHTML = '';
         
-        for (const season in data) {
-          for (const episode in data[season]) {
-            const links = data[season][episode];
-            let buttons = '';
+        if (isTVShow(data)) {
+          // TV Show Mode (with seasons and episodes)
+          for (const season in data) {
+            contentHTML += `<h3 class="season-title">${season.replace(/^\d+/, 'Season $&')}</h3>`;
+            
+            for (const episode in data[season]) {
+              const links = data[season][episode];
+              const buttons = createButtons(links);
 
-            if (links.filepress) {
-              buttons += `<a href="${links.filepress}" class="btn filepress" target="_blank"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
+              if (buttons) {
+                contentHTML += `
+                  <div class="episode-card">
+                    <h2>Episode ${episode}</h2>
+                    <div class="button-group">${buttons}</div>
+                  </div>
+                `;
+              }
             }
-
-            if (links.neodrive) {
-              buttons += `<a href="${links.neodrive}" class="btn gdirect" target="_blank"><i class="fas fa-bolt"></i> G-Direct [Instant]</a>`;
-            }
-
-            if (buttons) {
-              episodesHTML += `
-                <div class="episode-card">
-                  <h2>Episode ${episode}</h2>
-                  <div class="button-group">${buttons}</div>
-                </div>
-              `;
-            }
+          }
+        } else {
+          // Movie Mode (direct links)
+          const buttons = createButtons(data);
+          
+          if (buttons) {
+            contentHTML = `
+              <div class="movie-card">
+                <h2>Download Links</h2>
+                <div class="button-group">${buttons}</div>
+              </div>
+            `;
           }
         }
 
-        container.innerHTML = episodesHTML || "<p style='color: #ccc; text-align: center;'>No episodes found for this show.</p>";
+        container.innerHTML = contentHTML || "<p style='color: #ccc; text-align: center;'>No download links found for this content.</p>";
         
       } catch (err) {
         console.error("Error loading data:", err);
