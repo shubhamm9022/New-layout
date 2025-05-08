@@ -1,272 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Show Episodes - Watch Now</title>
-    <style>
-        :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --primary-color: #bb86fc;
-            --secondary-color: #03dac6;
-            --border-color: #333;
-        }
-
-        body.light-mode {
-            --bg-color: #f5f5f5;
-            --card-bg: #ffffff;
-            --text-color: #333333;
-            --primary-color: #6200ee;
-            --secondary-color: #018786;
-            --border-color: #e0e0e0;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            padding: 30px;
-        }
-        
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--secondary-color);
-        }
-        
-        .episode-section {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: var(--card-bg);
-            border-radius: 5px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .episode-title {
-            font-size: 1.2rem;
-            color: var(--text-color);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .episode-title::before {
-            content: "▶";
-            color: var(--primary-color);
-            margin-right: 10px;
-            font-size: 0.8em;
-        }
-        
-        .watch-btn {
-            display: block;
-            background-color: var(--primary-color);
-            color: white;
-            text-align: center;
-            padding: 12px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            width: 100%;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .watch-btn:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
-        }
-        
-        .note {
-            margin-top: 30px;
-            font-size: 0.9rem;
-            color: var(--text-color);
-            opacity: 0.7;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: var(--primary-color);
-        }
-
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            z-index: 100;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .theme-toggle {
-                top: 10px;
-                right: 10px;
-                padding: 6px 12px;
-                font-size: 0.8rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Show Episodes - Watch Now</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+    }
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #3498db;
+    }
+    .episode-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 5px;
+    }
+    .episode-title {
+      font-size: 1.2rem;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    .episode-title::before {
+      content: "▶";
+      color: #3498db;
+      margin-right: 10px;
+      font-size: 0.8em;
+    }
+    .watch-btn {
+      display: block;
+      background-color: #3498db;
+      color: white;
+      text-align: center;
+      padding: 12px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+    }
+    .watch-btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+    }
+    .note {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      text-align: center;
+      padding: 10px;
+    }
+  </style>
 </head>
-<body class="dark-mode">
-    <button class="theme-toggle" id="themeToggle">Light Mode</button>
+<body>
+  <div class="container">
+    <h1 id="show-title">Show Name</h1>
+    <div id="episodes-container"></div>
+    <div class="note">Use download manager for faster downloads</div>
+  </div>
 
-    <div class="container">
-        <h1 id="show-title">Loading...</h1>
-        
-        <div id="episodes-container">
-            <div class="loading">Loading episodes...</div>
-        </div>
-        
-        <div class="note">
-            Use download manager for faster downloads
-        </div>
-    </div>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    
-    <script>
-        // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyAVN4Dcl9tMt2nMtJ3f_4T6eB36iHl1h4Y",
-      authDomain: "watchpage-29f72.firebaseapp.com",
-      databaseURL: "https://watchpage-29f72-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "watchpage-29f72",
-      storageBucket: "watchpage-29f72.firebasestorage.app",
-      messagingSenderId: "943109547568",
-      appId: "1:943109547568:web:379b1f19da3c0fd6f52ff5",
-      measurementId: "G-KNR2ZD2J0V"
-    };
+  <script>
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAVN4Dcl9tMt2nMtJ3f_4T6eB36iHl1h4Y",
+  authDomain: "watchpage-29f72.firebaseapp.com",
+  databaseURL: "https://watchpage-29f72-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "watchpage-29f72",
+  storageBucket: "watchpage-29f72.firebasestorage.app",
+  messagingSenderId: "943109547568",
+  appId: "1:943109547568:web:379b1f19da3c0fd6f52ff5",
+  measurementId: "G-KNR2ZD2J0V"
+};
 
-        // DOM elements
-        const showTitleElement = document.getElementById('show-title');
-        const episodesContainer = document.getElementById('episodes-container');
-        const themeToggle = document.getElementById('themeToggle');
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
-        // Theme toggle functionality
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('light-mode');
-            document.body.classList.toggle('dark-mode');
-            themeToggle.textContent = document.body.classList.contains('light-mode') ? 'Dark Mode' : 'Light Mode';
-            
-            // Save preference to localStorage
-            localStorage.setItem('themePreference', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-        });
+    async function loadShow() {
+      const showName = window.location.hash.substring(1).toLowerCase();
+      const showTitle = document.getElementById('show-title');
+      const episodesContainer = document.getElementById('episodes-container');
+      episodesContainer.innerHTML = '';
+      showTitle.textContent = 'Loading...';
 
-        // Check for saved theme preference
-        const savedTheme = localStorage.getItem('themePreference');
-        if (savedTheme === 'light') {
-            document.body.classList.add('light-mode');
-            document.body.classList.remove('dark-mode');
-            themeToggle.textContent = 'Dark Mode';
+      if (!showName) {
+        showTitle.textContent = 'Show Not Found';
+        return;
+      }
+
+      try {
+        const snapshot = await database.ref(showName).once('value');
+        const data = snapshot.val();
+
+        if (!data) {
+          showTitle.textContent = 'Show Not Found';
+          return;
         }
 
-        // Function to load show data from Firebase
-        function loadShowData(showId) {
-            // Show loading state
-            episodesContainer.innerHTML = '<div class="loading">Loading episodes...</div>';
-            showTitleElement.textContent = 'Loading...';
-            
-            // Get show data from Firebase
-            database.ref('shows/' + showId).once('value')
-                .then((snapshot) => {
-                    const showData = snapshot.val();
-                    
-                    if (showData) {
-                        // Update show title
-                        showTitleElement.textContent = showData.title || 'Untitled Show';
-                        
-                        // Clear container
-                        episodesContainer.innerHTML = '';
-                        
-                        // Add episodes
-                        if (showData.episodes) {
-                            Object.entries(showData.episodes).forEach(([episodeNumber, episodeData]) => {
-                                const episodeSection = document.createElement('div');
-                                episodeSection.className = 'episode-section';
-                                
-                                const episodeTitle = document.createElement('h2');
-                                episodeTitle.className = 'episode-title';
-                                episodeTitle.textContent = `Episode ${episodeNumber}`;
-                                
-                                const watchBtn = document.createElement('a');
-                                watchBtn.className = 'watch-btn';
-                                watchBtn.href = episodeData.link || '#';
-                                watchBtn.textContent = 'Watch Now';
-                                watchBtn.target = "_blank";
-                                
-                                episodeSection.appendChild(episodeTitle);
-                                episodeSection.appendChild(watchBtn);
-                                episodesContainer.appendChild(episodeSection);
-                            });
-                        } else {
-                            episodesContainer.innerHTML = '<div class="loading">No episodes found</div>';
-                        }
-                    } else {
-                        showTitleElement.textContent = 'Show Not Found';
-                        episodesContainer.innerHTML = '<div class="loading">This show does not exist in our database</div>';
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error loading show data:", error);
-                    showTitleElement.textContent = 'Error Loading Show';
-                    episodesContainer.innerHTML = '<div class="loading">Failed to load show data. Please try again later.</div>';
-                });
-        }
+        showTitle.textContent = data.title || showName;
 
-        // Load show based on URL hash
-        window.addEventListener('load', () => {
-            const showId = window.location.hash.substring(1) || 'defaultShow';
-            loadShowData(showId);
-        });
+        Object.entries(data).forEach(([key, value]) => {
+          if (key.toLowerCase().startsWith('episode')) {
+            const episodeSection = document.createElement('div');
+            episodeSection.className = 'episode-section';
 
-        // Update when hash changes
-        window.addEventListener('hashchange', () => {
-            const showId = window.location.hash.substring(1);
-            if (showId) {
-                loadShowData(showId);
-            }
+            const episodeTitle = document.createElement('h2');
+            episodeTitle.className = 'episode-title';
+            episodeTitle.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+
+            const watchBtn = document.createElement('a');
+            watchBtn.className = 'watch-btn';
+            watchBtn.href = value;
+            watchBtn.textContent = 'Watch Now';
+            watchBtn.target = '_blank';
+
+            episodeSection.appendChild(episodeTitle);
+            episodeSection.appendChild(watchBtn);
+            episodesContainer.appendChild(episodeSection);
+          }
         });
-    </script>
+      } catch (error) {
+        console.error("Error loading show:", error);
+        showTitle.textContent = 'Error loading show';
+      }
+    }
+
+    window.addEventListener('load', loadShow);
+    window.addEventListener('hashchange', loadShow);
+  </script>
 </body>
 </html>
