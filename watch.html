@@ -7,6 +7,7 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
+    /* Your existing CSS styles */
     :root {
       --primary-color: #4361ee;
       --secondary-color: #3a0ca3;
@@ -185,6 +186,15 @@
       100% { transform: rotate(360deg); }
     }
 
+    .error-message {
+      color: #f72585;
+      text-align: center;
+      padding: 20px;
+      background-color: rgba(247, 37, 133, 0.1);
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
     @media (max-width: 768px) {
       .episodes-grid {
         grid-template-columns: 1fr;
@@ -223,11 +233,15 @@
     </div>
   </div>
 
+  <!-- Firebase SDK v9 (modular version) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // Your web app's Firebase configuration
+    // Debugging: Log that script is running
+    console.log("Watch page script initialized");
+
+    // Your Firebase configuration - MUST MATCH YOUR PROJECT
     const firebaseConfig = {
       apiKey: "AIzaSyAVN4Dcl9tMt2nMtJ3f_4T6eB36iHl1h4Y",
       authDomain: "watchpage-29f72.firebaseapp.com",
@@ -239,96 +253,141 @@
       measurementId: "G-KNR2ZD2J0V"
     };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
+    // Debugging: Log Firebase config
+    console.log("Firebase config:", firebaseConfig);
 
-    // Get show name from URL hash
-    function getShowFromUrl() {
-      const hash = window.location.hash.substring(1);
-      return hash ? decodeURIComponent(hash) : null;
-    }
+    try {
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      console.log("Firebase initialized successfully");
 
-    // Display the show data
-    function displayShow(showName, showData) {
-      const showTitle = document.getElementById('show-title');
-      const seasonsContainer = document.getElementById('seasons-container');
-      
-      // Set show title
-      showTitle.textContent = showName;
-      
-      // Clear loading spinner
-      seasonsContainer.innerHTML = '';
-      
-      // Create season elements
-      Object.keys(showData.seasons).sort((a, b) => parseInt(a) - parseInt(b)).forEach(seasonNum => {
-        const seasonData = showData.seasons[seasonNum];
-        const seasonDiv = document.createElement('div');
-        seasonDiv.className = 'season-container';
-        
-        // Season title
-        const seasonTitle = document.createElement('h2');
-        seasonTitle.className = 'season-title';
-        seasonTitle.textContent = `Season ${seasonNum}`;
-        seasonDiv.appendChild(seasonTitle);
-        
-        // Episodes grid
-        const episodesGrid = document.createElement('div');
-        episodesGrid.className = 'episodes-grid';
-        
-        // Add episodes
-        Object.keys(seasonData.episodes).sort((a, b) => parseInt(a) - parseInt(b)).forEach(episodeNum => {
-          const episodeLink = seasonData.episodes[episodeNum].link;
-          
-          const episodeCard = document.createElement('div');
-          episodeCard.className = 'episode-card';
-          
-          episodeCard.innerHTML = `
-            <div class="episode-number">Episode ${episodeNum}</div>
-            <a href="${episodeLink}" class="watch-btn" target="_blank">
-              <i class="fas fa-play"></i> Watch Now
-            </a>
-          `;
-          
-          episodesGrid.appendChild(episodeCard);
-        });
-        
-        seasonDiv.appendChild(episodesGrid);
-        seasonsContainer.appendChild(seasonDiv);
-      });
-    }
-
-    // Load show data
-    async function loadShowData() {
-      const showName = getShowFromUrl();
-      const seasonsContainer = document.getElementById('seasons-container');
-      
-      if (!showName) {
-        seasonsContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>No show selected. Please navigate from the main page.</p>";
-        return;
+      // Get show name from URL hash
+      function getShowFromUrl() {
+        const hash = window.location.hash.substring(1);
+        console.log("URL hash:", hash);
+        return hash ? decodeURIComponent(hash) : null;
       }
 
-      try {
-        const snapshot = await get(ref(db, `shows/${showName}`));
+      // Display error message
+      function showError(message) {
+        const container = document.getElementById('seasons-container');
+        container.innerHTML = `<div class="error-message">${message}</div>`;
+        console.error(message);
+      }
+
+      // Display the show data
+      function displayShow(showName, showData) {
+        console.log("Displaying show:", showName, showData);
+        const showTitle = document.getElementById('show-title');
+        const seasonsContainer = document.getElementById('seasons-container');
         
-        if (!snapshot.exists()) {
-          seasonsContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>Show not found in database.</p>";
+        // Set show title
+        showTitle.textContent = showName;
+        
+        // Clear loading spinner
+        seasonsContainer.innerHTML = '';
+        
+        // Check if show has seasons
+        if (!showData.seasons) {
+          showError("No seasons data found for this show");
+          return;
+        }
+        
+        // Create season elements
+        Object.keys(showData.seasons)
+          .sort((a, b) => parseInt(a) - parseInt(b))
+          .forEach(seasonNum => {
+            const seasonData = showData.seasons[seasonNum];
+            const seasonDiv = document.createElement('div');
+            seasonDiv.className = 'season-container';
+            
+            // Season title
+            const seasonTitle = document.createElement('h2');
+            seasonTitle.className = 'season-title';
+            seasonTitle.textContent = `Season ${seasonNum}`;
+            seasonDiv.appendChild(seasonTitle);
+            
+            // Episodes grid
+            const episodesGrid = document.createElement('div');
+            episodesGrid.className = 'episodes-grid';
+            
+            // Check if season has episodes
+            if (!seasonData.episodes) {
+              const noEpisodes = document.createElement('p');
+              noEpisodes.textContent = 'No episodes found for this season';
+              noEpisodes.style.color = 'var(--gray-color)';
+              seasonDiv.appendChild(noEpisodes);
+            } else {
+              // Add episodes
+              Object.keys(seasonData.episodes)
+                .sort((a, b) => parseInt(a) - parseInt(b))
+                .forEach(episodeNum => {
+                  const episode = seasonData.episodes[episodeNum];
+                  
+                  // Check if episode has link
+                  if (!episode || !episode.link) {
+                    console.warn(`Missing link for S${seasonNum}E${episodeNum}`);
+                    return;
+                  }
+                  
+                  const episodeCard = document.createElement('div');
+                  episodeCard.className = 'episode-card';
+                  
+                  episodeCard.innerHTML = `
+                    <div class="episode-number">Episode ${episodeNum}</div>
+                    <a href="${episode.link}" class="watch-btn" target="_blank">
+                      <i class="fas fa-play"></i> Watch Now
+                    </a>
+                  `;
+                  
+                  episodesGrid.appendChild(episodeCard);
+                });
+              
+              seasonDiv.appendChild(episodesGrid);
+            }
+            
+            seasonsContainer.appendChild(seasonDiv);
+          });
+      }
+
+      // Load show data
+      async function loadShowData() {
+        const showName = getShowFromUrl();
+        const seasonsContainer = document.getElementById('seasons-container');
+        
+        if (!showName) {
+          showError("No show specified in URL. Please navigate from the main page.");
           return;
         }
 
-        displayShow(showName, snapshot.val());
-        
-      } catch (err) {
-        console.error("Error loading show:", err);
-        seasonsContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>Error loading show data. Please try again.</p>";
+        try {
+          console.log(`Fetching show: ${showName}`);
+          const snapshot = await get(ref(db, `shows/${showName}`));
+          
+          if (!snapshot.exists()) {
+            showError(`Show "${showName}" not found in database.`);
+            return;
+          }
+
+          displayShow(showName, snapshot.val());
+          
+        } catch (err) {
+          showError("Error loading show data. Please check console for details.");
+          console.error("Error loading show:", err);
+        }
       }
+
+      // Load data when page loads
+      document.addEventListener('DOMContentLoaded', loadShowData);
+      
+      // Also load data when hash changes
+      window.addEventListener('hashchange', loadShowData);
+
+    } catch (error) {
+      console.error("Firebase initialization error:", error);
+      showError("Failed to initialize Firebase. Check console for details.");
     }
-
-    // Load data when page loads
-    document.addEventListener('DOMContentLoaded', loadShowData);
-
-    // Also load data when hash changes
-    window.addEventListener('hashchange', loadShowData);
   </script>
 </body>
 </html>
