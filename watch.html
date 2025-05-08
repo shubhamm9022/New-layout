@@ -74,32 +74,27 @@
     <div id="seasons-container"></div>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-  
-  <script>
-    // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+  <!-- Firebase SDK v9+ (modular version) -->
+  <script type="module">
+    // Import the functions you need from the Firebase SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAVN4Dcl9tMt2nMtJ3f_4T6eB36iHl1h4Y",
-  authDomain: "watchpage-29f72.firebaseapp.com",
-  databaseURL: "https://watchpage-29f72-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "watchpage-29f72",
-  storageBucket: "watchpage-29f72.firebasestorage.app",
-  messagingSenderId: "943109547568",
-  appId: "1:943109547568:web:379b1f19da3c0fd6f52ff5",
-  measurementId: "G-KNR2ZD2J0V"
-};
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAVN4Dcl9tMt2nMtJ3f_4T6eB36iHl1h4Y",
+      authDomain: "watchpage-29f72.firebaseapp.com",
+      databaseURL: "https://watchpage-29f72-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "watchpage-29f72",
+      storageBucket: "watchpage-29f72.firebasestorage.app",
+      messagingSenderId: "943109547568",
+      appId: "1:943109547568:web:379b1f19da3c0fd6f52ff5",
+      measurementId: "G-KNR2ZD2J0V"
+    };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
     // Get show name from URL hash
     function getShowNameFromUrl() {
@@ -154,25 +149,24 @@ const analytics = getAnalytics(app);
     }
 
     // Load show data
-    function loadShowData() {
+    async function loadShowData() {
       const showName = getShowNameFromUrl();
       if (!showName) {
         document.getElementById('seasons-container').innerHTML = '<p>No show specified in URL</p>';
         return;
       }
 
-      database.ref(`shows/${showName}`).once('value')
-        .then(snapshot => {
-          if (snapshot.exists()) {
-            displayShow(showName, snapshot.val());
-          } else {
-            document.getElementById('seasons-container').innerHTML = '<p>Show not found</p>';
-          }
-        })
-        .catch(error => {
-          console.error("Error loading show:", error);
-          document.getElementById('seasons-container').innerHTML = '<p>Error loading show</p>';
-        });
+      try {
+        const snapshot = await get(ref(database, `shows/${showName}`));
+        if (snapshot.exists()) {
+          displayShow(showName, snapshot.val());
+        } else {
+          document.getElementById('seasons-container').innerHTML = '<p>Show not found</p>';
+        }
+      } catch (error) {
+        console.error("Error loading show:", error);
+        document.getElementById('seasons-container').innerHTML = '<p>Error loading show</p>';
+      }
     }
 
     // Load data when page loads
