@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>Download Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -27,7 +29,7 @@
       const title = document.getElementById("show-title");
       const container = document.getElementById("episodes");
 
-      title.innerText = showKey ? `Showing: ${showKey}` : "Show Not Found";
+      title.innerText = showKey ? `${showKey}` : "Show Not Found";
 
       if (!showKey) return;
 
@@ -45,17 +47,19 @@
             let buttons = "";
 
             if (links.filepress) {
-              buttons += `<a href="${links.filepress}" class="btn filepress">Filepress [G-Drive]</a>`;
+              buttons += `<a href="${links.filepress}" class="btn filepress"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
             }
 
             if (links.neodrive) {
-              buttons += `<a href="${links.neodrive}" class="btn gdirect">⚡ G-Direct [Instant]</a>`;
+              buttons += `<a href="${links.neodrive}" class="btn gdirect"><i class="fas fa-bolt"></i> G-Direct [Instant]</a>`;
             }
 
             if (buttons) {
               container.innerHTML += `
-                <h2>-: Episode ${episode} :-</h2>
-                <div class="button-group">${buttons}</div>
+                <div class="episode-card">
+                  <h2>Episode ${episode}</h2>
+                  <div class="button-group">${buttons}</div>
+                </div>
               `;
             }
           }
@@ -67,91 +71,221 @@
     });
   </script>
   <style>
-    body {
+    :root {
+      --primary-color: #00a8ff;
+      --secondary-color: #0097e6;
+      --accent-color: #e84118;
+      --dark-color: #1e272e;
+      --darker-color: #1a2228;
+      --light-color: #f5f6fa;
+      --gray-color: #7f8fa6;
+      --success-color: #4cd137;
+    }
+
+    * {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0a0a0a;
-      color: #f5f5f5;
-      text-align: center;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--darker-color);
+      color: var(--light-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background-color: var(--dark-color);
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      margin-bottom: 30px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--light-color);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo i {
+      color: var(--primary-color);
+      margin-right: 10px;
     }
 
     .note {
-      margin: 20px;
-      font-size: 17px;
-      font-weight: 500;
-      color: #c8a657;
+      background-color: rgba(0, 168, 255, 0.1);
+      border-left: 4px solid var(--primary-color);
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 15px;
     }
 
-    h2 {
-      margin-top: 30px;
-      margin-bottom: 10px;
-      font-size: 22px;
-      color: #ffffff;
+    .note i {
+      color: var(--primary-color);
+      margin-right: 8px;
+    }
+
+    #show-title {
+      font-size: 28px;
+      margin: 20px 0;
+      color: var(--light-color);
+      text-align: center;
       font-weight: 600;
+    }
+
+    .episode-card {
+      background-color: var(--dark-color);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .episode-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .episode-card h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+      font-weight: 500;
     }
 
     .button-group {
-      margin: 15px 0 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 15px;
     }
 
     .btn {
-      display: inline-block;
-      margin: 10px;
-      padding: 13px 28px;
-      border: 1px solid transparent;
-      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 25px;
+      border-radius: 6px;
       font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
+      font-weight: 500;
       text-decoration: none;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
+      flex-grow: 1;
+      min-width: 200px;
     }
 
-    .btn:hover {
-      opacity: 0.92;
-      transform: translateY(-2px);
-    }
-
-    .btn:active {
-      transform: scale(0.97);
+    .btn i {
+      margin-right: 8px;
     }
 
     .gdirect {
-      background: #121212;
-      border: 1px solid #00bfa5;
-      color: #00e5c3;
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .gdirect:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 168, 255, 0.3);
     }
 
     .filepress {
-      background: #151515;
-      border: 1px solid #ffa000;
-      color: #ffca28;
+      background-color: var(--accent-color);
+      color: white;
     }
 
-    .footer {
-      background-color: #111;
-      padding: 20px;
-      font-size: 15px;
-      margin-top: 40px;
-      color: #c8e6c9;
+    .filepress:hover {
+      background-color: #c23616;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(232, 65, 24, 0.3);
     }
 
-    .footer strong {
-      color: #ff6e40;
+    footer {
+      background-color: var(--dark-color);
+      padding: 30px 0;
+      margin-top: 50px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .footer-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .footer-note {
+      background-color: rgba(76, 209, 55, 0.1);
+      border-left: 4px solid var(--success-color);
+      padding: 12px;
+      margin: 15px 0;
+      border-radius: 0 4px 4px 0;
+      font-size: 14px;
+    }
+
+    .footer-note i {
+      color: var(--success-color);
+      margin-right: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .button-group {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+      
+      .episode-card {
+        padding: 15px;
+      }
+      
+      #show-title {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="container">
+      <a href="#" class="logo">
+        <i class="fas fa-film"></i>
+        <span>MovieVault</span>
+      </a>
+    </div>
+  </header>
 
-  <div class="note">Note: Use Download Manager like IDM or ADM for ⚡ Instant Download!</div>
+  <div class="container">
+    <div class="note">
+      <i class="fas fa-info-circle"></i>
+      Use Download Manager like IDM or ADM for instant downloads!
+    </div>
 
-  <h2 id="show-title">Loading...</h2>
-  <div id="episodes"></div>
-
-  <div class="footer">
-    Use ✅ <strong>Fast Server {V-Cloud}</strong> to download without G-Drive login. (Supports resume)
+    <h2 id="show-title">Loading...</h2>
+    <div id="episodes"></div>
   </div>
 
+  <footer>
+    <div class="footer-content">
+      <div class="footer-note">
+        <i class="fas fa-check-circle"></i>
+        Use Fast Server (V-Cloud) to download without G-Drive login (Supports resume)
+      </div>
+      <p>&copy; 2024 MovieVault. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>
