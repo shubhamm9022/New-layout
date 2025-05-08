@@ -85,7 +85,7 @@
     <div class="note">Use download manager for faster downloads</div>
   </div>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
@@ -105,7 +105,6 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // Load and render the show
     async function loadShow() {
       const showName = window.location.hash.substring(1).toLowerCase();
       const showTitle = document.getElementById('show-title');
@@ -136,7 +135,7 @@
 
             const episodeTitle = document.createElement('h2');
             episodeTitle.className = 'episode-title';
-            episodeTitle.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+            episodeTitle.textContent = key;
 
             const watchBtn = document.createElement('a');
             watchBtn.className = 'watch-btn';
