@@ -1,50 +1,240 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Upload Panel</title>
+  <title>Secure Admin Upload Panel</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
+    :root {
+      --primary: #00ffd0;
+      --dark: #121212;
+      --darker: #0a0a0a;
+      --light: #ffffff;
+      --danger: #ff4444;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
     body {
-      background: #121212;
-      color: white;
-      font-family: sans-serif;
+      background: var(--dark);
+      color: var(--light);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       padding: 20px;
     }
-    input, select {
-      padding: 10px;
-      margin: 10px 0;
+    
+    .container {
       width: 100%;
-      border-radius: 5px;
-      border: none;
+      max-width: 800px;
+      background: var(--darker);
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
     }
+    
+    .auth-container, .upload-container {
+      padding: 30px;
+      transition: all 0.3s ease;
+    }
+    
+    h2 {
+      margin-bottom: 20px;
+      color: var(--primary);
+      text-align: center;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      background: #222;
+      color: var(--light);
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
     button {
-      padding: 10px;
-      background: #00ffd0;
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
       color: #000;
-      font-weight: bold;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    button:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    #status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    
+    .success {
+      background: rgba(0, 255, 0, 0.1);
+      color: #0f0;
+    }
+    
+    .error {
+      background: rgba(255, 0, 0, 0.1);
+      color: var(--danger);
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .tabs {
+      display: flex;
+      background: #1a1a1a;
+    }
+    
+    .tab {
+      flex: 1;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .tab.active {
+      background: var(--darker);
+      color: var(--primary);
+      font-weight: bold;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .logout-btn {
+      background: var(--danger);
+      color: white;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
+  <div class="container" id="auth-container">
+    <div class="auth-container">
+      <h2><i class="fas fa-lock"></i> Admin Login</h2>
+      <div class="form-group">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="admin@example.com">
+      </div>
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="••••••••">
+      </div>
+      <button onclick="login()"><i class="fas fa-sign-in-alt"></i> Login</button>
+      <p id="login-status" class="hidden"></p>
+    </div>
+  </div>
 
-  <h2>Upload New Episode</h2>
-
-  <input type="text" id="showName" placeholder="Show Name (e.g., Squid Game 1080p)">
-  <input type="text" id="season" placeholder="Season (e.g., 1)">
-  <input type="text" id="episode" placeholder="Episode (e.g., 2)">
-  <input type="text" id="filepress" placeholder="FilePress Link">
-  <input type="text" id="neodrive" placeholder="NeoDrive (Google Drive) Link">
-
-  <button onclick="uploadEpisode()">Upload Episode</button>
-
-  <p id="status"></p>
+  <div class="container hidden" id="upload-container">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('tv')">TV Show</div>
+      <div class="tab" onclick="switchTab('movie')">Movie</div>
+    </div>
+    
+    <div class="upload-container">
+      <!-- TV Show Upload Form -->
+      <div id="tv-form" class="tab-content active">
+        <h2><i class="fas fa-tv"></i> Upload TV Episode</h2>
+        <div class="form-group">
+          <label for="showName">Show Name</label>
+          <input type="text" id="showName" placeholder="e.g., Squid Game 1080p">
+        </div>
+        <div class="form-group">
+          <label for="season">Season</label>
+          <input type="text" id="season" placeholder="e.g., 1">
+        </div>
+        <div class="form-group">
+          <label for="episode">Episode</label>
+          <input type="text" id="episode" placeholder="e.g., 2">
+        </div>
+        <div class="form-group">
+          <label for="filepress">FilePress Link</label>
+          <input type="text" id="filepress" placeholder="https://filepress.link/...">
+        </div>
+        <div class="form-group">
+          <label for="neodrive">NeoDrive Link</label>
+          <input type="text" id="neodrive" placeholder="https://neodrive.link/...">
+        </div>
+        <button onclick="uploadContent('tv')"><i class="fas fa-upload"></i> Upload Episode</button>
+      </div>
+      
+      <!-- Movie Upload Form -->
+      <div id="movie-form" class="tab-content">
+        <h2><i class="fas fa-film"></i> Upload Movie</h2>
+        <div class="form-group">
+          <label for="movieName">Movie Name</label>
+          <input type="text" id="movieName" placeholder="e.g., Inception (2010) 1080p">
+        </div>
+        <div class="form-group">
+          <label for="movie-filepress">FilePress Link</label>
+          <input type="text" id="movie-filepress" placeholder="https://filepress.link/...">
+        </div>
+        <div class="form-group">
+          <label for="movie-neodrive">NeoDrive Link</label>
+          <input type="text" id="movie-neodrive" placeholder="https://neodrive.link/...">
+        </div>
+        <button onclick="uploadContent('movie')"><i class="fas fa-upload"></i> Upload Movie</button>
+      </div>
+      
+      <p id="status"></p>
+      <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
 
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
@@ -56,37 +246,144 @@
       appId: "1:61140580505:web:d3216ca8bd944662a22008"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const auth = getAuth(app);
 
-    window.uploadEpisode = function () {
-      const showName = document.getElementById("showName").value.trim();
-      const season = document.getElementById("season").value.trim();
-      const episode = document.getElementById("episode").value.trim();
-      const filepress = document.getElementById("filepress").value.trim();
-      const neodrive = document.getElementById("neodrive").value.trim();
+    // Check auth state
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        document.getElementById('auth-container').classList.add('hidden');
+        document.getElementById('upload-container').classList.remove('hidden');
+      } else {
+        // User is signed out
+        document.getElementById('auth-container').classList.remove('hidden');
+        document.getElementById('upload-container').classList.add('hidden');
+      }
+    });
 
-      if (!showName || !season || !episode || (!filepress && !neodrive)) {
-        alert("Fill all required fields");
+    // Login function
+    window.login = function() {
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const status = document.getElementById('login-status');
+      
+      if (!email || !password) {
+        showStatus('Please enter both email and password', 'error', status);
         return;
       }
-
-      const path = `shows/${showName}/Season ${season}/${episode}`;
-      const episodeRef = ref(db, path);
-
-      const data = {};
-      if (filepress) data.filepress = filepress;
-      if (neodrive) data.neodrive = neodrive;
-
-      set(episodeRef, data)
+      
+      signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-          document.getElementById("status").textContent = "Uploaded successfully!";
+          showStatus('Login successful!', 'success', status);
         })
-        .catch(error => {
-          document.getElementById("status").textContent = "Error: " + error.message;
+        .catch((error) => {
+          let message = 'Login failed. ';
+          switch(error.code) {
+            case 'auth/invalid-email':
+              message += 'Invalid email address.';
+              break;
+            case 'auth/user-disabled':
+              message += 'Account disabled.';
+              break;
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+              message += 'Invalid email or password.';
+              break;
+            default:
+              message += error.message;
+          }
+          showStatus(message, 'error', status);
         });
     };
-  </script>
 
+    // Logout function
+    window.logout = function() {
+      signOut(auth).then(() => {
+        showStatus('Logged out successfully', 'success');
+      }).catch((error) => {
+        showStatus('Logout error: ' + error.message, 'error');
+      });
+    };
+
+    // Switch between TV and Movie tabs
+    window.switchTab = function(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+      document.getElementById(`${tab}-form`).classList.add('active');
+    };
+
+    // Upload content (TV or Movie)
+    window.uploadContent = function(type) {
+      let path, data = {};
+      
+      if (type === 'tv') {
+        const showName = document.getElementById("showName").value.trim();
+        const season = document.getElementById("season").value.trim();
+        const episode = document.getElementById("episode").value.trim();
+        const filepress = document.getElementById("filepress").value.trim();
+        const neodrive = document.getElementById("neodrive").value.trim();
+
+        if (!showName || !season || !episode || (!filepress && !neodrive)) {
+          showStatus('Please fill all required fields', 'error');
+          return;
+        }
+
+        path = `shows/${showName}/Season ${season}/${episode}`;
+        if (filepress) data.filepress = filepress;
+        if (neodrive) data.neodrive = neodrive;
+      } 
+      else if (type === 'movie') {
+        const movieName = document.getElementById("movieName").value.trim();
+        const filepress = document.getElementById("movie-filepress").value.trim();
+        const neodrive = document.getElementById("movie-neodrive").value.trim();
+
+        if (!movieName || (!filepress && !neodrive)) {
+          showStatus('Please fill all required fields', 'error');
+          return;
+        }
+
+        path = `shows/${movieName}`;
+        if (filepress) data.filepress = filepress;
+        if (neodrive) data.neodrive = neodrive;
+      }
+
+      const contentRef = ref(db, path);
+
+      set(contentRef, data)
+        .then(() => {
+          showStatus(`${type === 'tv' ? 'Episode' : 'Movie'} uploaded successfully!`, 'success');
+          if (type === 'tv') {
+            document.getElementById("showName").value = '';
+            document.getElementById("season").value = '';
+            document.getElementById("episode").value = '';
+            document.getElementById("filepress").value = '';
+            document.getElementById("neodrive").value = '';
+          } else {
+            document.getElementById("movieName").value = '';
+            document.getElementById("movie-filepress").value = '';
+            document.getElementById("movie-neodrive").value = '';
+          }
+        })
+        .catch(error => {
+          showStatus("Error: " + error.message, 'error');
+        });
+    };
+
+    // Helper function to show status messages
+    function showStatus(message, type, element = document.getElementById('status')) {
+      element.textContent = message;
+      element.className = type;
+      element.classList.remove('hidden');
+      
+      setTimeout(() => {
+        element.classList.add('hidden');
+      }, 5000);
+    }
+  </script>
 </body>
 </html>
