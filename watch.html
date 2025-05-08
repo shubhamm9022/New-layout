@@ -85,30 +85,27 @@
     <div class="note">Use download manager for faster downloads</div>
   </div>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
   <script>
-    // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9zBQgD0C5IsUzxsk6lDTLaFzY5quwN9o",
+      authDomain: "watchpage-50643.firebaseapp.com",
+      databaseURL: "https://watchpage-50643-default-rtdb.firebaseio.com",
+      projectId: "watchpage-50643",
+      storageBucket: "watchpage-50643.appspot.com",
+      messagingSenderId: "218942960003",
+      appId: "1:218942960003:web:b956d47d8d2aa82b3bc6b6"
+    };
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyC9zBQgD0C5IsUzxsk6lDTLaFzY5quwN9o",
-  authDomain: "watchpage-50643.firebaseapp.com",
-  databaseURL: "https://watchpage-50643-default-rtdb.firebaseio.com",
-  projectId: "watchpage-50643",
-  storageBucket: "watchpage-50643.firebasestorage.app",
-  messagingSenderId: "218942960003",
-  appId: "1:218942960003:web:b956d47d8d2aa82b3bc6b6"
-};
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-
+    // Load and render the show
     async function loadShow() {
       const showName = window.location.hash.substring(1).toLowerCase();
       const showTitle = document.getElementById('show-title');
