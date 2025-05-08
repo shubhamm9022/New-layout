@@ -1,247 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Watch TV Show</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    /* Your existing CSS styles */
-    :root {
-      --primary-color: #4361ee;
-      --secondary-color: #3a0ca3;
-      --accent-color: #f72585;
-      --success-color: #4cc9f0;
-      --warning-color: #f8961e;
-      --dark-color: #1a1a2e;
-      --darker-color: #16213e;
-      --light-color: #f8f9fa;
-      --gray-color: #adb5bd;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show Episodes - Watch Now</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --primary-color: #bb86fc;
+            --secondary-color: #03dac6;
+            --border-color: #333;
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        body.light-mode {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #6200ee;
+            --secondary-color: #018786;
+            --border-color: #e0e0e0;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--darker-color);
-      color: var(--light-color);
-      line-height: 1.6;
-      padding-top: 30px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        .episode-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--card-bg);
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .episode-title {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .episode-title::before {
+            content: "▶";
+            color: var(--primary-color);
+            margin-right: 10px;
+            font-size: 0.8em;
+        }
+        
+        .watch-btn {
+            display: block;
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .watch-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .note {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.7;
+            text-align: center;
+            padding: 10px;
+        }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--primary-color);
+        }
 
-    .note {
-      background: linear-gradient(90deg, rgba(67, 97, 238, 0.1), transparent);
-      border-left: 4px solid var(--primary-color);
-      padding: 15px;
-      margin: 0 0 30px 0;
-      border-radius: 0 8px 8px 0;
-      font-size: 15px;
-      color: var(--light-color);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            z-index: 100;
+        }
 
-    .note i {
-      color: var(--primary-color);
-      margin-right: 8px;
-    }
-
-    #show-title {
-      font-size: 32px;
-      margin: 0 0 30px 0;
-      color: var(--light-color);
-      text-align: center;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .season-container {
-      background-color: var(--dark-color);
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .season-container:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-    }
-
-    .season-title {
-      font-size: 26px;
-      margin: 0 0 15px 0;
-      color: var(--warning-color);
-      font-weight: 600;
-      border-bottom: 2px solid var(--warning-color);
-      padding-bottom: 8px;
-    }
-
-    .episodes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    .episode-card {
-      background-color: var(--dark-color);
-      border-radius: 8px;
-      padding: 15px;
-      transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .episode-card:hover {
-      transform: translateY(-3px);
-      background-color: #2d2d2d;
-    }
-
-    .episode-number {
-      color: var(--accent-color);
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .watch-btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.3s ease;
-      width: 100%;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      border: none;
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .watch-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
-      z-index: -1;
-      transition: all 0.3s ease;
-      opacity: 0.5;
-    }
-
-    .watch-btn:hover::before {
-      opacity: 0.8;
-    }
-
-    .watch-btn:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
-    }
-
-    .watch-btn i {
-      margin-right: 10px;
-      font-size: 18px;
-    }
-
-    .loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px;
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      border-top: 4px solid var(--primary-color);
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .error-message {
-      color: #f72585;
-      text-align: center;
-      padding: 20px;
-      background-color: rgba(247, 37, 133, 0.1);
-      border-radius: 8px;
-      margin: 20px 0;
-    }
-
-    @media (max-width: 768px) {
-      .episodes-grid {
-        grid-template-columns: 1fr;
-      }
-      
-      #show-title {
-        font-size: 26px;
-      }
-      
-      .season-title {
-        font-size: 22px;
-      }
-      
-      .note {
-        font-size: 14px;
-      }
-      
-      .watch-btn {
-        padding: 10px 20px;
-      }
-    }
-  </style>
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .theme-toggle {
+                top: 10px;
+                right: 10px;
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <div class="note">
-      <i class="fas fa-info-circle"></i>
-      For best experience, use modern browsers like Chrome or Firefox. Right-click and "Open in new tab" if playback doesn't start.
+<body class="dark-mode">
+    <button class="theme-toggle" id="themeToggle">Light Mode</button>
+
+    <div class="container">
+        <h1 id="show-title">Loading...</h1>
+        
+        <div id="episodes-container">
+            <div class="loading">Loading episodes...</div>
+        </div>
+        
+        <div class="note">
+            Use download manager for faster downloads
+        </div>
     </div>
 
-    <h2 id="show-title">Loading...</h2>
-    <div id="seasons-container">
-      <div class="loading">
-        <div class="spinner"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Firebase SDK v9 (modular version) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-    // Debugging: Log that script is running
-    console.log("Watch page script initialized");
-
-    // Your Firebase configuration - MUST MATCH YOUR PROJECT
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <script>
+        // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAVN4Dcl9tMt2nMtJ3f_4T6eB36iHl1h4Y",
       authDomain: "watchpage-29f72.firebaseapp.com",
@@ -253,141 +174,99 @@
       measurementId: "G-KNR2ZD2J0V"
     };
 
-    // Debugging: Log Firebase config
-    console.log("Firebase config:", firebaseConfig);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
-    try {
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
-      console.log("Firebase initialized successfully");
+        // DOM elements
+        const showTitleElement = document.getElementById('show-title');
+        const episodesContainer = document.getElementById('episodes-container');
+        const themeToggle = document.getElementById('themeToggle');
 
-      // Get show name from URL hash
-      function getShowFromUrl() {
-        const hash = window.location.hash.substring(1);
-        console.log("URL hash:", hash);
-        return hash ? decodeURIComponent(hash) : null;
-      }
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            document.body.classList.toggle('dark-mode');
+            themeToggle.textContent = document.body.classList.contains('light-mode') ? 'Dark Mode' : 'Light Mode';
+            
+            // Save preference to localStorage
+            localStorage.setItem('themePreference', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
 
-      // Display error message
-      function showError(message) {
-        const container = document.getElementById('seasons-container');
-        container.innerHTML = `<div class="error-message">${message}</div>`;
-        console.error(message);
-      }
-
-      // Display the show data
-      function displayShow(showName, showData) {
-        console.log("Displaying show:", showName, showData);
-        const showTitle = document.getElementById('show-title');
-        const seasonsContainer = document.getElementById('seasons-container');
-        
-        // Set show title
-        showTitle.textContent = showName;
-        
-        // Clear loading spinner
-        seasonsContainer.innerHTML = '';
-        
-        // Check if show has seasons
-        if (!showData.seasons) {
-          showError("No seasons data found for this show");
-          return;
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('themePreference');
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            document.body.classList.remove('dark-mode');
+            themeToggle.textContent = 'Dark Mode';
         }
-        
-        // Create season elements
-        Object.keys(showData.seasons)
-          .sort((a, b) => parseInt(a) - parseInt(b))
-          .forEach(seasonNum => {
-            const seasonData = showData.seasons[seasonNum];
-            const seasonDiv = document.createElement('div');
-            seasonDiv.className = 'season-container';
+
+        // Function to load show data from Firebase
+        function loadShowData(showId) {
+            // Show loading state
+            episodesContainer.innerHTML = '<div class="loading">Loading episodes...</div>';
+            showTitleElement.textContent = 'Loading...';
             
-            // Season title
-            const seasonTitle = document.createElement('h2');
-            seasonTitle.className = 'season-title';
-            seasonTitle.textContent = `Season ${seasonNum}`;
-            seasonDiv.appendChild(seasonTitle);
-            
-            // Episodes grid
-            const episodesGrid = document.createElement('div');
-            episodesGrid.className = 'episodes-grid';
-            
-            // Check if season has episodes
-            if (!seasonData.episodes) {
-              const noEpisodes = document.createElement('p');
-              noEpisodes.textContent = 'No episodes found for this season';
-              noEpisodes.style.color = 'var(--gray-color)';
-              seasonDiv.appendChild(noEpisodes);
-            } else {
-              // Add episodes
-              Object.keys(seasonData.episodes)
-                .sort((a, b) => parseInt(a) - parseInt(b))
-                .forEach(episodeNum => {
-                  const episode = seasonData.episodes[episodeNum];
-                  
-                  // Check if episode has link
-                  if (!episode || !episode.link) {
-                    console.warn(`Missing link for S${seasonNum}E${episodeNum}`);
-                    return;
-                  }
-                  
-                  const episodeCard = document.createElement('div');
-                  episodeCard.className = 'episode-card';
-                  
-                  episodeCard.innerHTML = `
-                    <div class="episode-number">Episode ${episodeNum}</div>
-                    <a href="${episode.link}" class="watch-btn" target="_blank">
-                      <i class="fas fa-play"></i> Watch Now
-                    </a>
-                  `;
-                  
-                  episodesGrid.appendChild(episodeCard);
+            // Get show data from Firebase
+            database.ref('shows/' + showId).once('value')
+                .then((snapshot) => {
+                    const showData = snapshot.val();
+                    
+                    if (showData) {
+                        // Update show title
+                        showTitleElement.textContent = showData.title || 'Untitled Show';
+                        
+                        // Clear container
+                        episodesContainer.innerHTML = '';
+                        
+                        // Add episodes
+                        if (showData.episodes) {
+                            Object.entries(showData.episodes).forEach(([episodeNumber, episodeData]) => {
+                                const episodeSection = document.createElement('div');
+                                episodeSection.className = 'episode-section';
+                                
+                                const episodeTitle = document.createElement('h2');
+                                episodeTitle.className = 'episode-title';
+                                episodeTitle.textContent = `Episode ${episodeNumber}`;
+                                
+                                const watchBtn = document.createElement('a');
+                                watchBtn.className = 'watch-btn';
+                                watchBtn.href = episodeData.link || '#';
+                                watchBtn.textContent = 'Watch Now';
+                                watchBtn.target = "_blank";
+                                
+                                episodeSection.appendChild(episodeTitle);
+                                episodeSection.appendChild(watchBtn);
+                                episodesContainer.appendChild(episodeSection);
+                            });
+                        } else {
+                            episodesContainer.innerHTML = '<div class="loading">No episodes found</div>';
+                        }
+                    } else {
+                        showTitleElement.textContent = 'Show Not Found';
+                        episodesContainer.innerHTML = '<div class="loading">This show does not exist in our database</div>';
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error loading show data:", error);
+                    showTitleElement.textContent = 'Error Loading Show';
+                    episodesContainer.innerHTML = '<div class="loading">Failed to load show data. Please try again later.</div>';
                 });
-              
-              seasonDiv.appendChild(episodesGrid);
+        }
+
+        // Load show based on URL hash
+        window.addEventListener('load', () => {
+            const showId = window.location.hash.substring(1) || 'defaultShow';
+            loadShowData(showId);
+        });
+
+        // Update when hash changes
+        window.addEventListener('hashchange', () => {
+            const showId = window.location.hash.substring(1);
+            if (showId) {
+                loadShowData(showId);
             }
-            
-            seasonsContainer.appendChild(seasonDiv);
-          });
-      }
-
-      // Load show data
-      async function loadShowData() {
-        const showName = getShowFromUrl();
-        const seasonsContainer = document.getElementById('seasons-container');
-        
-        if (!showName) {
-          showError("No show specified in URL. Please navigate from the main page.");
-          return;
-        }
-
-        try {
-          console.log(`Fetching show: ${showName}`);
-          const snapshot = await get(ref(db, `shows/${showName}`));
-          
-          if (!snapshot.exists()) {
-            showError(`Show "${showName}" not found in database.`);
-            return;
-          }
-
-          displayShow(showName, snapshot.val());
-          
-        } catch (err) {
-          showError("Error loading show data. Please check console for details.");
-          console.error("Error loading show:", err);
-        }
-      }
-
-      // Load data when page loads
-      document.addEventListener('DOMContentLoaded', loadShowData);
-      
-      // Also load data when hash changes
-      window.addEventListener('hashchange', loadShowData);
-
-    } catch (error) {
-      console.error("Firebase initialization error:", error);
-      showError("Failed to initialize Firebase. Check console for details.");
-    }
-  </script>
+        });
+    </script>
 </body>
 </html>
