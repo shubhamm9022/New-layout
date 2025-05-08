@@ -405,6 +405,15 @@
 
     // Also load data when hash changes (if user navigates without refresh)
     window.addEventListener('hashchange', loadData);
+      // Block F12, Ctrl+Shift+I/J/C
+  document.onkeydown = function(e) {
+    if (e.key === "F12" || 
+       (e.ctrlKey && e.shiftKey && 
+        (e.key === "I" || e.key === "J" || e.key === "C"))) {
+      e.preventDefault();
+      return false;
+    }
+  };
   </script>
 </body>
 </html>
