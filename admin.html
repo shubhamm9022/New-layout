@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Upload Episode</title>
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 30px;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: #2c2f4a;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    input, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+    input {
+      background: #404263;
+      color: #fff;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Admin Panel</h2>
+
+    <div id="auth-section">
+      <input type="email" id="email" placeholder="Email" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="login()">Login</button>
+    </div>
+
+    <div id="upload-section" class="hidden">
+      <input type="text" id="show" placeholder="Show ID (e.g., dark)" />
+      <input type="text" id="title" placeholder="Show Title (optional)" />
+      <input type="text" id="episode" placeholder="Episode (e.g., episode 3)" />
+      <input type="url" id="link" placeholder="Episode Link" />
+      <button onclick="uploadEpisode()">Upload Episode</button>
+      <button onclick="logout()" style="background-color: red; margin-top: 15px;">Logout</button>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC9zBQgD0C5IsUzxsk6lDTLaFzY5quwN9o",
+      authDomain: "watchpage-50643.firebaseapp.com",
+      databaseURL: "https://watchpage-50643-default-rtdb.firebaseio.com",
+      projectId: "watchpage-50643",
+      storageBucket: "watchpage-50643.appspot.com",
+      messagingSenderId: "218942960003",
+      appId: "1:218942960003:web:b956d47d8d2aa82b3bc6b6"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    const authSection = document.getElementById('auth-section');
+    const uploadSection = document.getElementById('upload-section');
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        authSection.classList.add('hidden');
+        uploadSection.classList.remove('hidden');
+      } else {
+        authSection.classList.remove('hidden');
+        uploadSection.classList.add('hidden');
+      }
+    });
+
+    function login() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      auth.signInWithEmailAndPassword(email, password)
+        .catch(error => alert(error.message));
+    }
+
+    function logout() {
+      auth.signOut();
+    }
+
+    function uploadEpisode() {
+      const show = document.getElementById('show').value.toLowerCase();
+      const title = document.getElementById('title').value;
+      const episode = document.getElementById('episode').value;
+      const link = document.getElementById('link').value;
+
+      if (!show || !episode || !link) {
+        alert("Please fill in required fields.");
+        return;
+      }
+
+      if (title) {
+        db.ref(show + "/title").set(title);
+      }
+
+      db.ref(`${show}/${episode}`).set(link)
+        .then(() => alert("Episode uploaded successfully"))
+        .catch(error => alert("Error: " + error.message));
+    }
+  </script>
+</body>
+</html>
