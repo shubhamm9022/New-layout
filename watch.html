@@ -12,48 +12,49 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
     body {
-      background-color: #f5f5f5;
-      color: #333;
+      background-color: #0d0d1a;
+      color: #fff;
       line-height: 1.6;
       padding: 20px;
     }
     .container {
       max-width: 600px;
       margin: 0 auto;
-      background-color: white;
+      background-color: #121225;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
       padding: 30px;
     }
     h1 {
-      color: #2c3e50;
+      color: #ff4fcf;
       text-align: center;
       margin-bottom: 30px;
       padding-bottom: 15px;
-      border-bottom: 2px solid #3498db;
+      border-bottom: 2px solid #8249ff;
+      font-weight: bold;
     }
     .episode-section {
       margin-bottom: 20px;
       padding: 15px;
-      background-color: #f8f9fa;
+      background-color: #1d1d3b;
       border-radius: 5px;
     }
     .episode-title {
       font-size: 1.2rem;
-      color: #2c3e50;
+      color: #5bc0ff;
       margin-bottom: 15px;
       display: flex;
       align-items: center;
     }
     .episode-title::before {
       content: "▶";
-      color: #3498db;
+      color: #ff4fcf;
       margin-right: 10px;
       font-size: 0.8em;
     }
     .watch-btn {
       display: block;
-      background-color: #3498db;
+      background: linear-gradient(135deg, #ff4fcf, #5f52ff);
       color: white;
       text-align: center;
       padding: 12px;
@@ -66,15 +67,18 @@
       cursor: pointer;
     }
     .watch-btn:hover {
-      background-color: #2980b9;
+      opacity: 0.9;
       transform: translateY(-2px);
     }
     .note {
       margin-top: 30px;
       font-size: 0.9rem;
-      color: #7f8c8d;
+      color: #aaa;
       text-align: center;
       padding: 10px;
+      background-color: #1c1c2d;
+      border-left: 4px solid #5f52ff;
+      border-radius: 4px;
     }
   </style>
 </head>
@@ -82,7 +86,7 @@
   <div class="container">
     <h1 id="show-title">Show Name</h1>
     <div id="episodes-container"></div>
-    <div class="note">Use download manager for faster downloads</div>
+    <div class="note">Use Download Manager for faster downloads. Right-click and "Save Link As" if needed.</div>
   </div>
 
   <!-- Firebase SDK -->
