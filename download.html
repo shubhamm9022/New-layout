@@ -1,96 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Stream Episodes</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      background: #121212;
-      color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 2rem;
-      color: #00ffd0;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      margin-top: 40px;
-      border-left: 4px solid #00ffd0;
-      padding-left: 12px;
-    }
-
-    h3 {
-      margin-top: 25px;
-      margin-left: 8px;
-      color: #ccc;
-      font-size: 1.1rem;
-    }
-
-    .episode-card {
-      background: #1a1a1a;
-      border-radius: 14px;
-      padding: 20px;
-      margin: 20px 10px;
-      box-shadow: 0 0 10px rgba(0, 255, 200, 0.07);
-    }
-
-    .episode-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      text-align: center;
-    }
-
-    .stream-btn {
-      display: block;
-      text-align: center;
-      padding: 12px;
-      background: linear-gradient(to right, #00c6ff, #00ff99);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1rem;
-      transition: background 0.3s ease;
-    }
-
-    .stream-btn:hover {
-      background: linear-gradient(to right, #00a6cc, #00cc88);
-    }
-
-    .note {
-      font-size: 0.9rem;
-      background: #181818;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 10px;
-      border-left: 4px solid #ffaa00;
-      color: #bbb;
-    }
-  </style>
-</head>
-<body>
-  <h1>Stream Episodes</h1>
-  <div class="note">
-    Click on the episode to start streaming instantly. Best viewed in mobile or desktop browsers.
-  </div>
-  <div id="content"></div>
-
+  <meta charset="UTF-8" />
+  <title>Download Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Firebase SDKs -->
   <script type="module">
-    // Import Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
       authDomain: "movievault-e650e.firebaseapp.com",
@@ -101,60 +19,139 @@
       appId: "1:61140580505:web:d3216ca8bd944662a22008"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Get show name from URL hash
-    const showName = decodeURIComponent(window.location.hash.substring(1)).trim();
-    document.getElementById('show-title').innerText = showName;
+    document.addEventListener("DOMContentLoaded", async () => {
+      const showKey = decodeURIComponent(window.location.hash.slice(1));
+      const title = document.getElementById("show-title");
+      const container = document.getElementById("episodes");
 
-    // Reference to show data
-    const dbRef = ref(db);
+      title.innerText = showKey ? `Showing: ${showKey}` : "Show Not Found";
 
-    get(child(dbRef, `shows/${showName}`)).then((snapshot) => {
-      if (snapshot.exists()) {
-        const showData = snapshot.val();
-        const episodesDiv = document.getElementById('content');
+      if (!showKey) return;
 
-        Object.entries(showData).forEach(([season, episodes]) => {
-          const seasonHeader = document.createElement('h2');
-          seasonHeader.textContent = season;
-          episodesDiv.appendChild(seasonHeader);
+      try {
+        const snapshot = await get(child(ref(db), `shows/${showKey}`));
+        if (!snapshot.exists()) {
+          container.innerHTML = "<p style='color: #ccc'>Show not found.</p>";
+          return;
+        }
 
-          Object.entries(episodes).forEach(([epNum, links]) => {
-            const epDiv = document.createElement('div');
-            epDiv.className = 'episode-card';
-            epDiv.innerHTML = `<div class="episode-title">Episode ${epNum}</div>`;
+        const data = snapshot.val();
+        for (const season in data) {
+          for (const episode in data[season]) {
+            const links = data[season][episode];
+            let buttons = "";
 
             if (links.filepress) {
-              const filepressBtn = document.createElement('a');
-              filepressBtn.href = links.filepress;
-              filepressBtn.target = "_blank";
-              filepressBtn.className = 'stream-btn';
-              filepressBtn.innerText = "FilePress";
-              epDiv.appendChild(filepressBtn);
+              buttons += `<a href="${links.filepress}" class="btn filepress">Filepress [G-Drive]</a>`;
             }
 
             if (links.neodrive) {
-              const neoBtn = document.createElement('a');
-              neoBtn.href = links.neodrive;
-              neoBtn.target = "_blank";
-              neoBtn.className = 'stream-btn';
-              neoBtn.innerText = "NeoDrive";
-              epDiv.appendChild(neoBtn);
+              buttons += `<a href="${links.neodrive}" class="btn gdirect">⚡ G-Direct [Instant]</a>`;
             }
 
-            episodesDiv.appendChild(epDiv);
-          });
-        });
-
-      } else {
-        document.getElementById('content').innerText = "No data found for this show.";
+            if (buttons) {
+              container.innerHTML += `
+                <h2>-: Episode ${episode} :-</h2>
+                <div class="button-group">${buttons}</div>
+              `;
+            }
+          }
+        }
+      } catch (err) {
+        container.innerHTML = "<p style='color: #ccc'>Error loading data.</p>";
+        console.error(err);
       }
-    }).catch((error) => {
-      console.error("Error fetching data:", error);
     });
   </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0a0a0a;
+      color: #f5f5f5;
+      text-align: center;
+    }
+
+    .note {
+      margin: 20px;
+      font-size: 17px;
+      font-weight: 500;
+      color: #c8a657;
+    }
+
+    h2 {
+      margin-top: 30px;
+      margin-bottom: 10px;
+      font-size: 22px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .button-group {
+      margin: 15px 0 30px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 10px;
+      padding: 13px 28px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .gdirect {
+      background: #121212;
+      border: 1px solid #00bfa5;
+      color: #00e5c3;
+    }
+
+    .filepress {
+      background: #151515;
+      border: 1px solid #ffa000;
+      color: #ffca28;
+    }
+
+    .footer {
+      background-color: #111;
+      padding: 20px;
+      font-size: 15px;
+      margin-top: 40px;
+      color: #c8e6c9;
+    }
+
+    .footer strong {
+      color: #ff6e40;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="note">Note: Use Download Manager like IDM or ADM for ⚡ Instant Download!</div>
+
+  <h2 id="show-title">Loading...</h2>
+  <div id="episodes"></div>
+
+  <div class="footer">
+    Use ✅ <strong>Fast Server {V-Cloud}</strong> to download without G-Drive login. (Supports resume)
+  </div>
+
 </body>
 </html>
