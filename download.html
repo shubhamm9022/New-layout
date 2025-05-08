@@ -8,70 +8,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Firebase SDKs -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
-      authDomain: "movievault-e650e.firebaseapp.com",
-      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
-      projectId: "movievault-e650e",
-      storageBucket: "movievault-e650e.appspot.com",
-      messagingSenderId: "61140580505",
-      appId: "1:61140580505:web:d3216ca8bd944662a22008"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    document.addEventListener("DOMContentLoaded", async () => {
-      const showKey = decodeURIComponent(window.location.hash.slice(1));
-      const title = document.getElementById("show-title");
-      const container = document.getElementById("episodes");
-
-      title.innerText = showKey ? `${showKey}` : "Show Not Found";
-
-      if (!showKey) return;
-
-      try {
-        const snapshot = await get(child(ref(db), `shows/${showKey}`));
-        if (!snapshot.exists()) {
-          container.innerHTML = "<p style='color: #ccc'>Show not found.</p>";
-          return;
-        }
-
-        const data = snapshot.val();
-        for (const season in data) {
-          for (const episode in data[season]) {
-            const links = data[season][episode];
-            let buttons = "";
-
-            if (links.filepress) {
-              buttons += `<a href="${links.filepress}" class="btn filepress"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
-            }
-
-            if (links.neodrive) {
-              buttons += `<a href="${links.neodrive}" class="btn gdirect"><i class="fas fa-bolt"></i> G-Direct [Instant]</a>`;
-            }
-
-            if (buttons) {
-              container.innerHTML += `
-                <div class="episode-card">
-                  <h2>Episode ${episode}</h2>
-                  <div class="button-group">${buttons}</div>
-                </div>
-              `;
-            }
-          }
-        }
-      } catch (err) {
-        container.innerHTML = "<p style='color: #ccc'>Error loading data.</p>";
-        console.error(err);
-      }
-    });
-  </script>
   <style>
     :root {
       --primary-color: #4361ee;
@@ -231,6 +167,27 @@
       box-shadow: 0 8px 20px rgba(247, 37, 133, 0.4);
     }
 
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary-color);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     footer {
       background: linear-gradient(135deg, var(--dark-color), #0f3460);
       padding: 40px 0;
@@ -303,7 +260,11 @@
     </div>
 
     <h2 id="show-title">Loading...</h2>
-    <div id="episodes"></div>
+    <div id="episodes">
+      <div class="loading">
+        <div class="spinner"></div>
+      </div>
+    </div>
   </div>
 
   <footer>
@@ -315,5 +276,88 @@
       <p class="copyright">&copy; 2024 MovieVault. All rights reserved.</p>
     </div>
   </footer>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
+      authDomain: "movievault-e650e.firebaseapp.com",
+      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
+      projectId: "movievault-e650e",
+      storageBucket: "movievault-e650e.appspot.com",
+      messagingSenderId: "61140580505",
+      appId: "1:61140580505:web:d3216ca8bd944662a22008"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Function to load data
+    async function loadData() {
+      const showKey = decodeURIComponent(window.location.hash.slice(1));
+      const title = document.getElementById("show-title");
+      const container = document.getElementById("episodes");
+
+      if (!showKey) {
+        title.innerText = "Show Not Found";
+        container.innerHTML = "<p style='color: #ccc; text-align: center;'>No show selected. Please navigate from the main page.</p>";
+        return;
+      }
+
+      title.innerText = showKey;
+
+      try {
+        const snapshot = await get(child(ref(db), `shows/${showKey}`));
+        
+        if (!snapshot.exists()) {
+          container.innerHTML = "<p style='color: #ccc; text-align: center;'>Show not found in database.</p>";
+          return;
+        }
+
+        const data = snapshot.val();
+        let episodesHTML = '';
+        
+        for (const season in data) {
+          for (const episode in data[season]) {
+            const links = data[season][episode];
+            let buttons = '';
+
+            if (links.filepress) {
+              buttons += `<a href="${links.filepress}" class="btn filepress" target="_blank"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
+            }
+
+            if (links.neodrive) {
+              buttons += `<a href="${links.neodrive}" class="btn gdirect" target="_blank"><i class="fas fa-bolt"></i> G-Direct [Instant]</a>`;
+            }
+
+            if (buttons) {
+              episodesHTML += `
+                <div class="episode-card">
+                  <h2>Episode ${episode}</h2>
+                  <div class="button-group">${buttons}</div>
+                </div>
+              `;
+            }
+          }
+        }
+
+        container.innerHTML = episodesHTML || "<p style='color: #ccc; text-align: center;'>No episodes found for this show.</p>";
+        
+      } catch (err) {
+        console.error("Error loading data:", err);
+        container.innerHTML = "<p style='color: #ccc; text-align: center;'>Error loading data. Please try again.</p>";
+      }
+    }
+
+    // Load data immediately when page loads
+    document.addEventListener('DOMContentLoaded', loadData);
+
+    // Also load data when hash changes (if user navigates without refresh)
+    window.addEventListener('hashchange', loadData);
+  </script>
 </body>
 </html>
