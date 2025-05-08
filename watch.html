@@ -14,34 +14,34 @@
       --darker: #16213e;
       --light: #f8f9fa;
     }
-    
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    
+
     body {
       background-color: var(--darker);
       color: var(--light);
       line-height: 1.6;
       padding: 20px;
     }
-    
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
     }
-    
+
     .header {
       text-align: center;
       margin-bottom: 30px;
       padding-bottom: 20px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
-    
+
     .show-title {
       font-size: 2.5rem;
       margin-bottom: 15px;
@@ -49,11 +49,11 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    
+
     .season-container {
       margin-bottom: 40px;
     }
-    
+
     .season-title {
       font-size: 1.8rem;
       color: var(--primary);
@@ -61,13 +61,13 @@
       padding-bottom: 10px;
       border-bottom: 2px solid var(--primary);
     }
-    
+
     .episodes-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 20px;
     }
-    
+
     .episode-card {
       background: var(--dark);
       border-radius: 8px;
@@ -75,19 +75,19 @@
       transition: all 0.3s ease;
       border: 1px solid rgba(255,255,255,0.05);
     }
-    
+
     .episode-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     }
-    
+
     .episode-number {
       font-size: 1.2rem;
       font-weight: 600;
       color: var(--accent);
       margin-bottom: 15px;
     }
-    
+
     .watch-btn {
       display: block;
       width: 100%;
@@ -102,19 +102,19 @@
       cursor: pointer;
       transition: all 0.3s ease;
     }
-    
+
     .watch-btn:hover {
       background: linear-gradient(135deg, var(--accent), #b5179e);
       transform: translateY(-2px);
     }
-    
+
     .loading {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 200px;
     }
-    
+
     .spinner {
       width: 40px;
       height: 40px;
@@ -123,17 +123,17 @@
       border-top: 4px solid var(--primary);
       animation: spin 1s linear infinite;
     }
-    
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    
+
     @media (max-width: 768px) {
       .episodes-grid {
         grid-template-columns: 1fr;
       }
-      
+
       .show-title {
         font-size: 2rem;
       }
@@ -145,13 +145,16 @@
     <div class="header">
       <h1 class="show-title" id="show-title">Loading Show...</h1>
     </div>
-    
     <div id="seasons-container">
       <div class="loading">
         <div class="spinner"></div>
       </div>
     </div>
   </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <script>
    // Import the functions you need from the SDKs you need
@@ -176,100 +179,85 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-    // Get show ID from URL
     function getShowIdFromUrl() {
-      const path = window.location.pathname;
-      const parts = path.split('/');
-      // Assuming URL format like /watch/stranger-things
-      return parts[parts.length - 1];
+      const hash = window.location.hash;
+      if (hash.startsWith('#')) {
+        return hash.slice(1).toLowerCase().trim();
+      }
+      return null;
     }
-    
-    // Convert URL slug to show name (e.g., "stranger-things" => "Stranger Things")
+
     function slugToName(slug) {
-      return slug.split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
+      return slug.split('-').map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1)
+      ).join(' ');
     }
-    
-    // Display the show data
+
     function displayShow(showId, showData) {
       const showTitle = document.getElementById('show-title');
       const seasonsContainer = document.getElementById('seasons-container');
-      
-      // Set show title from data or URL
       showTitle.textContent = showData.name || slugToName(showId);
-      
-      // Clear loading spinner
       seasonsContainer.innerHTML = '';
-      
-      // Create season elements
-      Object.keys(showData.seasons)
+
+      Object.keys(showData.seasons || {})
         .sort((a, b) => parseInt(a) - parseInt(b))
         .forEach(seasonNum => {
           const seasonDiv = document.createElement('div');
           seasonDiv.className = 'season-container';
-          
-          // Season title
+
           const seasonTitle = document.createElement('h2');
           seasonTitle.className = 'season-title';
           seasonTitle.textContent = `Season ${seasonNum}`;
           seasonDiv.appendChild(seasonTitle);
-          
-          // Episodes grid
+
           const episodesGrid = document.createElement('div');
           episodesGrid.className = 'episodes-grid';
-          
-          // Add episodes
-          Object.keys(showData.seasons[seasonNum].episodes)
+
+          Object.keys(showData.seasons[seasonNum].episodes || {})
             .sort((a, b) => parseInt(a) - parseInt(b))
             .forEach(episodeNum => {
               const episode = showData.seasons[seasonNum].episodes[episodeNum];
-              
               const episodeCard = document.createElement('div');
               episodeCard.className = 'episode-card';
-              
               episodeCard.innerHTML = `
                 <div class="episode-number">Episode ${episodeNum}</div>
                 <a href="${episode.link}" class="watch-btn" target="_blank">
                   <i class="fas fa-play"></i> Watch Now
                 </a>
               `;
-              
               episodesGrid.appendChild(episodeCard);
             });
-          
+
           seasonDiv.appendChild(episodesGrid);
           seasonsContainer.appendChild(seasonDiv);
         });
     }
-    
-    // Load show data
+
     function loadShowData() {
       const showId = getShowIdFromUrl();
-      const seasonsContainer = document.getElementById('seasons-container');
-      
+      const container = document.getElementById('seasons-container');
+
       if (!showId) {
-        seasonsContainer.innerHTML = '<p>No show specified in URL</p>';
+        container.innerHTML = '<p>No show specified in URL.</p>';
         return;
       }
-      
-      // Fetch show data
+
       database.ref(`shows/${showId}`).once('value')
         .then(snapshot => {
           if (snapshot.exists()) {
             displayShow(showId, snapshot.val());
           } else {
-            seasonsContainer.innerHTML = '<p>Show not found</p>';
+            container.innerHTML = '<p>Show not found.</p>';
           }
         })
         .catch(error => {
           console.error("Error loading show:", error);
-          seasonsContainer.innerHTML = '<p>Error loading show data</p>';
+          container.innerHTML = '<p>Error loading show data.</p>';
         });
     }
-    
-    // Load data when page loads
+
     document.addEventListener('DOMContentLoaded', loadShowData);
+    window.addEventListener('hashchange', loadShowData);
   </script>
 </body>
 </html>
