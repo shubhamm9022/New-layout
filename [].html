@@ -155,7 +155,7 @@
       padding: 20px;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       position: relative;
       z-index: 2;
     }
@@ -374,21 +374,51 @@
     .btn-quality-dolby { background-color: var(--color-dolby); }
     .btn-quality-imax { background-color: var(--color-imax); }
 
-    .btn-season {
-      background: var(--color-season);
-      min-width: 180px;
+    /* Season Accordion Styles */
+    .season-accordion {
+      width: 100%;
       margin-bottom: 10px;
-      font-weight: 700;
     }
 
-    .btn-season:hover {
-      box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+    .season-btn {
+      background: var(--color-season);
+      min-width: 180px;
+      margin-bottom: 0;
+      font-weight: 700;
+      width: 100%;
+      text-align: left;
+      justify-content: space-between;
+    }
+
+    .season-btn::after {
+      content: '\F282';
+      font-family: 'bootstrap-icons';
+      font-size: 0.9rem;
+      transition: transform 0.3s;
+    }
+
+    .season-btn.active::after {
+      transform: rotate(180deg);
+    }
+
+    .season-content {
+      display: none;
+      padding: 15px;
+      background: rgba(30, 30, 30, 0.5);
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      margin-top: -10px;
+      border-left: 3px solid #2575fc;
+    }
+
+    .season-content.active {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
     .season-quality-btn {
       min-width: 160px;
-      margin-left: 20px;
-      margin-bottom: 10px;
+      margin-bottom: 0;
     }
 
     .button-container {
@@ -403,15 +433,6 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      width: 100%;
-    }
-
-    .season-container {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 15px;
-      border-left: 3px solid #2575fc;
-      padding-left: 15px;
       width: 100%;
     }
 
@@ -717,11 +738,6 @@
       
       .movie-title {
         font-size: 1.8rem;
-        text-align: center;
-      }
-      
-      .info-tags {
-        justify-content: center;
       }
     }
 
@@ -779,7 +795,6 @@
 
       .btn-quality, .season-quality-btn {
         width: 100%;
-        margin-left: 0;
       }
 
       .synopsis {
@@ -1008,15 +1023,17 @@ async function loadContentLinks() {
     }
 
     if (mediaItem.seasons) {
-      // Handle TV show with seasons
+      // Handle TV show with seasons - create accordion
       for (const [seasonNumber, seasonData] of Object.entries(mediaItem.seasons)) {
-        const seasonContainer = document.createElement('div');
-        seasonContainer.className = 'season-container';
+        const seasonAccordion = document.createElement('div');
+        seasonAccordion.className = 'season-accordion';
         
-        const seasonBtn = document.createElement('div');
-        seasonBtn.className = 'btn btn-season';
+        const seasonBtn = document.createElement('button');
+        seasonBtn.className = 'btn season-btn';
         seasonBtn.innerHTML = `<i class="bi bi-collection-play"></i> Season ${seasonNumber}`;
-        seasonContainer.appendChild(seasonBtn);
+        
+        const seasonContent = document.createElement('div');
+        seasonContent.className = 'season-content';
         
         if (seasonData.download_links && Object.keys(seasonData.download_links).length > 0) {
           for (const [quality, url] of Object.entries(seasonData.download_links)) {
@@ -1025,16 +1042,23 @@ async function loadContentLinks() {
             qualityBtn.className = `btn season-quality-btn btn-quality-${quality.toLowerCase()}`;
             qualityBtn.target = '_blank';
             qualityBtn.innerHTML = `<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}`;
-            seasonContainer.appendChild(qualityBtn);
+            seasonContent.appendChild(qualityBtn);
           }
         } else {
           const noDownload = document.createElement('p');
           noDownload.className = 'no-options';
           noDownload.textContent = 'No download options available for this season';
-          seasonContainer.appendChild(noDownload);
+          seasonContent.appendChild(noDownload);
         }
         
-        downloadOptions.appendChild(seasonContainer);
+        seasonBtn.addEventListener('click', () => {
+          seasonBtn.classList.toggle('active');
+          seasonContent.classList.toggle('active');
+        });
+        
+        seasonAccordion.appendChild(seasonBtn);
+        seasonAccordion.appendChild(seasonContent);
+        downloadOptions.appendChild(seasonAccordion);
       }
     } else if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
       // Handle movie or single-season show
@@ -1350,4 +1374,4 @@ document.onkeydown = function(e) {
 };
 </script>          
 </body>
-</html>
+  </html>
