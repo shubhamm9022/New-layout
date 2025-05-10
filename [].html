@@ -55,11 +55,15 @@
       --mobile-poster-height: 225px;
       --banner-height-desktop: 50vh;
       --banner-height-mobile: 30vh;
-      --color-primary: linear-gradient(90deg, #ff4d4d, #f9cb28);
-      --color-secondary: linear-gradient(90deg, #2196F3, #00BCD4);
+      --color-primary: #ff4d4d;
+      --color-primary-gradient: linear-gradient(135deg, #ff4d4d 0%, #f9cb28 100%);
+      --color-secondary: #2196F3;
+      --color-secondary-gradient: linear-gradient(135deg, #2196F3 0%, #00BCD4 100%);
       --bg-dark: #0d0d0d;
       --bg-card: #1a1a1a;
       --text-primary: #fff;
+      --btn-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      --btn-hover-shadow: 0 6px 20px rgba(255, 255, 255, 0.1);
     }
 
     * {
@@ -216,7 +220,7 @@
     }
 
     .tag.movie-type {
-      background: var(--color-primary);
+      background: var(--color-primary-gradient);
       color: #000;
       font-weight: 700;
     }
@@ -236,10 +240,10 @@
       color: #FFD700;
     }
 
+    /* Button Styles */
     .btn {
-      background: var(--color-primary);
       border: none;
-      color: black;
+      color: white;
       font-weight: 700;
       padding: 12px 25px;
       font-size: 16px;
@@ -252,28 +256,85 @@
       justify-content: center;
       gap: 8px;
       min-width: 150px;
+      box-shadow: var(--btn-shadow);
+      position: relative;
+      overflow: hidden;
     }
 
-    .btn.download-btn {
-      background: var(--color-secondary);
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
+      opacity: 0;
+      transition: opacity 0.3s;
     }
-    
-    .btn.quality-btn {
-      background: #333;
-      color: white;
+
+    .btn:hover::before {
+      opacity: 1;
+    }
+
+    .btn-primary {
+      background: var(--color-primary-gradient);
+      color: black;
+    }
+
+    .btn-secondary {
+      background: var(--color-secondary-gradient);
+    }
+
+    .btn-watch {
+      background: var(--color-primary-gradient);
+      color: black;
+      font-size: 16px;
+      padding: 12px 30px;
+    }
+
+    .btn-watch:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(255, 77, 77, 0.3);
+    }
+
+    .btn-download {
+      background: var(--color-secondary-gradient);
+      font-size: 16px;
+      padding: 12px 30px;
+    }
+
+    .btn-download:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+    }
+
+    .btn-quality {
       min-width: 120px;
       padding: 10px 15px;
       font-size: 14px;
+      font-weight: 600;
     }
-    
-    .btn.quality-720p { background: linear-gradient(90deg, #4CAF50, #8BC34A); }
-    .btn.quality-1080p { background: linear-gradient(90deg, #2196F3, #03A9F4); }
-    .btn.quality-4k { background: linear-gradient(90deg, #9C27B0, #E91E63); }
-    .btn.quality-cam { background: linear-gradient(90deg, #FF5722, #FF9800); }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    .btn-quality-720p {
+      background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+    }
+
+    .btn-quality-1080p {
+      background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);
+    }
+
+    .btn-quality-4k {
+      background: linear-gradient(135deg, #9C27B0 0%, #E91E63 100%);
+    }
+
+    .btn-quality-cam {
+      background: linear-gradient(135deg, #FF5722 0%, #FF9800 100%);
+    }
+
+    .btn-quality:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--btn-hover-shadow);
     }
 
     .button-container {
@@ -289,6 +350,13 @@
       gap: 10px;
       flex-wrap: wrap;
       width: 100%;
+      margin-top: 10px;
+    }
+
+    .no-options {
+      color: #aaa;
+      font-size: 14px;
+      padding: 10px 0;
     }
 
     .synopsis {
@@ -469,14 +537,18 @@
         margin: 12px 0;
       }
 
-      .btn {
+      .btn-watch, .btn-download {
         width: 100%;
-        padding: 10px;
+        padding: 12px;
         font-size: 0.9rem;
       }
       
       .download-options {
         flex-direction: column;
+      }
+
+      .btn-quality {
+        width: 100%;
       }
 
       .synopsis {
@@ -620,7 +692,7 @@
     <div class="info-tags" id="genreTags"></div>
 
     <div class="button-container">
-      <a href="#" class="btn" id="watchBtn"><i class="bi bi-play-fill"></i> WATCH NOW</a>
+      <a href="#" class="btn btn-watch" id="watchBtn"><i class="bi bi-play-fill"></i> WATCH NOW</a>
       <div class="download-options" id="downloadOptions"></div>
     </div>
 
@@ -692,6 +764,7 @@ async function loadContentLinks() {
     
     if (!mediaItem) {
       document.getElementById('watchBtn').style.display = 'none';
+      document.getElementById('downloadOptions').innerHTML = '<p class="no-options">Content not available</p>';
       return;
     }
 
@@ -700,6 +773,7 @@ async function loadContentLinks() {
     if (mediaItem.stream_link) {
       watchBtn.href = mediaItem.stream_link;
       watchBtn.target = '_blank';
+      watchBtn.classList.add('btn-watch');
     } else {
       watchBtn.style.display = 'none';
     }
@@ -713,22 +787,22 @@ async function loadContentLinks() {
       for (const [quality, url] of Object.entries(mediaItem.download_links)) {
         const qualityBtn = document.createElement('a');
         qualityBtn.href = url;
-        qualityBtn.className = `btn quality-btn quality-${quality.toLowerCase()}`;
+        qualityBtn.className = `btn btn-quality btn-quality-${quality.toLowerCase()}`;
         qualityBtn.target = '_blank';
         qualityBtn.innerHTML = `<i class="bi bi-download"></i> ${quality.toUpperCase()}`;
         downloadOptions.appendChild(qualityBtn);
       }
     } else {
       const noDownload = document.createElement('p');
+      noDownload.className = 'no-options';
       noDownload.textContent = 'No download options available';
-      noDownload.style.color = '#aaa';
       downloadOptions.appendChild(noDownload);
     }
   } catch (error) {
     console.error('Error loading content links:', error);
     document.getElementById('watchBtn').style.display = 'none';
     const downloadOptions = document.getElementById('downloadOptions');
-    downloadOptions.innerHTML = '<p style="color:#aaa">Download options currently unavailable</p>';
+    downloadOptions.innerHTML = '<p class="no-options">Download options currently unavailable</p>';
   }
 }
 
@@ -829,7 +903,7 @@ async function loadMediaDetails() {
     document.getElementById('title').textContent = 'Error loading content';
     document.getElementById('synopsisText').textContent = 'Failed to load details. Please try again later.';
     document.getElementById('watchBtn').style.display = 'none';
-    document.getElementById('downloadOptions').innerHTML = '<p style="color:#aaa">Download options currently unavailable</p>';
+    document.getElementById('downloadOptions').innerHTML = '<p class="no-options">Download options currently unavailable</p>';
   }
 }
 
