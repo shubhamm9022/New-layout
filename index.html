@@ -3,107 +3,95 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <!-- Primary Meta Tags -->
+
   <title>Moviesvault - Stream Latest Movies & TV Shows in HD Quality</title>
   <meta name="description" content="Watch and download the latest movies and TV series in HD, FHD, and 4K quality. Stream trending content with high ratings and multiple quality options.">
   <meta name="keywords" content="stream movies, watch TV series, HD movies, FHD content, 4K movies, latest releases, trending shows, movie downloads, filmyzilla, filmyzila, filmyzila.com, bollyflix, bollflix">
-  
-  <!-- Open Graph / Facebook -->
+
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://moviesvault.fun/">
   <meta property="og:title" content="Moviesvault - Stream Latest Movies & TV Shows in HD Quality">
   <meta property="og:description" content="Watch and download the latest movies and TV series in HD, FHD, and 4K quality. Stream trending content with high ratings and multiple quality options.">
   <meta property="og:image" content="Logo.png">
   <meta property="og:site_name" content="MoviesVault">
-  
-  <!-- Twitter -->
+
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://moviesvault.fun/">
   <meta property="twitter:title" content="Moviesvault - Stream Latest Movies & TV Shows in HD Quality">
   <meta property="twitter:description" content="Watch and download the latest movies and TV series in HD, FHD, and 4K quality. Stream trending content with high ratings and multiple quality options.">
   <meta property="twitter:image" content="Logo.png">
-  
-  <!-- Canonical URL -->
+
   <link rel="canonical" href="https://moviesvault.fun/" />
-  
-  <!-- Favicon -->
+
   <link rel="icon" href="assets/icons/favicon.ico">
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
   <link rel="manifest" href="assets/manifest/site.webmanifest">
-  
-  <!-- Theme Color -->
+
   <meta name="theme-color" content="#0d0d0d">
-  
-  <!-- Apple Touch Icon -->
+
   <link rel="apple-touch-icon" href="Logo.png">
-  
-  <!-- Fonts -->
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  
-  <!-- ====================== SCHEMA MARKUP ====================== -->
-  <!-- Organization Schema -->
+
   <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "MoviesVault",
-      "url": "https://moviesvault.fun/",
-      "logo": "Logo.png",
-      "sameAs": ["https://t.me/movievaultHQ"]
-    }
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "MoviesVault",
+    "url": "https://moviesvault.fun/",
+    "logo": "Logo.png",
+    "sameAs": ["https://t.me/movievaultHQ"]
+  }
   </script>
-  
-  <!-- Website Schema -->
+
   <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "MoviesVault",
+    "url": "https://moviesvault.fun/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://moviesvault.fun/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Latest HD Movies & TV Shows | MoviesVault",
+    "description": "Stream and download trending movies and TV series in HD, FHD, and 4K quality.",
+    "url": "https://moviesvault.fun/",
+    "isPartOf": {
       "@type": "WebSite",
-      "name": "MoviesVault",
-      "url": "https://moviesvault.fun/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://moviesvault.fun/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "name": "MoviesVault"
     }
-  </script>
-  
-  <!-- WebPage Schema -->
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "Latest HD Movies & TV Shows | MoviesVault",
-      "description": "Stream and download trending movies and TV series in HD, FHD, and 4K quality.",
-      "url": "https://moviesvault.fun/",
-      "isPartOf": {
-        "@type": "WebSite",
-        "name": "MoviesVault"
-      }
-    }
+  }
   </script>
   <style>
     /* RESET & BASE STYLES */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { 
-      background: #0d0d0d; 
+    body {
+      background: #0d0d0d;
       font-family: 'Poppins', sans-serif;
       color: white;
     }
     img, video {
-  pointer-events: none;
-  user-drag: none;
-  -webkit-user-drag: none;
-}
+      pointer-events: none;
+      user-drag: none;
+      -webkit-user-drag: none;
+    }
 
-body {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
     /* HEADER */
     header {
       position: fixed;
@@ -121,23 +109,23 @@ body {
       align-items: center;
       justify-content: space-between;
     }
-    
+
     .logo {
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    
-    .logo-img { 
-      height: 55px; 
+
+    .logo-img {
+      height: 55px;
       width: auto;
       transition: transform 0.3s ease;
     }
-    
+
     .logo:hover .logo-img {
       transform: scale(1.05);
     }
-    
+
     .logo-text {
       font-size: 1.25rem;
       font-weight: 700;
@@ -146,13 +134,13 @@ body {
       background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    
+
     nav {
       display: flex;
       align-items: center;
       gap: 30px;
     }
-    
+
     nav a {
       color: rgba(255, 255, 255, 0.8);
       text-decoration: none;
@@ -164,15 +152,15 @@ body {
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    
+
     nav a:hover {
       color: white;
     }
-    
+
     nav a.active {
       color: white;
     }
-    
+
     nav a.active::after {
       content: '';
       position: absolute;
@@ -183,34 +171,34 @@ body {
       background: linear-gradient(90deg, #ff4d4d, #f9cb28);
       border-radius: 2px;
     }
-    
+
     .right-section {
       display: flex;
       align-items: center;
       gap: 20px;
     }
     .telegram-icon {
-  font-size: 18px;
-  color: #ffffff;
-  transition: all 0.3s ease;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  text-decoration: none;
-  position: relative;
-}
+      font-size: 18px;
+      color: #ffffff;
+      transition: all 0.3s ease;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      text-decoration: none;
+      position: relative;
+    }
 
-.telegram-icon i {
-  font-size: 18px;
-  line-height: 1;
-}
+    .telegram-icon i {
+      font-size: 18px;
+      line-height: 1;
+    }
 
-.telegram-icon:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
+    .telegram-icon:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
     .search-icon {
       font-size: 16px;
       color: rgba(255, 255, 255, 0.8);
@@ -223,59 +211,64 @@ body {
       justify-content: center;
       border-radius: 50%;
     }
-    
+
     .search-icon:hover {
       background: rgba(255, 255, 255, 0.1);
       color: #ffffff;
     }
-    
+
+    /* === MODIFIED SEARCH BOX STYLES START === */
     .search-box {
-      position: absolute;
-      top: calc(100% + 12px);
-      right: 0;
-      background: rgba(20, 20, 20, 0.98);
-      padding: 12px 15px;
-      border-radius: 12px;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-10px);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      display: flex;
-      align-items: center;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      min-width: 280px;
-      z-index: 1001;
+        position: absolute;
+        top: calc(100% + 12px); /* Position below the header */
+        right: 0; /* Align to the right of the header */
+        background: rgba(25, 25, 25, 0.98); /* Slightly darker background for better contrast */
+        padding: 15px; /* Increased padding for a bit more space */
+        border-radius: 10px; /* Slightly softer corners */
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-10px) scale(0.95); /* Added scale for a subtle pop effect */
+        transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother transition */
+        display: flex;
+        align-items: center;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35); /* Deeper shadow for more depth */
+        border: 1px solid rgba(255, 255, 255, 0.1); /* Slightly more visible border */
+        min-width: 300px; /* Slightly wider */
+        z-index: 1001;
     }
-    
+
     .search-box.active {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0) scale(1); /* Smooth transform on active */
     }
-    
+
     .search-box input {
-      width: 100%;
-      padding: 10px 15px;
-      background: rgba(30, 30, 30, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-      color: white;
-      font-size: 14px;
-      outline: none;
-      transition: all 0.3s ease;
+        width: 100%;
+        padding: 12px 18px; /* Increased padding for better text feel */
+        background: rgba(40, 40, 40, 0.9); /* Darker input background */
+        border: 1px solid rgba(255, 255, 255, 0.15); /* Slightly more defined border */
+        border-radius: 8px; /* Consistent rounded corners */
+        color: #e0e0e0; /* Lighter text color for better readability */
+        font-size: 15px; /* Slightly larger font */
+        outline: none;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); /* Inner shadow for depth */
     }
-    
+
     .search-box input::placeholder {
-      color: rgba(255, 255, 255, 0.5);
-      font-weight: 400;
+        color: rgba(255, 255, 255, 0.4); /* Lighter placeholder */
+        font-weight: 400;
+        font-style: italic; /* Italic placeholder */
     }
-    
+
     .search-box input:focus {
-      border-color: rgba(255, 255, 255, 0.3);
-      background: rgba(40, 40, 40, 0.8);
+        border-color: #f9cb28; /* Using your theme's gold color for focus */
+        background: rgba(45, 45, 45, 0.95); /* Slightly lighter background on focus */
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.2), 0 0 0 2px rgba(249, 203, 40, 0.3); /* Outer glow effect on focus */
     }
-    
+    /* === MODIFIED SEARCH BOX STYLES END === */
+
     .hamburger {
       display: none;
       flex-direction: column;
@@ -285,7 +278,7 @@ body {
       width: 24px;
       height: 24px;
     }
-    
+
     .hamburger span {
       width: 24px;
       height: 2px;
@@ -293,25 +286,25 @@ body {
       border-radius: 3px;
       transition: all 0.4s;
     }
-    
+
     .hamburger.active span:nth-child(1) {
       transform: rotate(45deg) translate(5px, 5px);
     }
-    
+
     .hamburger.active span:nth-child(2) {
       opacity: 0;
     }
-    
+
     .hamburger.active span:nth-child(3) {
       transform: rotate(-45deg) translate(5px, -5px);
     }
-    
+
     /* CONTENT WRAPPER */
     .content-wrapper {
       margin-top: 72px;
       padding: 20px;
     }
-    
+
     /* NOTICE BOX */
     .notice-box {
       background: rgba(30, 30, 30, 0.8);
@@ -325,25 +318,25 @@ body {
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
-    
+
     .notice-icon {
       color: #f9cb28;
       font-size: 18px;
       margin-top: 2px;
     }
-    
+
     .notice-content {
       flex: 1;
       font-size: 14px;
       line-height: 1.5;
       color: rgba(255, 255, 255, 0.9);
     }
-    
+
     .notice-content strong {
       color: #ffffff;
       font-weight: 600;
     }
-    
+
     /* BREADCRUMB - IMPROVED FOR MOBILE */
     .breadcrumb {
       display: flex;
@@ -356,11 +349,11 @@ body {
       white-space: nowrap;
       -webkit-overflow-scrolling: touch;
     }
-    
+
     .breadcrumb::-webkit-scrollbar {
       display: none;
     }
-    
+
     .breadcrumb ol {
       display: flex;
       align-items: center;
@@ -368,13 +361,13 @@ body {
       padding: 0;
       margin: 0;
     }
-    
+
     .breadcrumb li {
       display: inline-flex;
       align-items: center;
       flex-shrink: 0;
     }
-    
+
     .breadcrumb a {
       display: inline-flex;
       align-items: center;
@@ -384,30 +377,30 @@ body {
       text-decoration: none;
       transition: color 0.3s;
     }
-    
+
     .breadcrumb a:hover {
       color: white;
     }
-    
+
     .breadcrumb svg {
       width: 14px;
       height: 14px;
       margin-right: 8px;
       flex-shrink: 0;
     }
-    
+
     .breadcrumb .separator {
       color: rgba(255, 255, 255, 0.4);
       margin: 0 8px;
       flex-shrink: 0;
     }
-    
+
     .breadcrumb .current {
       color: rgba(255, 255, 255, 0.5);
       font-weight: 500;
       flex-shrink: 0;
     }
-    
+
     /* LATEST RELEASES SECTION - IMPROVED FOR MOBILE */
     .section-title {
       display: flex;
@@ -418,19 +411,19 @@ body {
       background: rgba(30, 30, 30, 0.5);
       border-radius: 8px;
     }
-    
+
     .section-title i {
       color: #f9cb28;
       font-size: 18px;
     }
-    
+
     .section-title h2 {
       font-size: 16px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    
+
     /* MOVIE CARDS */
     .movies-grid {
       display: grid;
@@ -439,7 +432,7 @@ body {
       justify-items: center;
       color: white;
     }
-    
+
     .movie-card {
       position: relative;
       width: 100%;
@@ -453,12 +446,12 @@ body {
       flex-direction: column;
       cursor: pointer;
     }
-    
+
     .movie-card:hover {
       transform: scale(1.05);
       box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
     }
-    
+
     .poster-wrapper {
       position: relative;
       width: 100%;
@@ -466,7 +459,7 @@ body {
       background: #2a2a2a;
       overflow: hidden;
     }
-    
+
     .movie-poster {
       width: 100%;
       height: 100%;
@@ -474,9 +467,9 @@ body {
       transition: opacity 0.5s;
       opacity: 0;
     }
-    
+
     .movie-poster.loaded { opacity: 1; }
-    
+
     .rating-star {
       position: absolute;
       bottom: 8px;
@@ -492,9 +485,9 @@ body {
       color: #fff;
       backdrop-filter: blur(4px);
     }
-    
+
     .rating-star img { width: 14px; height: 14px; }
-    
+
     .movie-info {
       padding: 8px;
       display: flex;
@@ -502,7 +495,7 @@ body {
       gap: 6px;
       min-height: 60px;
     }
-    
+
     .title {
       font-size: 13px;
       font-weight: 700;
@@ -514,7 +507,7 @@ body {
       -webkit-box-orient: vertical;
       text-overflow: ellipsis;
     }
-    
+
     .tags {
       display: flex;
       flex-wrap: wrap;
@@ -522,18 +515,18 @@ body {
       font-size: 11px;
       opacity: 0.9;
     }
-    
+
     .tag {
       padding: 2px 6px;
       border-radius: 5px;
       background: #333;
     }
-    
+
     .tag.hd { background: #4CAF50; }
     .tag.cam { background: #FF5722; }
     .tag.fhd { background: #2196F3; }
     .tag.uhd { background: #9C27B0; }
-    
+
     /* PAGINATION */
     .pagination {
       display: flex;
@@ -542,7 +535,7 @@ body {
       margin: 30px 0;
       padding: 0 20px;
     }
-    
+
     .page-btn {
       width: 36px;
       height: 36px;
@@ -558,22 +551,22 @@ body {
       cursor: pointer;
       transition: all 0.3s;
     }
-    
+
     .page-btn:hover {
       background: rgba(255, 255, 255, 0.1);
       border-color: rgba(255, 255, 255, 0.3);
     }
-    
+
     .page-btn.active {
       background: linear-gradient(90deg, #ff4d4d, #f9cb28);
       border-color: transparent;
     }
-    
+
     .page-btn.disabled {
       opacity: 0.5;
       pointer-events: none;
     }
-    
+
     /* LOADER */
     .loader {
       position: fixed;
@@ -588,18 +581,18 @@ body {
       animation: spin 1s linear infinite;
       z-index: 2000;
     }
-    
+
     @keyframes spin {
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
-    
+
     /* RESPONSIVE */
     @media (max-width: 768px) {
       header {
         padding: 0 15px;
       }
-      
+
       nav {
         position: fixed;
         top: 72px;
@@ -618,64 +611,68 @@ body {
         border-left: 1px solid rgba(255, 255, 255, 0.08);
         z-index: 999;
       }
-      
+
       nav.active {
         transform: translateX(0);
       }
-      
+
       .hamburger {
         display: flex;
       }
-      
+
       .search-box {
-        right: -30px;
-        min-width: 260px;
+        /* Adjusted for mobile view if needed, current style should be okay */
+        /* but you might want to make it full-width or adjust position */
+        right: 15px; /* Align with header padding */
+        left: 15px;
+        min-width: auto; /* Allow it to shrink */
+        width: calc(100% - 30px); /* Take full width minus padding */
       }
-      
+
       .logo-text {
         display: none;
       }
-      
+
       .content-wrapper {
         padding: 15px;
       }
-      
+
       .notice-box {
         padding: 10px 12px;
         margin-bottom: 15px;
       }
-      
+
       .notice-icon {
         font-size: 16px;
       }
-      
+
       .notice-content {
         font-size: 13px;
       }
-      
+
       .breadcrumb {
         padding: 10px 12px;
       }
-      
+
       .section-title {
         padding: 8px 12px;
       }
-      
+
       .section-title i {
         font-size: 16px;
       }
-      
+
       .section-title h2 {
         font-size: 15px;
       }
-      
+
       .movies-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 15px;
       }
-      
+
       .poster-wrapper {
-        height: 240px;
+        height: 240px; /* Example: adjust poster height for 2 columns */
       }
     }
 
@@ -683,62 +680,67 @@ body {
       .breadcrumb a, .breadcrumb .current {
         font-size: 12px;
       }
-      
+
       .breadcrumb svg {
         width: 12px;
         height: 12px;
         margin-right: 6px;
       }
-      
+
       .breadcrumb .separator {
         margin: 0 6px;
       }
-      
+
       .section-title h2 {
         font-size: 14px;
       }
-      
+
       .page-btn {
         width: 32px;
         height: 32px;
         font-size: 13px;
       }
+       .movies-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); /* Adjust for smaller cards */
+        gap: 12px;
+      }
+      .poster-wrapper {
+        height: 200px; /* Example: further adjust poster height */
+      }
+       .movie-card {
+        max-width: none; /* Allow cards to fill column */
+      }
     }
   </style>
 </head>
 <body>
-<!-- Header Start -->
 <header>
   <a href="#" class="logo">
     <img src="Logo.png" alt="Moviesvault Logo" class="logo-img">
-  </a>
-  
+    </a>
+
   <nav id="menu">
     <a href="#" class="active">Home</a>
     <a href="#">Movies</a>
     <a href="#">TV Series</a>
   </nav>
-    <div class="right-section">
-  <i class="fas fa-search search-icon" id="search-icon" aria-label="Search"></i>
-  <a href="https://t.me/movievaultHQ" target="_blank" class="telegram-icon" aria-label="Telegram">
-    <i class="fab fa-telegram"></i>
-  </a>
-    </div>
-    <div class="search-box" id="search-box">
-      <input type="text" placeholder="Search movies, series..." aria-label="Search movies and TV series">
-    </div>
-    <div class="hamburger" id="hamburger" aria-label="Menu">
+
+  <div class="right-section">
+    <i class="fas fa-search search-icon" id="search-icon" aria-label="Search"></i>
+    <a href="https://t.me/movievaultHQ" target="_blank" class="telegram-icon" aria-label="Telegram">
+      <i class="fab fa-telegram"></i>
+    </a>
+     <div class="hamburger" id="hamburger" aria-label="Menu">
       <span></span>
       <span></span>
       <span></span>
     </div>
   </div>
+  <div class="search-box" id="search-box">
+    <input type="text" placeholder="Search movies, series..." aria-label="Search movies and TV series">
+  </div>
 </header>
-<!-- Header End -->
-
-<!-- Content Wrapper -->
 <div class="content-wrapper">
-  <!-- Notice Box -->
   <div class="notice-box">
     <div class="notice-icon">
       <i class="fas fa-bullhorn"></i>
@@ -748,7 +750,6 @@ body {
     </div>
   </div>
 
-  <!-- Breadcrumb -->
   <nav class="breadcrumb" aria-label="Breadcrumb">
     <ol itemscope itemtype="https://schema.org/BreadcrumbList">
       <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="inline-flex items-center">
@@ -785,19 +786,15 @@ body {
     </ol>
   </nav>
 
-  <!-- Latest Releases Section -->
   <div class="section-title">
     <i class="fas fa-bolt"></i>
     <h2>Latest Releases</h2>
   </div>
 
-  <!-- Loader -->
   <div class="loader" id="loader"></div>
 
-  <!-- Movie Cards Grid -->
   <div class="movies-grid" id="movies-container" role="list"></div>
 
-  <!-- Pagination -->
   <div class="pagination" id="pagination">
     <button class="page-btn prev-btn disabled" aria-label="Previous page">
       <i class="fas fa-chevron-left"></i>
@@ -815,250 +812,298 @@ body {
   </p>
   <p style="margin-top:10px;">© 2025 MoviesVault. All rights reserved.</p>
   <p style="margin-top:7px;">NOTE: This site does not store any files on its server. All contents are provided by non-affiliated third parties.</p>
-  
+
 </footer>
-  
+
 <script>
-  // Header functionality (unchanged)
+  // Header functionality
   const hamburger = document.getElementById('hamburger');
   const menu = document.getElementById('menu');
   const searchIcon = document.getElementById('search-icon');
   const searchBox = document.getElementById('search-box');
   const searchInput = searchBox.querySelector('input');
-  const navLinks = document.querySelectorAll('nav a');
-  
+  const navLinks = document.querySelectorAll('nav a'); // Selects links within the main nav
+
   hamburger.addEventListener('click', () => {
     hamburger.classList.toggle('active');
     menu.classList.toggle('active');
   });
-  
+
   searchIcon.addEventListener('click', (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Prevent click from immediately closing due to document listener
     searchBox.classList.toggle('active');
     if (searchBox.classList.contains('active')) {
       searchInput.focus();
     }
   });
-  
+
+  // Close search box if clicked outside
   document.addEventListener('click', (e) => {
     if (!searchBox.contains(e.target) && !searchIcon.contains(e.target)) {
       searchBox.classList.remove('active');
     }
+    // Close mobile menu if clicked outside
+    if (menu.classList.contains('active') && !menu.contains(e.target) && !hamburger.contains(e.target)) {
+        menu.classList.remove('active');
+        hamburger.classList.remove('active');
+    }
   });
-  
-  navLinks.forEach(link => {
+
+  // Handle nav link clicks for active state and closing mobile menu
+  // Selects links within the main nav (id="menu")
+  const mainNavLinks = document.querySelectorAll('#menu a');
+  mainNavLinks.forEach(link => {
     link.addEventListener('click', () => {
-      navLinks.forEach(l => l.classList.remove('active'));
+      mainNavLinks.forEach(l => l.classList.remove('active'));
       link.classList.add('active');
-      if (menu.classList.contains('active')) {
+      if (menu.classList.contains('active')) { // If mobile menu is open
         menu.classList.remove('active');
         hamburger.classList.remove('active');
       }
     });
   });
-  
-  // Breadcrumb functionality (unchanged)
+
+  // Breadcrumb functionality
   const breadcrumbHome = document.querySelector('.breadcrumb-home');
   const breadcrumbMovies = document.querySelector('.breadcrumb-movies');
-  const breadcrumbLatest = document.querySelector('.breadcrumb-latest');
-  
-  breadcrumbHome.addEventListener('click', (e) => {
-    e.preventDefault();
-    navLinks.forEach(l => l.classList.remove('active'));
-    document.querySelector('nav a[href="#"]').classList.add('active');
-  });
-  
-  breadcrumbMovies.addEventListener('click', (e) => {
-    e.preventDefault();
-    navLinks.forEach(l => l.classList.remove('active'));
-    document.querySelector('nav a:nth-child(2)').classList.add('active');
-  });
-  
-  breadcrumbLatest.addEventListener('click', (e) => {
-    e.preventDefault();
-    navLinks.forEach(l => l.classList.remove('active'));
-    document.querySelector('nav a:nth-child(2)').classList.add('active');
-  });
-  
+  // const breadcrumbLatest = document.querySelector('.breadcrumb-latest'); // Not interactive
+
+  if (breadcrumbHome) {
+    breadcrumbHome.addEventListener('click', (e) => {
+      e.preventDefault();
+      mainNavLinks.forEach(l => l.classList.remove('active'));
+      const homeLink = document.querySelector('#menu a[href="#"]'); // Assuming home is '#'
+      if (homeLink) homeLink.classList.add('active');
+      // Add navigation logic if needed, e.g., fetchMediaForCategory('home');
+    });
+  }
+
+  if (breadcrumbMovies) {
+    breadcrumbMovies.addEventListener('click', (e) => {
+      e.preventDefault();
+      mainNavLinks.forEach(l => l.classList.remove('active'));
+      // Assuming "Movies" is the second link in your nav
+      const moviesLink = document.querySelector('#menu a:nth-child(2)');
+      if (moviesLink) moviesLink.classList.add('active');
+      // Add navigation logic, e.g., fetchMediaForCategory('movies');
+    });
+  }
+
+
   // Updated movie/TV series fetching
   const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
   const moviesContainer = document.getElementById('movies-container');
   const loader = document.getElementById('loader');
-  const pagination = document.getElementById('pagination');
+  const paginationContainer = document.getElementById('pagination'); // Renamed for clarity
   const pageNumbers = document.getElementById('page-numbers');
   const prevBtn = document.querySelector('.prev-btn');
   const nextBtn = document.querySelector('.next-btn');
-  
-  const starImageUrl = 'star.png';
+
+  const starImageUrl = 'star.png'; // Make sure this path is correct
   let allMedia = [];
   let currentPage = 1;
-  const moviesPerPage = 20;
+  const moviesPerPage = 20; // Or your desired number
   let totalPages = 1;
+  let currentFilteredMedia = []; // To store currently filtered/searched media
 
   async function fetchMedia() {
     try {
       loader.style.display = 'block';
-      
+      moviesContainer.innerHTML = ''; // Clear previous items
+      paginationContainer.style.display = 'none'; // Hide pagination initially
+
       // Load both movies and series JSON files
       const [moviesResponse, seriesResponse] = await Promise.all([
-        fetch('movies.json'),
+        fetch('movies.json'), // Ensure these files exist in the correct path
         fetch('series.json')
       ]);
-      
+
+      if (!moviesResponse.ok || !seriesResponse.ok) {
+        throw new Error('Failed to load local content files.');
+      }
+
       const [moviesData, seriesData] = await Promise.all([
         moviesResponse.json(),
         seriesResponse.json()
       ]);
-      
+
       // Combine both datasets and ensure each item has a type
       const combinedItems = [
         ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
         ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
       ];
-      
-      // Generate structured data for all media items
-      generateStructuredData(combinedItems);
-      
+
+      if (combinedItems.length === 0) {
+          moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No content found in local files.</p>';
+          loader.style.display = 'none';
+          return;
+      }
+
       // Fetch details for each item from TMDb
-      allMedia = await Promise.all(
-        combinedItems.map(async item => {
-          try {
-            const endpoint = item.type === 'tv' 
-              ? `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}`
-              : `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}`;
-            
-            const tmdbResponse = await fetch(endpoint);
-            const tmdbData = await tmdbResponse.json();
-            
-            return {
-              ...tmdbData,
-              media_type: item.type,
-              stream_link: item.stream_link,
-              download_links: item.download_links || {}
-            };
-          } catch (error) {
-            console.error(`Error fetching ${item.type} ${item.id}:`, error);
-            return null;
+      const mediaDetailsPromises = combinedItems.map(async item => {
+        try {
+          const endpoint = item.type === 'tv'
+            ? `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}&language=en-US`
+            : `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}&language=en-US`;
+
+          const tmdbResponse = await fetch(endpoint);
+          if (!tmdbResponse.ok) {
+            console.warn(`Failed to fetch TMDB data for ${item.type} ID ${item.id}: ${tmdbResponse.status}`);
+            return null; // Skip this item if TMDB fetch fails
           }
-        })
-      );
-      
-      // Filter out failed fetches
-      allMedia = allMedia.filter(item => item !== null);
-      
-      totalPages = Math.ceil(allMedia.length / moviesPerPage);
-      displayMedia();
-      setupPagination();
+          const tmdbData = await tmdbResponse.json();
+
+          return {
+            ...tmdbData, // TMDB data (includes poster_path, title, name, vote_average etc.)
+            id: item.id, // Ensure local ID is used
+            media_type: item.type, // Original type from local JSON
+            stream_link: item.stream_link, // From local JSON
+            download_links: item.download_links || {} // From local JSON
+          };
+        } catch (error) {
+          console.error(`Error processing ${item.type} ${item.id}:`, error);
+          return null;
+        }
+      });
+
+      allMedia = (await Promise.all(mediaDetailsPromises)).filter(item => item !== null);
+      currentFilteredMedia = [...allMedia]; // Initialize with all media
+
+      if (allMedia.length === 0) {
+          moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No content available after fetching details.</p>';
+      } else {
+        generateStructuredData(allMedia); // Generate structured data for all initial items
+        totalPages = Math.ceil(currentFilteredMedia.length / moviesPerPage);
+        displayMedia();
+        setupPagination();
+        if (totalPages > 1) paginationContainer.style.display = 'flex';
+      }
+
     } catch (error) {
       console.error('Error loading content:', error);
-      moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">Failed to load content. Please try again later.</p>';
+      moviesContainer.innerHTML = `<p style="color: white; grid-column: 1/-1; text-align: center;">Failed to load content. ${error.message}</p>`;
     } finally {
       loader.style.display = 'none';
     }
   }
 
-function generateStructuredData(mediaItems) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": mediaItems.map((item, index) => {
-      const schema = {
-        "@type": "ListItem",
-        "position": index + 1,
-        "item": {
-          "@type": item.type === 'tv' ? 'TVSeries' : 'Movie',
-          "name": item.title || item.name,
-          "url": `https://moviesvault.fun/[].html?id=${item.id}&type=${item.type}`,
-          "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
-          "description": item.overview || 'No description available',
-          "datePublished": item.release_date || item.first_air_date,
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": item.vote_average?.toFixed(1) || "N/A",
-            "bestRating": "10",
-            "ratingCount": item.vote_count || 0
-          },
-          "genre": item.genres?.map(g => g.name) || []
+  function generateStructuredData(mediaItems) {
+    const existingSchema = document.querySelector('script[type="application/ld+json"].item-list-schema');
+    if (existingSchema) {
+        existingSchema.remove(); // Remove old schema if it exists
+    }
+
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": mediaItems.map((item, index) => {
+        const schema = {
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": item.media_type === 'tv' ? 'TVSeries' : 'Movie',
+            "name": item.title || item.name || "Untitled",
+            "url": `[].html?id=${item.id}&type=${item.media_type}`, // Make sure [] is replaced by actual page name e.g. details.html
+            "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : (item.backdrop_path ? `https://image.tmdb.org/t/p/w500${item.backdrop_path}` : ''),
+            "description": item.overview || 'No description available.',
+            "datePublished": item.release_date || item.first_air_date,
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": item.vote_average ? item.vote_average.toFixed(1) : "N/A",
+              "bestRating": "10",
+              "ratingCount": item.vote_count || 0
+            },
+            "genre": item.genres ? item.genres.map(g => g.name) : []
+          }
+        };
+        if (item.stream_link) {
+          schema.item.potentialAction = {
+            "@type": "WatchAction",
+            "target": item.stream_link
+          };
         }
-      };
+        return schema;
+      })
+    };
 
-      // Add VideoObject schema if streaming link exists
-      if (item.stream_link) {
-        schema.item.contentUrl = item.stream_link;
-        schema.item.embedUrl = item.stream_link;
-      }
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.className = 'item-list-schema'; // Add a class for easy selection later
+    script.text = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+  }
 
-      return schema;
-    })
-  };
 
-  const script = document.createElement('script');
-  script.type = 'application/ld+json';
-  script.text = JSON.stringify(structuredData);
-  document.head.appendChild(script);
-}
+  function displayMedia() {
+    moviesContainer.innerHTML = ''; // Clear previous items
 
-  function displayMedia(filteredMedia = allMedia) {
-    moviesContainer.innerHTML = '';
-    
     const startIndex = (currentPage - 1) * moviesPerPage;
     const endIndex = startIndex + moviesPerPage;
-    const mediaToDisplay = filteredMedia.slice(startIndex, endIndex);
-    
-    if (mediaToDisplay.length === 0) {
-      moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No content available. Check back later.</p>';
-      return;
+    const mediaToDisplay = currentFilteredMedia.slice(startIndex, endIndex);
+
+    if (mediaToDisplay.length === 0 && currentFilteredMedia.length > 0) {
+         moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No more content on this page.</p>';
+         return;
+    } else if (mediaToDisplay.length === 0) {
+        moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No content matches your criteria.</p>';
+        paginationContainer.style.display = 'none';
+        return;
     }
-    
-    mediaToDisplay.forEach((media, index) => {
-      const posterPath = media.poster_path || media.backdrop_path
-        ? `https://image.tmdb.org/t/p/w500${media.poster_path || media.backdrop_path}` 
-        : 'https://via.placeholder.com/180x270?text=No+Image';
-      
-      const title = media.title || media.name || 'No Title';
+    if (totalPages > 1) paginationContainer.style.display = 'flex'; else paginationContainer.style.display = 'none';
+
+
+    mediaToDisplay.forEach((media) => {
+      const posterPath = media.poster_path
+        ? `https://image.tmdb.org/t/p/w500${media.poster_path}`
+        : (media.backdrop_path ? `https://image.tmdb.org/t/p/w500${media.backdrop_path}` : 'https://via.placeholder.com/180x270?text=No+Image');
+
+      const title = media.title || media.name || 'No Title Available';
       const releaseDate = media.release_date || media.first_air_date || '';
       const formattedDate = formatDate(releaseDate);
       const type = media.media_type === 'movie' ? 'Movie' : 'Series';
       const rating = media.vote_average ? media.vote_average.toFixed(1) : 'N/A';
-      
+
       const card = document.createElement('div');
       card.className = 'movie-card';
       card.setAttribute('role', 'listitem');
+      // Add itemscope and itemtype for Schema.org if not handled by JSON-LD fully
       card.setAttribute('itemscope', '');
       card.setAttribute('itemtype', media.media_type === 'movie' ? 'https://schema.org/Movie' : 'https://schema.org/TVSeries');
+
+      let qualityTags = '';
+      if (media.download_links && Object.keys(media.download_links).length > 0) {
+        qualityTags = Object.keys(media.download_links)
+          .map(quality => `<div class="tag ${quality.toLowerCase().replace(' ', '')}">${quality.toUpperCase()}</div>`) // Sanitize class names
+          .join('');
+      }
+
+
       card.innerHTML = `
         <div class="poster-wrapper">
           <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')" itemprop="image">
-          <div class="rating-star">
+          ${rating !== 'N/A' ? `<div class="rating-star">
             <img src="${starImageUrl}" alt="star">
             ${rating}
-          </div>
+          </div>` : ''}
         </div>
         <div class="movie-info">
           <div class="title" itemprop="name">${title}</div>
           <div class="tags">
-            <div class="tag" itemprop="dateCreated">${formattedDate}</div>
-            ${media.download_links ? Object.keys(media.download_links)
-              .map(quality => `<div class="tag ${quality.toLowerCase()}">${quality}</div>`)
-              .join('') : ''}
+            <div class="tag" itemprop="datePublished">${formattedDate}</div>
+            ${qualityTags}
             <div class="tag">${type}</div>
           </div>
-          <meta itemprop="description" content="${media.overview || 'No description available'}">
+          <meta itemprop="description" content="${media.overview ? media.overview.substring(0,150)+'...' : 'No description available.'}">
+          <meta itemprop="url" content="[].html?id=${media.id}&type=${media.media_type}">
         </div>
       `;
-      
+
       card.addEventListener('click', () => {
-        sessionStorage.setItem('currentMedia', JSON.stringify({
-          id: media.id,
-          type: media.media_type,
-          title: title,
-          poster: posterPath,
-          stream_link: media.stream_link,
-          download_links: media.download_links
-        }));
-        window.location.href = `[].html?id=${media.id}&type=${media.media_type}`;
+        // Storing in sessionStorage is optional if you directly use URL params on the details page
+        sessionStorage.setItem('currentMediaDetails', JSON.stringify(media)); // Store full TMDB data
+        window.location.href = `[].html?id=${media.id}&type=${media.media_type}`; // Make sure [] is replaced by actual page name
       });
-      
+
       moviesContainer.appendChild(card);
     });
   }
@@ -1066,40 +1111,79 @@ function generateStructuredData(mediaItems) {
   function formatDate(dateString) {
     if (!dateString) return 'Unknown';
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    if (isNaN(date)) return 'Unknown'; // Invalid date string
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      // month: 'short', // Uncomment if you want short month name
+      // day: 'numeric' // Uncomment if you want day
     });
   }
 
   function setupPagination() {
-    pageNumbers.innerHTML = '';
+    pageNumbers.innerHTML = ''; // Clear old page numbers
+    if (totalPages <= 1) {
+      paginationContainer.style.display = 'none';
+      return;
+    }
+    paginationContainer.style.display = 'flex';
+
     let startPage = Math.max(1, currentPage - 2);
     let endPage = Math.min(totalPages, currentPage + 2);
-    
-    if (currentPage <= 3) endPage = Math.min(5, totalPages);
-    if (currentPage >= totalPages - 2) startPage = Math.max(totalPages - 4, 1);
-    
-    prevBtn.classList.toggle('disabled', currentPage === 1);
-    
-    for (let i = startPage; i <= endPage; i++) {
-      const pageBtn = document.createElement('button');
-      pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-      pageBtn.textContent = i;
-      pageBtn.setAttribute('aria-label', `Page ${i}`);
-      pageBtn.addEventListener('click', () => {
-        currentPage = i;
-        displayMedia();
-        setupPagination();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-      pageNumbers.appendChild(pageBtn);
+
+    if (currentPage <= 3) { // if at the beginning
+        endPage = Math.min(5, totalPages);
     }
-    
+    if (currentPage >= totalPages - 2) { // if at the end
+        startPage = Math.max(totalPages - 4, 1);
+    }
+
+
+    prevBtn.classList.toggle('disabled', currentPage === 1);
     nextBtn.classList.toggle('disabled', currentPage === totalPages);
+
+    // Always show first page if not in current range
+    if (startPage > 1) {
+        addPageButton(1);
+        if (startPage > 2) {
+            const dots = document.createElement('span');
+            dots.textContent = '...';
+            dots.className = 'page-dots'; // Add class for styling if needed
+            pageNumbers.appendChild(dots);
+        }
+    }
+
+
+    for (let i = startPage; i <= endPage; i++) {
+      addPageButton(i);
+    }
+
+    // Always show last page if not in current range
+     if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+             const dots = document.createElement('span');
+            dots.textContent = '...';
+            dots.className = 'page-dots';
+            pageNumbers.appendChild(dots);
+        }
+        addPageButton(totalPages);
+    }
   }
-  
+
+  function addPageButton(pageNumber) {
+    const pageBtn = document.createElement('button');
+    pageBtn.className = `page-btn ${pageNumber === currentPage ? 'active' : ''}`;
+    pageBtn.textContent = pageNumber;
+    pageBtn.setAttribute('aria-label', `Go to page ${pageNumber}`);
+    pageBtn.addEventListener('click', () => {
+      currentPage = pageNumber;
+      displayMedia();
+      setupPagination();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+    pageNumbers.appendChild(pageBtn);
+  }
+
+
   prevBtn.addEventListener('click', () => {
     if (currentPage > 1) {
       currentPage--;
@@ -1108,7 +1192,7 @@ function generateStructuredData(mediaItems) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   });
-  
+
   nextBtn.addEventListener('click', () => {
     if (currentPage < totalPages) {
       currentPage++;
@@ -1119,50 +1203,54 @@ function generateStructuredData(mediaItems) {
   });
 
   searchInput.addEventListener('input', () => {
-    const query = searchInput.value.toLowerCase();
-    const filteredMedia = allMedia.filter(media => {
-      const title = (media.title || media.name || '').toLowerCase();
-      return title.includes(query);
-    });
-    
-    totalPages = Math.ceil(filteredMedia.length / moviesPerPage);
-    currentPage = 1;
-    displayMedia(filteredMedia);
+    const query = searchInput.value.toLowerCase().trim();
+    if (query === "") {
+        currentFilteredMedia = [...allMedia]; // Reset to all media if search is cleared
+    } else {
+        currentFilteredMedia = allMedia.filter(media => {
+            const title = (media.title || media.name || '').toLowerCase();
+            return title.includes(query);
+        });
+    }
+
+    totalPages = Math.ceil(currentFilteredMedia.length / moviesPerPage);
+    currentPage = 1; // Reset to first page for new search results
+    displayMedia();
     setupPagination();
   });
 
   // Initialize
   document.addEventListener('DOMContentLoaded', () => {
-    fetchMedia();
-    
-    // Track search queries for analytics
+    fetchMedia(); // Initial fetch
+
+    // Handle search query from URL (e.g., from an external search box)
     const urlParams = new URLSearchParams(window.location.search);
-    const searchQuery = urlParams.get('q');
-    if (searchQuery) {
-      searchInput.value = searchQuery.toLowerCase();
-      const filteredMedia = allMedia.filter(media => {
-        const title = (media.title || media.name || '').toLowerCase();
-        return title.includes(searchQuery.toLowerCase());
-      });
-      totalPages = Math.ceil(filteredMedia.length / moviesPerPage);
-      currentPage = 1;
-      displayMedia(filteredMedia);
-      setupPagination();
+    const searchQueryFromURL = urlParams.get('q');
+    if (searchQueryFromURL) {
+      searchInput.value = searchQueryFromURL;
+      // Trigger the input event to filter
+      searchInput.dispatchEvent(new Event('input'));
+      // Show and focus search box if there's a query
+      searchBox.classList.add('active');
+      searchInput.focus();
     }
   });
 
-  // Disable right-click
-  document.addEventListener('contextmenu', e => e.preventDefault());
+  // Disable right-click (consider accessibility implications)
+  // document.addEventListener('contextmenu', e => e.preventDefault());
 
-  // Block F12, Ctrl+Shift+I/J/C
+  // Block F12, Ctrl+Shift+I/J/C (consider user freedom)
+  /*
   document.onkeydown = function(e) {
-    if (e.key === "F12" || 
-       (e.ctrlKey && e.shiftKey && 
-        (e.key === "I" || e.key === "J" || e.key === "C"))) {
+    if (e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey &&
+         (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        (e.ctrlKey && e.key === "U")) { // Block Ctrl+U for view source
       e.preventDefault();
       return false;
     }
   };
+  */
 </script>
 </body>
 </html>
