@@ -1,651 +1,647 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Movie Details</title>
-  
-  <!-- SEO Meta Tags -->
-  <meta name="description" content="Watch and download the latest movies and TV shows in high quality. Enjoy unlimited entertainment with our vast collection.">
-  <meta name="keywords" content="movies, TV shows, streaming, download, entertainment, watch online">
-  <meta name="robots" content="index, follow">
-  <meta name="author" content="MovieHub">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://example.com/movie-details">
-  <meta property="og:title" content="Movie Details | MovieHub">
-  <meta property="og:description" content="Watch and download the latest movies and TV shows in high quality.">
-  <meta property="og:image" content="https://example.com/images/logo.png">
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://example.com/movie-details">
-  <meta property="twitter:title" content="Movie Details | MovieHub">
-  <meta property="twitter:description" content="Watch and download the latest movies and TV shows in high quality.">
-  <meta property="twitter:image" content="https://example.com/images/moviehub-social.jpg">
-  <link rel="canonical" href="https://example.com/movie-details">
-  
-  <!-- Favicon -->
-  <link rel="icon" href="assets/icons/favicon.ico">
-  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="manifest" href="assets/manifest/site.webmanifest">
-  
-  <!-- Fonts and Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "MovieHub",
-    "url": "https://example.com",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://example.com/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
-  
-  <style>
-    :root {
-      --desktop-poster-width: 220px;
-      --desktop-poster-height: 330px;
-      --mobile-poster-width: 150px;
-      --mobile-poster-height: 225px;
-      --banner-height-desktop: 50vh;
-      --banner-height-mobile: 30vh;
-      --color-primary: linear-gradient(90deg, #ff4d4d, #f9cb28);
-      --color-secondary: linear-gradient(90deg, #2196F3, #00BCD4);
-      --bg-dark: #0d0d0d;
-      --bg-card: #1a1a1a;
-      --text-primary: #fff;
-    }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Movie Details</title>
+  
+    <meta name="description" content="Watch and download the latest movies and TV shows in high quality. Enjoy unlimited entertainment with our vast collection.">
+  <meta name="keywords" content="movies, TV shows, streaming, download, entertainment, watch online">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="MovieHub">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://example.com/movie-details">
+  <meta property="og:title" content="Movie Details | MovieHub">
+  <meta property="og:description" content="Watch and download the latest movies and TV shows in high quality.">
+  <meta property="og:image" content="https://example.com/images/logo.png">
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://example.com/movie-details">
+  <meta property="twitter:title" content="Movie Details | MovieHub">
+  <meta property="twitter:description" content="Watch and download the latest movies and TV shows in high quality.">
+  <meta property="twitter:image" content="https://example.com/images/moviehub-social.jpg">
+  <link rel="canonical" href="https://example.com/movie-details">
+  
+    <link rel="icon" href="assets/icons/favicon.ico">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="manifest" href="assets/manifest/site.webmanifest">
+  
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "MovieHub",
+    "url": "https://example.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://example.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  
+  <style>
+    :root {
+      --desktop-poster-width: 220px;
+      --desktop-poster-height: 330px;
+      --mobile-poster-width: 150px;
+      --mobile-poster-height: 225px;
+      --banner-height-desktop: 50vh;
+      --banner-height-mobile: 30vh;
+      --color-primary: linear-gradient(90deg, #ff4d4d, #f9cb28);
+      --color-secondary: linear-gradient(90deg, #2196F3, #00BCD4);
+      --bg-dark: #0d0d0d;
+      --bg-card: #1a1a1a;
+      --text-primary: #fff;
+    }
 
-    * {
-      box-sizing: border-box;
-    }
+    * {
+      box-sizing: border-box;
+    }
 
-    body {
-      margin: 0;
-      background: var(--bg-dark);
-      color: var(--text-primary);
-      font-family: 'Poppins', sans-serif;
-      padding: 0;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      user-select: none;
-    }
+    body {
+      margin: 0;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: 'Poppins', sans-serif;
+      padding: 0;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
 
-    img, video {
-      pointer-events: none;
-      user-drag: none;
-      -webkit-user-drag: none;
-    }
+    img, video {
+      pointer-events: none;
+      user-drag: none;
+      -webkit-user-drag: none;
+    }
 
-    /* Back button */
-    .back-btn {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      z-index: 10;
-      background: rgba(30, 30, 30, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-    }
+    /* Back button */
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
 
-    /* Home button */
-    .home-btn {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
-      background: rgba(30, 30, 30, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-    }
+    /* Home button */
+    .home-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
 
-    .back-btn:hover, .home-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
-    }
+    .back-btn:hover, .home-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
 
-    .banner {
-      position: relative;
-      width: 100%;
-      height: var(--banner-height-desktop);
-      max-height: 400px;
-      min-height: 300px;
-      background: #1a1a1a;
-      background-size: cover;
-      background-position: center;
-    }
+    .banner {
+      position: relative;
+      width: 100%;
+      height: var(--banner-height-desktop);
+      max-height: 400px;
+      min-height: 300px;
+      background: #1a1a1a;
+      background-size: cover;
+      background-position: center;
+    }
 
-    .banner::after {
-      content: "";
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8));
-    }
+    .banner::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8));
+    }
 
-    .movie-container {
-      max-width: 1100px;
-      margin: -100px auto 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      z-index: 2;
-    }
+    .movie-container {
+      max-width: 1100px;
+      margin: -100px auto 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
 
-    .poster {
-  width: 250px; /* Increased from 220px */
-  height: 375px; /* Increased from 330px (maintaining 2:3 aspect ratio) */
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.7);
-  margin-bottom: 20px;
-  position: relative;
+    .poster {
+  width: 250px; /* Increased from 220px */
+  height: 375px; /* Increased from 330px (maintaining 2:3 aspect ratio) */
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+  margin-bottom: 20px;
+  position: relative;
 }
 
-    .poster img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: opacity 0.5s;
-      opacity: 0;
-    }
-    .poster img.loaded { opacity: 1; }
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s;
+      opacity: 0;
+    }
+    .poster img.loaded { opacity: 1; }
 
-    .movie-details {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: flex-start;
-      margin-top: 10px;
-    }
+    .movie-details {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+      margin-top: 10px;
+    }
 
-    .movie-title {
-      font-size: 24px;
-      font-weight: 700;
-      margin: 0;
-      line-height: 1.2;
-    }
+    .movie-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.2;
+    }
 
-    .info-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-      align-items: center;
-    }
+    .info-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      align-items: center;
+    }
 
-    .tag {
-      background: #1f1f1f;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      white-space: nowrap;
-    }
+    .tag {
+      background: #1f1f1f;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
 
-    .tag.movie-type {
-      background: var(--color-primary);
-      color: #000;
-      font-weight: 700;
-    }
+    .tag.movie-type {
+      background: var(--color-primary);
+      color: #000;
+      font-weight: 700;
+    }
 
-    .rating-tag {
-      background: #1f1f1f;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+    .rating-tag {
+      background: #1f1f1f;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
 
-    .rating-tag i {
-      color: #FFD700;
-    }
+    .rating-tag i {
+      color: #FFD700;
+    }
 
-    .btn {
-      background: var(--color-primary);
-      border: none;
-      color: black;
-      font-weight: 700;
-      padding: 12px 25px;
-      font-size: 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.3s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      min-width: 150px;
-    }
+    .btn {
+      background: var(--color-primary);
+      border: none;
+      color: black;
+      font-weight: 700;
+      padding: 12px 25px;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 150px;
+    }
 
-    .btn.download-btn {
-      background: var(--color-secondary);
-    }
+    .btn.watch-btn {
+      background: var(--color-primary);
+    }
+    
+    /* Style for the new download quality buttons */
+    .btn.quality-btn {
+      background: var(--bg-card); /* Dark background from card */
+      color: var(--text-primary); /* White text */
+      border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+      padding: 10px 20px;
+      font-weight: 500; /* Slightly lighter font weight */
+      font-size: 14px;
+      min-width: unset; /* Remove min-width constraint */
+      width: auto; /* Allow button width to adjust to content */
+    }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
-    }
+    .btn.quality-btn:hover {
+      background: rgba(255, 255, 255, 0.1); /* Lighter background on hover */
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+    }
 
-    .button-container {
-      display: flex;
-      gap: 15px;
-      margin-top: 15px;
-      width: 100%;
-      flex-wrap: wrap;
-    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
 
-    .synopsis {
-      margin-top: 30px;
-      width: 100%;
-    }
+    .button-container {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+      width: 100%;
+      flex-wrap: wrap;
+      align-items: center; /* Align items vertically in the center */
+    }
+    
+    .download-buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px; /* Smaller gap between quality buttons */
+      margin-top: 10px; /* Space above download buttons */
+    }
 
-    .synopsis-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
+    .synopsis {
+      margin-top: 30px;
+      width: 100%;
+    }
 
-    .synopsis-text {
-      font-size: 14px;
-      line-height: 1.6;
-      opacity: 0.85;
-    }
+    .synopsis-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
 
-    /* Similar movies grid - optimized layout */
-    .similar-section {
-      margin-top: 50px;
-      padding: 0 20px 30px;
-      max-width: 1100px;
-      margin-left: auto;
-      margin-right: auto;
-      width: 100%;
-    }
+    .synopsis-text {
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0.85;
+    }
 
-    .similar-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      padding-left: 10px;
-    }
+    /* Similar movies grid - optimized layout */
+    .similar-section {
+      margin-top: 50px;
+      padding: 0 20px 30px;
+      max-width: 1100px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 100%;
+    }
 
-    .similar-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 20px;
-      justify-items: center;
-      padding: 0 10px;
-    }
+    .similar-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      padding-left: 10px;
+    }
 
-    .movie-card {
-      position: relative;
-      width: 100%;
-      max-width: 200px;
-      background: var(--bg-card);
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
-      transition: transform 0.4s, box-shadow 0.4s;
-      cursor: pointer;
-    }
+    .similar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      justify-items: center;
+      padding: 0 10px;
+    }
 
-    .movie-card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
-    }
+    .movie-card {
+      position: relative;
+      width: 100%;
+      max-width: 200px;
+      background: var(--bg-card);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+      transition: transform 0.4s, box-shadow 0.4s;
+      cursor: pointer;
+    }
 
-    .poster-wrapper {
-      position: relative;
-      width: 100%;
-      height: 270px;
-      background: #2a2a2a;
-      overflow: hidden;
-    }
+    .movie-card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+    }
 
-    .movie-poster {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: opacity 0.5s;
-      opacity: 0;
-    }
+    .poster-wrapper {
+      position: relative;
+      width: 100%;
+      height: 270px;
+      background: #2a2a2a;
+      overflow: hidden;
+    }
 
-    .movie-poster.loaded { opacity: 1; }
+    .movie-poster {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.5s;
+      opacity: 0;
+    }
 
-    .rating-star {
-      position: absolute;
-      bottom: 8px;
-      left: 8px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 2px 6px;
-      border-radius: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
-      backdrop-filter: blur(4px);
-    }
+    .movie-poster.loaded { opacity: 1; }
 
-    .rating-star img { width: 14px; height: 14px; }
+    .rating-star {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      font-size: 11px;
+      font-weight: 600;
+      color: #fff;
+      backdrop-filter: blur(4px);
+    }
 
-    .movie-info {
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .rating-star img { width: 14px; height: 14px; }
 
-    .title {
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.3em;
-      max-height: 2.6em;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      text-overflow: ellipsis;
-    }
+    .movie-info {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
 
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      font-size: 11px;
-      opacity: 0.9;
-    }
+    .title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.3em;
+      max-height: 2.6em;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+    }
 
-    .tag {
-      padding: 2px 6px;
-      border-radius: 5px;
-      background: #333;
-    }
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      font-size: 11px;
+      opacity: 0.9;
+    }
 
-    .tag.hd { background: #4CAF50; }
-    .tag.cam { background: #FF5722; }
-    .tag.fhd { background: #2196F3; }
-    .tag._4k { background: #9C27B0; }
+    .tag {
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: #333;
+    }
 
-    /* Download options dropdown */
-    .download-dropdown {
-      position: absolute;
-      background: var(--bg-card);
-      border-radius: 8px;
-      padding: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-      z-index: 1000;
-      margin-top: 5px;
-      width: 100%;
-      max-width: 300px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
+    .tag.hd { background: #4CAF50; }
+    .tag.cam { background: #FF5722; }
+    .tag.fhd { background: #2196F3; }
+    .tag._4k { background: #9C27B0; }
 
-    .download-option {
-      display: block;
-      padding: 8px 15px;
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      margin-bottom: 5px;
-      background: #2a2a2a;
-      transition: background-color 0.2s;
-      font-size: 14px;
-    }
+    /* Mobile Responsive Styles */
+    @media (max-width: 767px) {
+      body {
+        font-size: 14px;
+      }
 
-    .download-option:hover {
-      background: #3a3a3a;
-    }
+      .banner {
+        height: var(--banner-height-mobile);
+        min-height: 200px;
+        max-height: 250px;
+      }
 
-    .download-option i {
-      margin-right: 8px;
-    }
+      .movie-container {
+        margin-top: -80px;
+        padding: 12px;
+      }
 
-    /* Mobile Responsive Styles */
-    @media (max-width: 767px) {
-      body {
-        font-size: 14px;
-      }
+      .poster {
+    width: 170px; /* Increased from 150px */
+    height: 255px; /* Increased from 225px */
+  }
 
-      .banner {
-        height: var(--banner-height-mobile);
-        min-height: 200px;
-        max-height: 250px;
-      }
+      .movie-title {
+        font-size: 1.5rem;
+        text-align: center;
+        margin-bottom: 8px;
+      }
 
-      .movie-container {
-        margin-top: -80px;
-        padding: 12px;
-      }
+      .info-tags {
+        justify-content: center;
+        gap: 5px;
+        margin-bottom: 8px;
+      }
 
-      .poster {
-    width: 170px; /* Increased from 150px */
-    height: 255px; /* Increased from 225px */
-  }
-}
+      .tag, .rating-tag {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+      }
 
-      .movie-title {
-        font-size: 1.5rem;
-        text-align: center;
-        margin-bottom: 8px;
-      }
+      .button-container {
+        flex-direction: column;
+        gap: 8px;
+        margin: 12px 0;
+      }
+      
+      .download-buttons-container {
+        flex-direction: column;
+        gap: 8px;
+        width: 100%;
+      }
 
-      .info-tags {
-        justify-content: center;
-        gap: 5px;
-        margin-bottom: 8px;
-      }
+      .btn {
+        width: 100%;
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+      
+      .btn.quality-btn {
+        width: 100%;
+      }
 
-      .tag, .rating-tag {
-        font-size: 0.75rem;
-        padding: 3px 8px;
-      }
+      .synopsis {
+        margin-top: 15px;
+      }
 
-      .button-container {
-        flex-direction: column;
-        gap: 8px;
-        margin: 12px 0;
-      }
+      .synopsis-title {
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+      }
 
-      .btn {
-        width: 100%;
-        padding: 10px;
-        font-size: 0.9rem;
-      }
+      .synopsis-text {
+        font-size: 0.85rem;
+        line-height: 1.5;
+      }
 
-      .synopsis {
-        margin-top: 15px;
-      }
+      .similar-section {
+        margin-top: 30px;
+        padding: 0 12px 20px;
+      }
 
-      .synopsis-title {
-        font-size: 1.2rem;
-        margin-bottom: 8px;
-      }
+      .similar-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+      }
 
-      .synopsis-text {
-        font-size: 0.85rem;
-        line-height: 1.5;
-      }
+      .similar-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+      }
+      
+      .poster-wrapper {
+        height: 200px;
+      }
 
-      .similar-section {
-        margin-top: 30px;
-        padding: 0 12px 20px;
-      }
+      .movie-info {
+        padding: 8px;
+      }
 
-      .similar-title {
-        font-size: 1.2rem;
-        margin-bottom: 15px;
-      }
+      .title {
+        font-size: 0.8rem;
+      }
 
-      .similar-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 15px;
-      }
-      
-      .poster-wrapper {
-        height: 200px;
-      }
+      .tags {
+        font-size: 0.7rem;
+      }
 
-      .movie-info {
-        padding: 8px;
-      }
+      .back-btn, .home-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+        top: 10px;
+      }
+      .back-btn {
+        left: 10px;
+      }
+      .home-btn {
+        right: 10px;
+      }
+    }
 
-      .title {
-        font-size: 0.8rem;
-      }
+    @media (max-width: 480px) {
+      .similar-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+      }
+      
+      .poster-wrapper {
+        height: 180px;
+      }
+    }
 
-      .tags {
-        font-size: 0.7rem;
-      }
+    @media (max-width: 360px) {
+      .poster {
+        width: 150px;
+        height: 225px;
+      }
 
-      .back-btn, .home-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-        top: 10px;
-      }
-      .back-btn {
-        left: 10px;
-      }
-      .home-btn {
-        right: 10px;
-      }
-    }
+      .similar-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
 
-    @media (max-width: 480px) {
-      .similar-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 12px;
-      }
-      
-      .poster-wrapper {
-        height: 180px;
-      }
-    }
+      .poster-wrapper {
+        height: 240px;
+      }
+    }
 
-    @media (max-width: 360px) {
-      .poster {
-        width: 150px;
-        height: 225px;
-      }
+    @media (min-width: 361px) and (max-width: 400px) {
+      .poster {
+        width: 160px;
+        height: 240px;
+      }
+    }
 
-      .similar-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    @media (min-width: 401px) and (max-width: 480px) {
+      .poster {
+        width: 180px;
+        height: 270px;
+      }
+      .banner {
+        height: 32vh;
+      }
+    }
 
-      .poster-wrapper {
-        height: 240px;
-      }
-    }
-
-    @media (min-width: 361px) and (max-width: 400px) {
-      .poster {
-        width: 160px;
-        height: 240px;
-      }
-    }
-
-    @media (min-width: 401px) and (max-width: 480px) {
-      .poster {
-        width: 180px;
-        height: 270px;
-      }
-      .banner {
-        height: 32vh;
-      }
-    }
-
-    @media (min-width: 481px) and (max-width: 767px) {
-      .poster {
-        width: 200px;
-        height: 300px;
-      }
-      .banner {
-        height: 35vh;
-      }
-      .similar-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-  </style>
+    @media (min-width: 481px) and (max-width: 767px) {
+      .poster {
+        width: 200px;
+        height: 300px;
+      }
+      .banner {
+        height: 35vh;
+      }
+      .similar-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="banner" id="banner">
-  <div class="back-btn" id="backBtn">
-    <i class="bi bi-arrow-left"></i>
-  </div>
-  <div class="home-btn" id="homeBtn">
-    <i class="bi bi-house-door"></i>
-  </div>
+  <div class="back-btn" id="backBtn">
+    <i class="bi bi-arrow-left"></i>
+  </div>
+  <div class="home-btn" id="homeBtn">
+    <i class="bi bi-house-door"></i>
+  </div>
 </div>
 
 <div class="movie-container">
-  <div class="poster">
-    <img id="poster" src="" alt="Poster" onerror="this.src='https://via.placeholder.com/220x330?text=No+Poster'">
-  </div>
+  <div class="poster">
+    <img id="poster" src="" alt="Poster" onerror="this.src='https://via.placeholder.com/220x330?text=No+Poster'">
+  </div>
 
-  <div class="movie-details">
-    <h1 class="movie-title" id="title">Loading...</h1>
+  <div class="movie-details">
+    <h1 class="movie-title" id="title">Loading...</h1>
 
-    <div class="info-tags" id="mainTags"></div>
+    <div class="info-tags" id="mainTags"></div>
 
-    <div class="info-tags" id="genreTags"></div>
+    <div class="info-tags" id="genreTags"></div>
 
-    <div class="button-container">
-      <a href="#" class="btn" id="watchBtn"><i class="bi bi-play-fill"></i> WATCH NOW</a>
-      <a href="#" class="btn download-btn" id="downloadBtn"><i class="bi bi-download"></i> DOWNLOAD</a>
-    </div>
+    <div class="button-container">
+      <a href="#" class="btn watch-btn" id="watchBtn"><i class="bi bi-play-fill"></i> WATCH NOW</a>
+            <div id="downloadButtonsContainer" class="download-buttons-container"></div>
+    </div>
 
-    <div class="synopsis" id="synopsisSection">
-      <h2 class="synopsis-title">Synopsis</h2>
-      <p class="synopsis-text" id="synopsisText">Loading...</p>
-    </div>
-  </div>
+    <div class="synopsis" id="synopsisSection">
+      <h2 class="synopsis-title">Synopsis</h2>
+      <p class="synopsis-text" id="synopsisText">Loading...</p>
+    </div>
+  </div>
 </div>
 
-<!-- Similar movies -->
 <div class="similar-section">
-  <h2 class="similar-title">Similar Content</h2>
-  <div class="similar-grid" id="similarMovies"></div>
+  <h2 class="similar-title">Similar Content</h2>
+  <div class="similar-grid" id="similarMovies"></div>
 </div>
 
 <script>
@@ -656,327 +652,283 @@ const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
 
 // API endpoints
 const detailsUrl = mediaType === 'tv'
-  ? `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US`
-  : `https://api.themoviedb.org/3/movie/${mediaId}?api_key=${apiKey}&language=en-US`;
+  ? `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US`
+  : `https://api.themoviedb.org/3/movie/${mediaId}?api_key=${apiKey}&language=en-US`;
 
 const similarUrl = mediaType === 'tv'
-  ? `https://api.themoviedb.org/3/tv/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`
-  : `https://api.themoviedb.org/3/movie/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`;
+  ? `https://api.themoviedb.org/3/tv/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`
+  : `https://api.themoviedb.org/3/movie/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`;
 
 // Star image URL
 const starImageUrl = 'star.png';
 
 // Back button functionality
 document.getElementById('backBtn').addEventListener('click', () => {
-  window.location.href = document.referrer.includes(window.location.hostname) 
-    ? document.referrer 
-    : 'index.html';
+  window.location.href = document.referrer.includes(window.location.hostname) 
+    ? document.referrer 
+    : 'index.html';
 });
 
 // Home button functionality
 document.getElementById('homeBtn').addEventListener('click', () => {
-  window.location.href = 'index.html';
+  window.location.href = 'index.html';
 });
 
 // Load content from JSON files
 async function loadContentLinks() {
-  try {
-    // Load both movies and series JSON files
-    const [moviesResponse, seriesResponse] = await Promise.all([
-      fetch('movies.json'),
-      fetch('series.json')
-    ]);
-    
-    const [moviesData, seriesData] = await Promise.all([
-      moviesResponse.json(),
-      seriesResponse.json()
-    ]);
-    
-    // Combine both datasets
-    const combinedContent = [
-      ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
-      ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
-    ];
-    
-    // Find the current media item
-    const mediaItem = combinedContent.find(item => item.id == mediaId && item.type === mediaType);
-    
-    if (!mediaItem) {
-      document.getElementById('watchBtn').style.display = 'none';
-      document.getElementById('downloadBtn').style.display = 'none';
-      return;
-    }
+  try {
+    // Load both movies and series JSON files
+    const [moviesResponse, seriesResponse] = await Promise.all([
+      fetch('movies.json'),
+      fetch('series.json')
+    ]);
+    
+    const [moviesData, seriesData] = await Promise.all([
+      moviesResponse.json(),
+      seriesResponse.json()
+    ]);
+    
+    // Combine both datasets
+    const combinedContent = [
+      ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
+      ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
+    ];
+    
+    // Find the current media item
+    const mediaItem = combinedContent.find(item => item.id == mediaId && item.type === mediaType);
+    
+    const watchBtn = document.getElementById('watchBtn');
+    const downloadButtonsContainer = document.getElementById('downloadButtonsContainer');
+    downloadButtonsContainer.innerHTML = ''; // Clear previous buttons
 
-    // Set watch button
-    const watchBtn = document.getElementById('watchBtn');
-    if (mediaItem.stream_link) {
-      watchBtn.href = mediaItem.stream_link;
-      watchBtn.target = '_blank';
-    } else {
-      watchBtn.style.display = 'none';
-    }
+    if (!mediaItem) {
+      watchBtn.style.display = 'none';
+      return;
+    }
 
-    // Set download button
-    const downloadBtn = document.getElementById('downloadBtn');
-    if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
-      const downloadLinks = Object.entries(mediaItem.download_links);
-      
-      if (downloadLinks.length === 1) {
-        // Single download link
-        downloadBtn.href = downloadLinks[0][1];
-        downloadBtn.target = '_blank';
-      } else {
-        // Multiple download options
-        downloadBtn.onclick = (e) => {
-          e.preventDefault();
-          showDownloadOptions(mediaItem.download_links);
-        };
-      }
-    } else {
-      downloadBtn.style.display = 'none';
-    }
-  } catch (error) {
-    console.error('Error loading content links:', error);
-    document.getElementById('watchBtn').style.display = 'none';
-    document.getElementById('downloadBtn').style.display = 'none';
-  }
-}
+    // Set watch button
+    if (mediaItem.stream_link) {
+      watchBtn.href = mediaItem.stream_link;
+      watchBtn.target = '_blank';
+      watchBtn.style.display = 'inline-flex'; // Show if link exists
+    } else {
+      watchBtn.style.display = 'none'; // Hide if no link
+    }
 
-// Show download options dropdown
-function showDownloadOptions(downloadLinks) {
-  // Remove existing dropdown if any
-  const existingDropdown = document.querySelector('.download-dropdown');
-  if (existingDropdown) {
-    existingDropdown.remove();
-    return;
-  }
-  
-  // Create dropdown
-  const dropdown = document.createElement('div');
-  dropdown.className = 'download-dropdown';
-  
-  // Add download options
-  for (const [quality, url] of Object.entries(downloadLinks)) {
-    const option = document.createElement('a');
-    option.href = url;
-    option.className = 'download-option';
-    option.target = '_blank';
-    option.innerHTML = `<i class="bi bi-download"></i> ${quality}`;
-    dropdown.appendChild(option);
-  }
-  
-  // Position dropdown
-  const downloadBtn = document.getElementById('downloadBtn');
-  const rect = downloadBtn.getBoundingClientRect();
-  
-  dropdown.style.left = `${rect.left}px`;
-  dropdown.style.top = `${rect.bottom + window.scrollY + 5}px`;
-  dropdown.style.width = `${rect.width}px`;
-  
-  document.body.appendChild(dropdown);
-  
-  // Close dropdown when clicking outside
-  const clickHandler = (e) => {
-    if (!dropdown.contains(e.target) && e.target !== downloadBtn) {
-      dropdown.remove();
-      document.removeEventListener('click', clickHandler);
-    }
-  };
-  
-  setTimeout(() => {
-    document.addEventListener('click', clickHandler);
-  }, 0);
+    // Create and display download buttons
+    if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
+      const downloadLinks = Object.entries(mediaItem.download_links);
+      
+      downloadLinks.forEach(([quality, url]) => {
+        const downloadBtn = document.createElement('a');
+        downloadBtn.href = url;
+        downloadBtn.className = 'btn quality-btn'; // Use new class for styling
+        downloadBtn.target = '_blank';
+        downloadBtn.innerHTML = `<i class="bi bi-download"></i> Download ${quality}`;
+        downloadButtonsContainer.appendChild(downloadBtn);
+      });
+    }
+  } catch (error) {
+    console.error('Error loading content links:', error);
+    document.getElementById('watchBtn').style.display = 'none';
+    document.getElementById('downloadButtonsContainer').innerHTML = ''; // Clear buttons on error
+  }
 }
 
 // Filter similar media to only show available content
 async function filterAvailableMedia(mediaItems) {
-  try {
-    // Load both movies and series JSON files
-    const [moviesResponse, seriesResponse] = await Promise.all([
-      fetch('movies.json'),
-      fetch('series.json')
-    ]);
-    
-    const [moviesData, seriesData] = await Promise.all([
-      moviesResponse.json(),
-      seriesResponse.json()
-    ]);
-    
-    // Combine both datasets
-    const combinedContent = [
-      ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
-      ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
-    ];
-    
-    const availableIds = combinedContent.map(item => item.id.toString());
-    return mediaItems.filter(item => availableIds.includes(item.id.toString()));
-  } catch (error) {
-    console.error('Error filtering available media:', error);
-    return mediaItems.slice(0, 6); // Fallback to first 6 items
-  }
+  try {
+    // Load both movies and series JSON files
+    const [moviesResponse, seriesResponse] = await Promise.all([
+      fetch('movies.json'),
+      fetch('series.json')
+    ]);
+    
+    const [moviesData, seriesData] = await Promise.all([
+      moviesResponse.json(),
+      seriesResponse.json()
+    ]);
+    
+    // Combine both datasets
+    const combinedContent = [
+      ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
+      ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
+    ];
+    
+    const availableIds = combinedContent.map(item => item.id.toString());
+    return mediaItems.filter(item => availableIds.includes(item.id.toString()));
+  } catch (error) {
+    console.error('Error filtering available media:', error);
+    return mediaItems.slice(0, 6); // Fallback to first 6 items
+  }
 }
 
 async function loadMediaDetails() {
-  try {
-    const response = await fetch(detailsUrl);
-    if (!response.ok) throw new Error('Failed to fetch details');
-    
-    const media = await response.json();
+  try {
+    const response = await fetch(detailsUrl);
+    if (!response.ok) throw new Error('Failed to fetch details');
+    
+    const media = await response.json();
 
-    // Set banner
-    const banner = document.getElementById('banner');
-    if (media.backdrop_path) {
-      banner.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${media.backdrop_path})`;
-    } else {
-      banner.style.backgroundImage = 'linear-gradient(to right, #1a1a1a, #2a2a2a)';
-    }
+    // Set banner
+    const banner = document.getElementById('banner');
+    if (media.backdrop_path) {
+      banner.style.backgroundImage = `url(https://image.tmdb.org/t/p/original${media.backdrop_path})`;
+    } else {
+      banner.style.backgroundImage = 'linear-gradient(to right, #1a1a1a, #2a2a2a)';
+    }
 
-    // Set poster
-    const poster = document.getElementById('poster');
-    poster.src = media.poster_path 
-      ? `https://image.tmdb.org/t/p/w500${media.poster_path}`
-      : 'https://via.placeholder.com/220x330?text=No+Poster';
-    poster.alt = mediaType === 'tv' ? media.name : media.title;
-    poster.onload = function() {
-      this.classList.add('loaded');
-    };
+    // Set poster
+    const poster = document.getElementById('poster');
+    poster.src = media.poster_path 
+      ? `https://image.tmdb.org/t/p/w500${media.poster_path}`
+      : 'https://via.placeholder.com/220x330?text=No+Poster';
+    poster.alt = mediaType === 'tv' ? media.name : media.title;
+    poster.onload = function() {
+      this.classList.add('loaded');
+    };
 
-    document.getElementById('title').textContent = mediaType === 'tv' ? media.name : media.title;
+    document.getElementById('title').textContent = mediaType === 'tv' ? media.name : media.title;
 
-    // Main tags
-    const mainTags = document.getElementById('mainTags');
-    mainTags.innerHTML = `
-      <div class="tag movie-type">${mediaType === 'tv' ? 'TV Series' : 'Movie'}</div>
-      <div class="tag"><i class="bi bi-calendar-event"></i> ${
-        mediaType === 'tv'
-          ? media.first_air_date ? new Date(media.first_air_date).getFullYear() : 'N/A'
-          : media.release_date ? new Date(media.release_date).getFullYear() : 'N/A'
-      }</div>
-      <div class="tag"><i class="bi ${
-        mediaType === 'tv' ? 'bi-collection' : 'bi-clock'
-      }"></i> ${
-        mediaType === 'tv'
-          ? `${media.number_of_seasons} season${media.number_of_seasons !== 1 ? 's' : ''}`
-          : media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A'
-      }</div>
-      <div class="rating-tag"><i class="bi bi-star-fill"></i> ${media.vote_average ? media.vote_average.toFixed(1) : 'N/A'}</div>
-    `;
+    // Main tags
+    const mainTags = document.getElementById('mainTags');
+    mainTags.innerHTML = `
+      <div class="tag movie-type">${mediaType === 'tv' ? 'TV Series' : 'Movie'}</div>
+      <div class="tag"><i class="bi bi-calendar-event"></i> ${
+        mediaType === 'tv'
+          ? media.first_air_date ? new Date(media.first_air_date).getFullYear() : 'N/A'
+          : media.release_date ? new Date(media.release_date).getFullYear() : 'N/A'
+      }</div>
+      <div class="tag"><i class="bi ${
+        mediaType === 'tv' ? 'bi-collection' : 'bi-clock'
+      }"></i> ${
+        mediaType === 'tv'
+          ? `${media.number_of_seasons} season${media.number_of_seasons !== 1 ? 's' : ''}`
+          : media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A'
+      }</div>
+      <div class="rating-tag"><i class="bi bi-star-fill"></i> ${media.vote_average ? media.vote_average.toFixed(1) : 'N/A'}</div>
+    `;
 
-    // Genre tags
-    const genreTags = document.getElementById('genreTags');
-    genreTags.innerHTML = '';
-    if (media.genres && media.genres.length) {
-      media.genres.forEach(genre => {
-        const tag = document.createElement('div');
-        tag.className = 'tag';
-        tag.textContent = genre.name;
-        genreTags.appendChild(tag);
-      });
-    }
+    // Genre tags
+    const genreTags = document.getElementById('genreTags');
+    genreTags.innerHTML = '';
+    if (media.genres && media.genres.length) {
+      media.genres.forEach(genre => {
+        const tag = document.createElement('div');
+        tag.className = 'tag';
+        tag.textContent = genre.name;
+        genreTags.appendChild(tag);
+      });
+    }
 
-    // Synopsis
-    document.getElementById('synopsisText').textContent = media.overview || "No synopsis available.";
+    // Synopsis
+    document.getElementById('synopsisText').textContent = media.overview || "No synopsis available.";
 
-    // Load content links from JSON
-    await loadContentLinks();
+    // Load content links from JSON
+    await loadContentLinks();
 
-  } catch (error) {
-    console.error('Error loading media details:', error);
-    document.getElementById('title').textContent = 'Error loading content';
-    document.getElementById('synopsisText').textContent = 'Failed to load details. Please try again later.';
-    document.getElementById('watchBtn').style.display = 'none';
-    document.getElementById('downloadBtn').style.display = 'none';
-  }
+  } catch (error) {
+    console.error('Error loading media details:', error);
+    document.getElementById('title').textContent = 'Error loading content';
+    document.getElementById('synopsisText').textContent = 'Failed to load details. Please try again later.';
+    document.getElementById('watchBtn').style.display = 'none';
+    document.getElementById('downloadButtonsContainer').innerHTML = ''; // Clear buttons on error
+  }
 }
 
 async function loadSimilarMedia() {
-  try {
-    const response = await fetch(similarUrl);
-    if (!response.ok) throw new Error('Failed to fetch similar content');
-    
-    const data = await response.json();
-    const similarContainer = document.getElementById('similarMovies');
-    similarContainer.innerHTML = '';
+  try {
+    const response = await fetch(similarUrl);
+    if (!response.ok) throw new Error('Failed to fetch similar content');
+    
+    const data = await response.json();
+    const similarContainer = document.getElementById('similarMovies');
+    similarContainer.innerHTML = '';
 
-    if (!data.results || data.results.length === 0) {
-      similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found</p>';
-      return;
-    }
+    if (!data.results || data.results.length === 0) {
+      similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found</p>';
+      return;
+    }
 
-    // Filter to only show available content
-    const availableSimilar = await filterAvailableMedia(data.results);
-    
-    if (availableSimilar.length === 0) {
-      similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content available</p>';
-      return;
-    }
+    // Filter to only show available content
+    const availableSimilar = await filterAvailableMedia(data.results);
+    
+    if (availableSimilar.length === 0) {
+      similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content available</p>';
+      return;
+    }
 
-    // Display available similar media
-    availableSimilar.slice(0, 6).forEach(item => {
-      const posterPath = item.poster_path 
-        ? `https://image.tmdb.org/t/p/w500${item.poster_path}` 
-        : 'https://via.placeholder.com/180x270?text=No+Image';
-      
-      const title = mediaType === 'tv' ? item.name : item.title;
-      const releaseDate = mediaType === 'tv' ? item.first_air_date : item.release_date;
-      const formattedDate = formatDate(releaseDate);
-      const type = mediaType === 'tv' ? 'Series' : 'Movie';
-      const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
-      
-      const card = document.createElement('div');
-      card.className = 'movie-card';
-      card.innerHTML = `
-        <div class="poster-wrapper">
-          <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')">
-          <div class="rating-star">
-            <img src="${starImageUrl}" alt="star">
-            ${rating}
-          </div>
-        </div>
-        <div class="movie-info">
-          <div class="title">${title}</div>
-          <div class="tags">
-            <div class="tag">${formattedDate}</div>
-            <div class="tag">${type}</div>
-          </div>
-        </div>
-      `;
-      
-      card.addEventListener('click', () => {
-        window.location.href = `[].html?id=${item.id}&type=${mediaType}`;
-      });
-      
-      similarContainer.appendChild(card);
-    });
+    // Display available similar media
+    availableSimilar.slice(0, 6).forEach(item => {
+      const posterPath = item.poster_path 
+        ? `https://image.tmdb.org/t/p/w500${item.poster_path}` 
+        : 'https://via.placeholder.com/180x270?text=No+Image';
+      
+      const title = mediaType === 'tv' ? item.name : item.title;
+      const releaseDate = mediaType === 'tv' ? item.first_air_date : item.release_date;
+      const formattedDate = formatDate(releaseDate);
+      const type = mediaType === 'tv' ? 'Series' : 'Movie';
+      const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
+      
+      const card = document.createElement('div');
+      card.className = 'movie-card';
+      card.innerHTML = `
+        <div class="poster-wrapper">
+          <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')">
+          <div class="rating-star">
+            <img src="${starImageUrl}" alt="star">
+            ${rating}
+          </div>
+        </div>
+        <div class="movie-info">
+          <div class="title">${title}</div>
+          <div class="tags">
+            <div class="tag">${formattedDate}</div>
+            <div class="tag">${type}</div>
+          </div>
+        </div>
+      `;
+      
+      card.addEventListener('click', () => {
+        // Ensure clicking similar content navigates to its details page
+        // Need to determine the type ('movie' or 'tv') for similar items
+        // based on the response structure. Assuming 'media_type' or similar field exists.
+        // If not, you might need an additional check or update your JSON data.
+        const similarMediaType = item.media_type || mediaType; // Use media_type from response or current type
+        window.location.href = `[].html?id=${item.id}&type=${similarMediaType}`;
+      });
+      
+      similarContainer.appendChild(card);
+    });
 
-  } catch (error) {
-    console.error('Error loading similar media:', error);
-    similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">Failed to load similar content</p>';
-  }
+  } catch (error) {
+    console.error('Error loading similar media:', error);
+    similarContainer.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">Failed to load similar content</p>';
+  }
 }
 
 function formatDate(dateString) {
-  if (!dateString) return 'Unknown';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { 
-    month: 'short', 
-    day: 'numeric', 
-    year: 'numeric' 
-  });
+  if (!dateString) return 'Unknown';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    month: 'short', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
 }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-  if (!mediaId) {
-    document.getElementById('title').textContent = 'No content selected';
-    document.getElementById('synopsisText').textContent = 'Please go back and select a movie or TV show.';
-    document.getElementById('watchBtn').style.display = 'none';
-    document.getElementById('downloadBtn').style.display = 'none';
-    return;
-  }
-  
-  loadMediaDetails();
-  loadSimilarMedia();
+  if (!mediaId) {
+    document.getElementById('title').textContent = 'No content selected';
+    document.getElementById('synopsisText').textContent = 'Please go back and select a movie or TV show.';
+    document.getElementById('watchBtn').style.display = 'none';
+    document.getElementById('downloadButtonsContainer').innerHTML = ''; // Clear buttons
+    return;
+  }
+  
+  loadMediaDetails();
+  loadSimilarMedia();
 });
 
 // Disable right-click
@@ -984,13 +936,13 @@ document.addEventListener('contextmenu', e => e.preventDefault());
 
 // Block F12, Ctrl+Shift+I/J/C
 document.onkeydown = function(e) {
-  if (e.key === "F12" || 
-     (e.ctrlKey && e.shiftKey && 
-      (e.key === "I" || e.key === "J" || e.key === "C"))) {
-    e.preventDefault();
-    return false;
-  }
+  if (e.key === "F12" || 
+     (e.ctrlKey && e.shiftKey && 
+      (e.key === "I" || e.key === "J" || e.key === "C"))) {
+    e.preventDefault();
+    return false;
+  }
 };
-</script>          
+</script>          
 </body>
 </html>
