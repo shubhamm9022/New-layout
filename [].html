@@ -34,10 +34,10 @@
   
   <style>
     :root {
-      --desktop-poster-width: 240px;
-      --desktop-poster-height: 360px;
-      --mobile-poster-width: 160px;
-      --mobile-poster-height: 240px;
+      --desktop-poster-width: 260px;
+      --desktop-poster-height: 390px;
+      --mobile-poster-width: 180px;
+      --mobile-poster-height: 270px;
       --banner-height-desktop: 55vh;
       --banner-height-mobile: 35vh;
       --color-primary: #ff4d4d;
@@ -308,7 +308,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      min-width: 150px;
+      min-width: 180px;
       box-shadow: var(--btn-shadow);
       position: relative;
       overflow: hidden;
@@ -341,28 +341,28 @@
     }
 
     .btn-watch {
-      background: var(--color-primary-gradient);
-      color: black;
+      background: var(--color-season);
+      color: white;
       font-weight: 700;
     }
 
     .btn-watch:hover {
-      box-shadow: 0 6px 20px rgba(255, 77, 77, 0.4);
+      box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
     }
 
     .btn-download {
-      background: var(--color-secondary-gradient);
+      background: var(--color-season);
       font-weight: 700;
     }
 
     .btn-download:hover {
-      box-shadow: var(--btn-hover-shadow);
+      box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
     }
 
     .btn-quality {
-      min-width: 130px;
-      padding: 10px 20px;
-      font-size: 0.85rem;
+      min-width: 180px;
+      padding: 12px 25px;
+      font-size: 0.95rem;
       font-weight: 600;
     }
 
@@ -417,7 +417,7 @@
     }
 
     .season-quality-btn {
-      min-width: 160px;
+      min-width: 180px;
       margin-bottom: 0;
     }
 
@@ -767,8 +767,8 @@
       }
 
       .poster {
-        width: 160px;
-        height: 240px;
+        width: 180px;
+        height: 270px;
       }
 
       .movie-title {
@@ -882,8 +882,8 @@
 
     @media (max-width: 360px) {
       .poster {
-        width: 140px;
-        height: 210px;
+        width: 160px;
+        height: 240px;
       }
 
       .similar-grid {
@@ -1379,4 +1379,4 @@ document.onkeydown = function(e) {
 };
 </script>          
 </body>
-  </html>
+</html>
