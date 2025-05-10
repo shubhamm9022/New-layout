@@ -155,7 +155,7 @@
       padding: 20px;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       position: relative;
       z-index: 2;
     }
@@ -252,7 +252,7 @@
     }
 
     .tag.zip-tag {
-      background: var(--color-secondary-gradient);
+      background: var(--color-season);
       color: white;
       font-weight: 700;
     }
@@ -707,7 +707,7 @@
     .tag.cam { background: var(--color-cam); }
     .tag.fhd { background: var(--color-1080p); }
     .tag._4k { background: var(--color-4k); }
-    .tag.zip { background: var(--color-secondary); }
+    .tag.zip { background: var(--color-season); }
     .tag.hdr { background: var(--color-hdr); }
     .tag.dolby { background: var(--color-dolby); }
     .tag.imax { background: var(--color-imax); }
@@ -738,6 +738,11 @@
       
       .movie-title {
         font-size: 1.8rem;
+        text-align: center;
+      }
+      
+      .info-tags {
+        justify-content: center;
       }
     }
 
