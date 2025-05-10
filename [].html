@@ -58,12 +58,12 @@
       --color-primary: #ff4d4d;
       --color-primary-gradient: linear-gradient(135deg, #ff4d4d 0%, #f9cb28 100%);
       --color-secondary: #2196F3;
-      --color-secondary-gradient: linear-gradient(135deg, #2196F3 0%, #00BCD4 100%);
+      --color-secondary-gradient: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
       --bg-dark: #0d0d0d;
       --bg-card: #1a1a1a;
       --text-primary: #fff;
       --btn-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-      --btn-hover-shadow: 0 6px 20px rgba(255, 255, 255, 0.1);
+      --btn-hover-shadow: 0 6px 20px rgba(25, 118, 210, 0.3);
     }
 
     * {
@@ -225,6 +225,12 @@
       font-weight: 700;
     }
 
+    .tag.zip-tag {
+      background: var(--color-secondary-gradient);
+      color: white;
+      font-weight: 700;
+    }
+
     .rating-tag {
       background: #1f1f1f;
       padding: 5px 12px;
@@ -306,7 +312,7 @@
 
     .btn-download:hover {
       transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.3);
+      box-shadow: var(--btn-hover-shadow);
     }
 
     .btn-quality {
@@ -314,22 +320,7 @@
       padding: 10px 15px;
       font-size: 14px;
       font-weight: 600;
-    }
-
-    .btn-quality-720p {
-      background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
-    }
-
-    .btn-quality-1080p {
-      background: linear-gradient(135deg, #2196F3 0%, #03A9F4 100%);
-    }
-
-    .btn-quality-4k {
-      background: linear-gradient(135deg, #9C27B0 0%, #E91E63 100%);
-    }
-
-    .btn-quality-cam {
-      background: linear-gradient(135deg, #FF5722 0%, #FF9800 100%);
+      background: var(--color-secondary-gradient);
     }
 
     .btn-quality:hover {
@@ -350,7 +341,6 @@
       gap: 10px;
       flex-wrap: wrap;
       width: 100%;
-      margin-top: 10px;
     }
 
     .no-options {
@@ -491,6 +481,7 @@
     .tag.cam { background: #FF5722; }
     .tag.fhd { background: #2196F3; }
     .tag._4k { background: #9C27B0; }
+    .tag.zip { background: #1976D2; }
 
     /* Mobile Responsive Styles */
     @media (max-width: 767px) {
@@ -787,9 +778,16 @@ async function loadContentLinks() {
       for (const [quality, url] of Object.entries(mediaItem.download_links)) {
         const qualityBtn = document.createElement('a');
         qualityBtn.href = url;
-        qualityBtn.className = `btn btn-quality btn-quality-${quality.toLowerCase()}`;
+        qualityBtn.className = `btn btn-quality`;
         qualityBtn.target = '_blank';
-        qualityBtn.innerHTML = `<i class="bi bi-download"></i> ${quality.toUpperCase()}`;
+        
+        // For TV shows, show "ZIP" instead of quality
+        if (mediaType === 'tv') {
+          qualityBtn.innerHTML = `<i class="bi bi-file-earmark-zip"></i> ZIP`;
+        } else {
+          qualityBtn.innerHTML = `<i class="bi bi-download"></i> ${quality.toUpperCase()}`;
+        }
+        
         downloadOptions.appendChild(qualityBtn);
       }
     } else {
@@ -877,6 +875,7 @@ async function loadMediaDetails() {
           ? `${media.number_of_seasons} season${media.number_of_seasons !== 1 ? 's' : ''}`
           : media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A'
       }</div>
+      ${mediaType === 'tv' ? '<div class="tag zip-tag"><i class="bi bi-file-earmark-zip"></i> ZIP</div>' : ''}
       <div class="rating-tag"><i class="bi bi-star-fill"></i> ${media.vote_average ? media.vote_average.toFixed(1) : 'N/A'}</div>
     `;
 
@@ -956,6 +955,7 @@ async function loadSimilarMedia() {
           <div class="tags">
             <div class="tag">${formattedDate}</div>
             <div class="tag">${type}</div>
+            ${mediaType === 'tv' ? '<div class="tag zip">ZIP</div>' : ''}
           </div>
         </div>
       `;
