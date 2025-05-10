@@ -32,21 +32,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "MovieHub",
-    "url": "https://example.com",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://example.com/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
-  
   <style>
     :root {
       --desktop-poster-width: 220px;
@@ -59,6 +44,11 @@
       --color-primary-gradient: linear-gradient(135deg, #ff4d4d 0%, #f9cb28 100%);
       --color-secondary: #2196F3;
       --color-secondary-gradient: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);
+      --color-season: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      --color-720p: #4CAF50;
+      --color-1080p: #2196F3;
+      --color-4k: #9C27B0;
+      --color-cam: #FF5722;
       --bg-dark: #0d0d0d;
       --bg-card: #1a1a1a;
       --text-primary: #fff;
@@ -68,6 +58,8 @@
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
@@ -246,6 +238,21 @@
       color: #FFD700;
     }
 
+    /* Quality Tag Styles */
+    .quality-tag {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 5px;
+      text-transform: uppercase;
+    }
+
+    .quality-720p { background-color: var(--color-720p); }
+    .quality-1080p { background-color: var(--color-1080p); }
+    .quality-4k { background-color: var(--color-4k); }
+    .quality-cam { background-color: var(--color-cam); }
+
     /* Button Styles */
     .btn {
       border: none;
@@ -283,15 +290,6 @@
       opacity: 1;
     }
 
-    .btn-primary {
-      background: var(--color-primary-gradient);
-      color: black;
-    }
-
-    .btn-secondary {
-      background: var(--color-secondary-gradient);
-    }
-
     .btn-watch {
       background: var(--color-primary-gradient);
       color: black;
@@ -320,12 +318,28 @@
       padding: 10px 15px;
       font-size: 14px;
       font-weight: 600;
-      background: var(--color-secondary-gradient);
     }
 
-    .btn-quality:hover {
+    .btn-quality-720p { background-color: var(--color-720p); }
+    .btn-quality-1080p { background-color: var(--color-1080p); }
+    .btn-quality-4k { background-color: var(--color-4k); }
+    .btn-quality-cam { background-color: var(--color-cam); }
+
+    .btn-season {
+      background: var(--color-season);
+      min-width: 180px;
+      margin-bottom: 10px;
+    }
+
+    .btn-season:hover {
       transform: translateY(-3px);
-      box-shadow: var(--btn-hover-shadow);
+      box-shadow: 0 6px 20px rgba(106, 17, 203, 0.3);
+    }
+
+    .season-quality-btn {
+      min-width: 160px;
+      margin-left: 20px;
+      margin-bottom: 10px;
     }
 
     .button-container {
@@ -338,9 +352,17 @@
     
     .download-options {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 5px;
       width: 100%;
+    }
+
+    .season-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+      border-left: 3px solid #2575fc;
+      padding-left: 10px;
     }
 
     .no-options {
@@ -366,7 +388,7 @@
       opacity: 0.85;
     }
 
-    /* Similar movies grid - optimized layout */
+    /* Similar movies grid */
     .similar-section {
       margin-top: 50px;
       padding: 0 20px 30px;
@@ -538,8 +560,9 @@
         flex-direction: column;
       }
 
-      .btn-quality {
+      .btn-quality, .season-quality-btn {
         width: 100%;
+        margin-left: 0;
       }
 
       .synopsis {
@@ -624,36 +647,6 @@
 
       .poster-wrapper {
         height: 240px;
-      }
-    }
-
-    @media (min-width: 361px) and (max-width: 400px) {
-      .poster {
-        width: 160px;
-        height: 240px;
-      }
-    }
-
-    @media (min-width: 401px) and (max-width: 480px) {
-      .poster {
-        width: 180px;
-        height: 270px;
-      }
-      .banner {
-        height: 32vh;
-      }
-    }
-
-    @media (min-width: 481px) and (max-width: 767px) {
-      .poster {
-        width: 200px;
-        height: 300px;
-      }
-      .banner {
-        height: 35vh;
-      }
-      .similar-grid {
-        grid-template-columns: repeat(3, 1fr);
       }
     }
   </style>
@@ -773,17 +766,56 @@ async function loadContentLinks() {
     const downloadOptions = document.getElementById('downloadOptions');
     downloadOptions.innerHTML = '';
     
-    if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
-      // Create buttons for each available quality
+    // Add available qualities tags
+    const mainTags = document.getElementById('mainTags');
+    if (mediaItem.available_qualities && mediaItem.available_qualities.length > 0) {
+      mediaItem.available_qualities.forEach(quality => {
+        const qualityTag = document.createElement('span');
+        qualityTag.className = `quality-tag quality-${quality.toLowerCase()}`;
+        qualityTag.textContent = quality;
+        mainTags.appendChild(qualityTag);
+      });
+    }
+
+    if (mediaItem.seasons) {
+      // Handle TV show with seasons
+      for (const [seasonNumber, seasonData] of Object.entries(mediaItem.seasons)) {
+        const seasonContainer = document.createElement('div');
+        seasonContainer.className = 'season-container';
+        
+        const seasonBtn = document.createElement('div');
+        seasonBtn.className = 'btn btn-season';
+        seasonBtn.innerHTML = `<i class="bi bi-collection-play"></i> Season ${seasonNumber}`;
+        seasonContainer.appendChild(seasonBtn);
+        
+        if (seasonData.download_links && Object.keys(seasonData.download_links).length > 0) {
+          for (const [quality, url] of Object.entries(seasonData.download_links)) {
+            const qualityBtn = document.createElement('a');
+            qualityBtn.href = url;
+            qualityBtn.className = `btn season-quality-btn btn-quality-${quality.toLowerCase()}`;
+            qualityBtn.target = '_blank';
+            qualityBtn.innerHTML = `<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}`;
+            seasonContainer.appendChild(qualityBtn);
+          }
+        } else {
+          const noDownload = document.createElement('p');
+          noDownload.className = 'no-options';
+          noDownload.textContent = 'No download options available for this season';
+          seasonContainer.appendChild(noDownload);
+        }
+        
+        downloadOptions.appendChild(seasonContainer);
+      }
+    } else if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
+      // Handle movie or single-season show
       for (const [quality, url] of Object.entries(mediaItem.download_links)) {
         const qualityBtn = document.createElement('a');
         qualityBtn.href = url;
-        qualityBtn.className = `btn btn-quality`;
+        qualityBtn.className = `btn btn-quality btn-quality-${quality.toLowerCase()}`;
         qualityBtn.target = '_blank';
         
-        // For TV shows, show "ZIP" instead of quality
         if (mediaType === 'tv') {
-          qualityBtn.innerHTML = `<i class="bi bi-file-earmark-zip"></i> ZIP`;
+          qualityBtn.innerHTML = `<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}`;
         } else {
           qualityBtn.innerHTML = `<i class="bi bi-download"></i> ${quality.toUpperCase()}`;
         }
