@@ -157,14 +157,14 @@
     }
 
     .poster {
-  width: 250px; /* Increased from 220px */
-  height: 375px; /* Increased from 330px (maintaining 2:3 aspect ratio) */
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.7);
-  margin-bottom: 20px;
-  position: relative;
-}
+      width: 250px; /* Increased from 220px */
+      height: 375px; /* Increased from 330px (maintaining 2:3 aspect ratio) */
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+      margin-bottom: 20px;
+      position: relative;
+    }
 
     .poster img {
       width: 100%;
@@ -247,11 +247,11 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      min-width: 150px;
+      /* min-width: 150px; Removed to allow flex item wrapping */
     }
-
+    
     .btn.watch-btn {
-      background: var(--color-primary);
+      /* Already styled by .btn with primary color */
     }
     
     /* Style for the new download quality buttons */
@@ -262,7 +262,7 @@
       padding: 10px 20px;
       font-weight: 500; /* Slightly lighter font weight */
       font-size: 14px;
-      min-width: unset; /* Remove min-width constraint */
+      min-width: unset; /* Ensure no min-width */
       width: auto; /* Allow button width to adjust to content */
     }
 
@@ -279,18 +279,20 @@
 
     .button-container {
       display: flex;
-      gap: 15px;
+      gap: 15px; /* Gap between watch button and download buttons group */
       margin-top: 15px;
       width: 100%;
-      flex-wrap: wrap;
+      flex-wrap: wrap; /* Allow wrapping on smaller screens */
       align-items: center; /* Align items vertically in the center */
     }
     
+    /* Container for multiple download quality buttons */
     .download-buttons-container {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px; /* Smaller gap between quality buttons */
-      margin-top: 10px; /* Space above download buttons */
+      flex-wrap: wrap; /* Allow quality buttons to wrap within their container */
+      gap: 10px; /* Smaller gap between individual quality buttons */
+      /* margin-top: 10px; Removed margin-top here, gap from button-container handles spacing */
+      align-items: center; /* Align quality buttons vertically */
     }
 
     .synopsis {
@@ -444,9 +446,9 @@
       }
 
       .poster {
-    width: 170px; /* Increased from 150px */
-    height: 255px; /* Increased from 225px */
-  }
+        width: 170px;
+        height: 255px;
+      }
 
       .movie-title {
         font-size: 1.5rem;
@@ -466,25 +468,25 @@
       }
 
       .button-container {
-        flex-direction: column;
-        gap: 8px;
+        flex-direction: column; /* Stack watch button and download group */
+        gap: 10px; /* Adjust gap for stacked items */
         margin: 12px 0;
+        align-items: stretch; /* Stretch buttons to full width */
       }
       
       .download-buttons-container {
-        flex-direction: column;
-        gap: 8px;
-        width: 100%;
+        flex-direction: column; /* Stack quality buttons within their container */
+        gap: 8px; /* Gap between stacked quality buttons */
       }
 
       .btn {
-        width: 100%;
+        width: 100%; /* Ensure watch button takes full width */
         padding: 10px;
         font-size: 0.9rem;
       }
       
       .btn.quality-btn {
-        width: 100%;
+        width: 100%; /* Ensure quality buttons take full width */
       }
 
       .synopsis {
@@ -660,13 +662,16 @@ const similarUrl = mediaType === 'tv'
   : `https://api.themoviedb.org/3/movie/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`;
 
 // Star image URL
-const starImageUrl = 'star.png';
+const starImageUrl = 'star.png'; // Make sure 'star.png' is in your 'assets/icons' or specified correctly
 
 // Back button functionality
 document.getElementById('backBtn').addEventListener('click', () => {
-  window.location.href = document.referrer.includes(window.location.hostname) 
-    ? document.referrer 
-    : 'index.html';
+  // Check if the referrer is within the same origin to prevent unexpected navigation
+  if (document.referrer && document.referrer.includes(window.location.origin)) {
+    history.back(); // Go back using browser history
+  } else {
+    window.location.href = 'index.html'; // Fallback to home if no referrer or outside origin
+  }
 });
 
 // Home button functionality
@@ -674,7 +679,7 @@ document.getElementById('homeBtn').addEventListener('click', () => {
   window.location.href = 'index.html';
 });
 
-// Load content from JSON files
+// Load content links from JSON files and update buttons
 async function loadContentLinks() {
   try {
     // Load both movies and series JSON files
@@ -702,7 +707,7 @@ async function loadContentLinks() {
     downloadButtonsContainer.innerHTML = ''; // Clear previous buttons
 
     if (!mediaItem) {
-      watchBtn.style.display = 'none';
+      watchBtn.style.display = 'none'; // Hide watch button if media item not found
       return;
     }
 
@@ -715,23 +720,29 @@ async function loadContentLinks() {
       watchBtn.style.display = 'none'; // Hide if no link
     }
 
-    // Create and display download buttons
+    // Create and display download buttons if links exist
     if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
       const downloadLinks = Object.entries(mediaItem.download_links);
       
       downloadLinks.forEach(([quality, url]) => {
         const downloadBtn = document.createElement('a');
         downloadBtn.href = url;
-        downloadBtn.className = 'btn quality-btn'; // Use new class for styling
+        downloadBtn.className = 'btn quality-btn'; // Use custom class for download styling
         downloadBtn.target = '_blank';
         downloadBtn.innerHTML = `<i class="bi bi-download"></i> Download ${quality}`;
         downloadButtonsContainer.appendChild(downloadBtn);
       });
+      // Ensure the download container is visible if buttons were added
+      downloadButtonsContainer.style.display = 'flex';
+    } else {
+      // Hide the container if no download links are available
+      downloadButtonsContainer.style.display = 'none';
     }
   } catch (error) {
     console.error('Error loading content links:', error);
     document.getElementById('watchBtn').style.display = 'none';
     document.getElementById('downloadButtonsContainer').innerHTML = ''; // Clear buttons on error
+    document.getElementById('downloadButtonsContainer').style.display = 'none'; // Hide container on error
   }
 }
 
@@ -756,17 +767,18 @@ async function filterAvailableMedia(mediaItems) {
     ];
     
     const availableIds = combinedContent.map(item => item.id.toString());
+    // Filter based on ID presence in available content, also trying to preserve type if possible
     return mediaItems.filter(item => availableIds.includes(item.id.toString()));
   } catch (error) {
     console.error('Error filtering available media:', error);
-    return mediaItems.slice(0, 6); // Fallback to first 6 items
+    return mediaItems.slice(0, 6); // Fallback to first 6 items if filtering fails
   }
 }
 
 async function loadMediaDetails() {
   try {
     const response = await fetch(detailsUrl);
-    if (!response.ok) throw new Error('Failed to fetch details');
+    if (!response.ok) throw new Error(`Failed to fetch details: ${response.status}`);
     
     const media = await response.json();
 
@@ -787,26 +799,28 @@ async function loadMediaDetails() {
     poster.onload = function() {
       this.classList.add('loaded');
     };
+    poster.onerror = function() {
+      this.src = 'https://via.placeholder.com/220x330?text=No+Poster';
+      this.classList.add('loaded');
+    }
 
-    document.getElementById('title').textContent = mediaType === 'tv' ? media.name : media.title;
+    document.getElementById('title').textContent = mediaType === 'tv' ? media.name || 'N/A' : media.title || 'N/A';
 
     // Main tags
     const mainTags = document.getElementById('mainTags');
+    const year = mediaType === 'tv'
+      ? (media.first_air_date ? new Date(media.first_air_date).getFullYear() : 'N/A')
+      : (media.release_date ? new Date(media.release_date).getFullYear() : 'N/A');
+    const durationOrSeasons = mediaType === 'tv'
+      ? (media.number_of_seasons ? `${media.number_of_seasons} season${media.number_of_seasons !== 1 ? 's' : ''}` : 'N/A')
+      : (media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A');
+    const rating = media.vote_average ? media.vote_average.toFixed(1) : 'N/A';
+
     mainTags.innerHTML = `
       <div class="tag movie-type">${mediaType === 'tv' ? 'TV Series' : 'Movie'}</div>
-      <div class="tag"><i class="bi bi-calendar-event"></i> ${
-        mediaType === 'tv'
-          ? media.first_air_date ? new Date(media.first_air_date).getFullYear() : 'N/A'
-          : media.release_date ? new Date(media.release_date).getFullYear() : 'N/A'
-      }</div>
-      <div class="tag"><i class="bi ${
-        mediaType === 'tv' ? 'bi-collection' : 'bi-clock'
-      }"></i> ${
-        mediaType === 'tv'
-          ? `${media.number_of_seasons} season${media.number_of_seasons !== 1 ? 's' : ''}`
-          : media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A'
-      }</div>
-      <div class="rating-tag"><i class="bi bi-star-fill"></i> ${media.vote_average ? media.vote_average.toFixed(1) : 'N/A'}</div>
+      <div class="tag"><i class="bi bi-calendar-event"></i> ${year}</div>
+      <div class="tag"><i class="bi ${mediaType === 'tv' ? 'bi-collection' : 'bi-clock'}"></i> ${durationOrSeasons}</div>
+      <div class="rating-tag"><i class="bi bi-star-fill"></i> ${rating}</div>
     `;
 
     // Genre tags
@@ -833,13 +847,14 @@ async function loadMediaDetails() {
     document.getElementById('synopsisText').textContent = 'Failed to load details. Please try again later.';
     document.getElementById('watchBtn').style.display = 'none';
     document.getElementById('downloadButtonsContainer').innerHTML = ''; // Clear buttons on error
+    document.getElementById('downloadButtonsContainer').style.display = 'none'; // Hide container on error
   }
 }
 
 async function loadSimilarMedia() {
   try {
     const response = await fetch(similarUrl);
-    if (!response.ok) throw new Error('Failed to fetch similar content');
+    if (!response.ok) throw new Error(`Failed to fetch similar content: ${response.status}`);
     
     const data = await response.json();
     const similarContainer = document.getElementById('similarMovies');
@@ -859,24 +874,29 @@ async function loadSimilarMedia() {
     }
 
     // Display available similar media
-    availableSimilar.slice(0, 6).forEach(item => {
+    // Sort by vote_average descending to show better-rated similar content first (optional)
+    // availableSimilar.sort((a, b) => (b.vote_average || 0) - (a.vote_average || 0));
+
+    availableSimilar.slice(0, 12).forEach(item => { // Display up to 12 similar items
       const posterPath = item.poster_path 
         ? `https://image.tmdb.org/t/p/w500${item.poster_path}` 
         : 'https://via.placeholder.com/180x270?text=No+Image';
       
-      const title = mediaType === 'tv' ? item.name : item.title;
-      const releaseDate = mediaType === 'tv' ? item.first_air_date : item.release_date;
+      const title = item.title || item.name || 'Untitled'; // Use title for movies, name for series
+      const releaseDate = item.release_date || item.first_air_date; // Use release_date for movies, first_air_date for series
       const formattedDate = formatDate(releaseDate);
-      const type = mediaType === 'tv' ? 'Series' : 'Movie';
+      // Determine type based on the API response if available, otherwise default to current mediaType
+      const itemType = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+      const displayType = itemType === 'tv' ? 'Series' : 'Movie';
       const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
       
       const card = document.createElement('div');
       card.className = 'movie-card';
       card.innerHTML = `
         <div class="poster-wrapper">
-          <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')">
+          <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')" onerror="this.src='https://via.placeholder.com/180x270?text=No+Image'; this.classList.add('loaded');">
           <div class="rating-star">
-            <img src="${starImageUrl}" alt="star">
+            <img src="${starImageUrl}" alt="star icon">
             ${rating}
           </div>
         </div>
@@ -884,18 +904,14 @@ async function loadSimilarMedia() {
           <div class="title">${title}</div>
           <div class="tags">
             <div class="tag">${formattedDate}</div>
-            <div class="tag">${type}</div>
+            <div class="tag">${displayType}</div>
           </div>
         </div>
       `;
       
       card.addEventListener('click', () => {
-        // Ensure clicking similar content navigates to its details page
-        // Need to determine the type ('movie' or 'tv') for similar items
-        // based on the response structure. Assuming 'media_type' or similar field exists.
-        // If not, you might need an additional check or update your JSON data.
-        const similarMediaType = item.media_type || mediaType; // Use media_type from response or current type
-        window.location.href = `[].html?id=${item.id}&type=${similarMediaType}`;
+        // Navigate to the details page for the clicked similar item
+        window.location.href = `[].html?id=${item.id}&type=${itemType}`;
       });
       
       similarContainer.appendChild(card);
@@ -909,12 +925,21 @@ async function loadSimilarMedia() {
 
 function formatDate(dateString) {
   if (!dateString) return 'Unknown';
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', { 
-    month: 'short', 
-    day: 'numeric', 
-    year: 'numeric' 
-  });
+  try {
+    const date = new Date(dateString);
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+    return date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+  } catch (e) {
+    console.error("Error formatting date:", e);
+    return 'Unknown';
+  }
 }
 
 // Initialize
@@ -924,6 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('synopsisText').textContent = 'Please go back and select a movie or TV show.';
     document.getElementById('watchBtn').style.display = 'none';
     document.getElementById('downloadButtonsContainer').innerHTML = ''; // Clear buttons
+    document.getElementById('downloadButtonsContainer').style.display = 'none'; // Hide container
     return;
   }
   
@@ -934,11 +960,14 @@ document.addEventListener('DOMContentLoaded', () => {
 // Disable right-click
 document.addEventListener('contextmenu', e => e.preventDefault());
 
-// Block F12, Ctrl+Shift+I/J/C
+// Block F12, Ctrl+Shift+I/J/C (Developer Tools)
 document.onkeydown = function(e) {
-  if (e.key === "F12" || 
-     (e.ctrlKey && e.shiftKey && 
-      (e.key === "I" || e.key === "J" || e.key === "C"))) {
+  // Using key codes for broader browser compatibility
+  if (e.keyCode === 123 || // F12
+      (e.ctrlKey && e.shiftKey && e.keyCode === 73) || // Ctrl+Shift+I
+      (e.ctrlKey && e.shiftKey && e.keyCode === 74) || // Ctrl+Shift+J
+      (e.ctrlKey && e.keyCode === 85) // Ctrl+U for source view
+    ) {
     e.preventDefault();
     return false;
   }
