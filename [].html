@@ -52,7 +52,7 @@
       --banner-height-desktop: 50vh;
       --banner-height-mobile: 30vh;
       --color-primary: linear-gradient(90deg, #ff4d4d, #f9cb28);
-      --color-secondary: linear-gradient(90deg, #2196F3, #00BCD4);
+      --color-secondary: linear-gradient(90deg, #2196F3, #00BCD4); /* This is the original download button color */
       --bg-dark: #0d0d0d;
       --bg-card: #1a1a1a;
       --text-primary: #fff;
@@ -233,7 +233,8 @@
     }
 
     .btn {
-      background: var(--color-primary);
+      /* Base button styles from your original code */
+      background: var(--color-primary); /* Default primary color */
       border: none;
       color: black;
       font-weight: 700;
@@ -251,31 +252,32 @@
     }
     
     .btn.watch-btn {
-      /* Already styled by .btn with primary color */
+      /* Specific style for watch button - uses primary color */
+      background: var(--color-primary);
     }
     
-    /* Style for the new download quality buttons */
-    .btn.quality-btn {
-      background: var(--bg-card); /* Dark background from card */
-      color: var(--text-primary); /* White text */
-      border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
-      padding: 10px 20px;
-      font-weight: 500; /* Slightly lighter font weight */
-      font-size: 14px;
+    /* Style for the download quality buttons - using the original download-btn style */
+    .btn.download-btn {
+      background: var(--color-secondary); /* Original secondary color for download */
+      color: black; /* Assuming black text like the primary button */
+      font-weight: 700; /* Assuming bold text like the primary button */
+      padding: 12px 20px; /* Slightly adjusted padding for multiple buttons */
+      font-size: 14px; /* Slightly smaller font for multiple buttons */
       min-width: unset; /* Ensure no min-width */
       width: auto; /* Allow button width to adjust to content */
-    }
-
-    .btn.quality-btn:hover {
-      background: rgba(255, 255, 255, 0.1); /* Lighter background on hover */
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(255, 255, 255, 0.05);
+      gap: 6px; /* Slightly smaller gap inside button */
     }
 
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
     }
+    
+    /* Specific hover for download buttons if needed, otherwise use generic .btn:hover */
+    .btn.download-btn:hover {
+      /* Using generic .btn:hover for consistency */
+    }
+
 
     .button-container {
       display: flex;
@@ -291,7 +293,6 @@
       display: flex;
       flex-wrap: wrap; /* Allow quality buttons to wrap within their container */
       gap: 10px; /* Smaller gap between individual quality buttons */
-      /* margin-top: 10px; Removed margin-top here, gap from button-container handles spacing */
       align-items: center; /* Align quality buttons vertically */
     }
 
@@ -480,13 +481,14 @@
       }
 
       .btn {
-        width: 100%; /* Ensure watch button takes full width */
+        width: 100%; /* Ensure buttons take full width */
         padding: 10px;
         font-size: 0.9rem;
       }
       
-      .btn.quality-btn {
-        width: 100%; /* Ensure quality buttons take full width */
+      /* Override specific mobile width if needed, but width: 100% is usually desired when stacked */
+      .btn.download-btn {
+        width: 100%;
       }
 
       .synopsis {
@@ -638,6 +640,7 @@
       <h2 class="synopsis-title">Synopsis</h2>
       <p class="synopsis-text" id="synopsisText">Loading...</p>
     </div>
+    
   </div>
 </div>
 
@@ -650,7 +653,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const mediaId = urlParams.get('id');
 const mediaType = urlParams.get('type') || 'movie';
-const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
+const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa'; // Ensure you have a valid TMDB API key here
 
 // API endpoints
 const detailsUrl = mediaType === 'tv'
@@ -662,7 +665,7 @@ const similarUrl = mediaType === 'tv'
   : `https://api.themoviedb.org/3/movie/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`;
 
 // Star image URL
-const starImageUrl = 'star.png'; // Make sure 'star.png' is in your 'assets/icons' or specified correctly
+const starImageUrl = 'star.png'; // Make sure 'star.png' is accessible at this path
 
 // Back button functionality
 document.getElementById('backBtn').addEventListener('click', () => {
@@ -683,6 +686,7 @@ document.getElementById('homeBtn').addEventListener('click', () => {
 async function loadContentLinks() {
   try {
     // Load both movies and series JSON files
+    // Make sure these files exist and are accessible
     const [moviesResponse, seriesResponse] = await Promise.all([
       fetch('movies.json'),
       fetch('series.json')
@@ -708,6 +712,7 @@ async function loadContentLinks() {
 
     if (!mediaItem) {
       watchBtn.style.display = 'none'; // Hide watch button if media item not found
+      downloadButtonsContainer.style.display = 'none'; // Hide download container
       return;
     }
 
@@ -724,11 +729,25 @@ async function loadContentLinks() {
     if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
       const downloadLinks = Object.entries(mediaItem.download_links);
       
+      // Sort download links by quality (e.g., 720p, 1080p, 4k) - Optional
+      const qualityOrder = ['360p', '480p', '720p', '1080p', '2K', '4K'];
+      downloadLinks.sort((a, b) => {
+        const aIndex = qualityOrder.indexOf(a[0]);
+        const bIndex = qualityOrder.indexOf(b[0]);
+        if (aIndex === -1 && bIndex === -1) return 0;
+        if (aIndex === -1) return 1; // Unknown quality goes last
+        if (bIndex === -1) return -1; // Unknown quality goes last
+        return aIndex - bIndex;
+      });
+
+
       downloadLinks.forEach(([quality, url]) => {
         const downloadBtn = document.createElement('a');
         downloadBtn.href = url;
-        downloadBtn.className = 'btn quality-btn'; // Use custom class for download styling
+        // *** Use the original download-btn class for styling ***
+        downloadBtn.className = 'btn download-btn';
         downloadBtn.target = '_blank';
+        // Use the original download icon and add quality text
         downloadBtn.innerHTML = `<i class="bi bi-download"></i> Download ${quality}`;
         downloadButtonsContainer.appendChild(downloadBtn);
       });
@@ -772,7 +791,7 @@ async function filterAvailableMedia(mediaItems) {
   } catch (error) {
     console.error('Error filtering available media:', error);
     return mediaItems.slice(0, 6); // Fallback to first 6 items if filtering fails
-  }
+    }
 }
 
 async function loadMediaDetails() {
@@ -886,7 +905,7 @@ async function loadSimilarMedia() {
       const releaseDate = item.release_date || item.first_air_date; // Use release_date for movies, first_air_date for series
       const formattedDate = formatDate(releaseDate);
       // Determine type based on the API response if available, otherwise default to current mediaType
-      const itemType = item.media_type || (item.first_air_date ? 'tv' : 'movie');
+      const itemType = item.media_type || (item.first_air_date ? 'tv' : 'movie'); // Fallback if media_type is missing
       const displayType = itemType === 'tv' ? 'Series' : 'Movie';
       const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
       
