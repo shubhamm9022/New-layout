@@ -29,17 +29,17 @@
   <link rel="manifest" href="assets/manifest/site.webmanifest">
   
   <!-- Fonts and Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
   
   <style>
     :root {
-      --desktop-poster-width: 220px;
-      --desktop-poster-height: 330px;
-      --mobile-poster-width: 150px;
-      --mobile-poster-height: 225px;
-      --banner-height-desktop: 50vh;
-      --banner-height-mobile: 30vh;
+      --desktop-poster-width: 240px;
+      --desktop-poster-height: 360px;
+      --mobile-poster-width: 160px;
+      --mobile-poster-height: 240px;
+      --banner-height-desktop: 55vh;
+      --banner-height-mobile: 35vh;
       --color-primary: #ff4d4d;
       --color-primary-gradient: linear-gradient(135deg, #ff4d4d 0%, #f9cb28 100%);
       --color-secondary: #2196F3;
@@ -49,11 +49,19 @@
       --color-1080p: #2196F3;
       --color-4k: #9C27B0;
       --color-cam: #FF5722;
+      --color-hdr: #FF9800;
+      --color-dolby: #E91E63;
+      --color-imax: #00BCD4;
       --bg-dark: #0d0d0d;
       --bg-card: #1a1a1a;
+      --bg-card-hover: #252525;
       --text-primary: #fff;
+      --text-secondary: rgba(255, 255, 255, 0.8);
+      --text-tertiary: rgba(255, 255, 255, 0.6);
       --btn-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       --btn-hover-shadow: 0 6px 20px rgba(25, 118, 210, 0.3);
+      --border-radius: 12px;
+      --transition: all 0.3s ease;
     }
 
     * {
@@ -67,10 +75,12 @@
       background: var(--bg-dark);
       color: var(--text-primary);
       font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
       padding: 0;
       -webkit-user-select: none;
       -moz-user-select: none;
       user-select: none;
+      overflow-x: hidden;
     }
 
     img, video {
@@ -79,75 +89,69 @@
       -webkit-user-drag: none;
     }
 
-    /* Back button */
+    /* Navigation Buttons */
+    .nav-btn {
+      position: fixed;
+      top: 20px;
+      z-index: 10;
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
     .back-btn {
-      position: fixed;
-      top: 20px;
       left: 20px;
-      z-index: 10;
-      background: rgba(30, 30, 30, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
     }
 
-    /* Home button */
     .home-btn {
-      position: fixed;
-      top: 20px;
       right: 20px;
-      z-index: 10;
-      background: rgba(30, 30, 30, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
     }
 
-    .back-btn:hover, .home-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
+    /* Banner Section */
     .banner {
       position: relative;
       width: 100%;
       height: var(--banner-height-desktop);
-      max-height: 400px;
-      min-height: 300px;
+      max-height: 500px;
+      min-height: 350px;
       background: #1a1a1a;
       background-size: cover;
       background-position: center;
+      background-repeat: no-repeat;
+      overflow: hidden;
     }
 
     .banner::after {
       content: "";
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8));
+      top: 0; 
+      left: 0;
+      width: 100%; 
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.9));
+      z-index: 1;
     }
 
+    /* Main Content Container */
     .movie-container {
-      max-width: 1100px;
-      margin: -100px auto 0;
+      max-width: 1200px;
+      margin: -120px auto 0;
       padding: 20px;
       display: flex;
       flex-direction: column;
@@ -156,14 +160,30 @@
       z-index: 2;
     }
 
+    @media (min-width: 992px) {
+      .movie-container {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 30px;
+      }
+    }
+
+    /* Poster Styles */
     .poster {
-      width: 250px;
-      height: 375px;
-      border-radius: 12px;
+      width: var(--desktop-poster-width);
+      height: var(--desktop-poster-height);
+      border-radius: var(--border-radius);
       overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.7);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
       margin-bottom: 20px;
       position: relative;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .poster:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
     }
 
     .poster img {
@@ -173,42 +193,56 @@
       transition: opacity 0.5s;
       opacity: 0;
     }
-    .poster img.loaded { opacity: 1; }
+    
+    .poster img.loaded { 
+      opacity: 1;
+    }
 
+    /* Movie Details Section */
     .movie-details {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 15px;
       align-items: flex-start;
-      margin-top: 10px;
     }
 
     .movie-title {
-      font-size: 24px;
+      font-size: 2.2rem;
       font-weight: 700;
       margin: 0;
       line-height: 1.2;
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(90deg, #fff, #aaa);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .info-tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 10px;
+      margin-top: 5px;
       align-items: center;
     }
 
     .tag {
       background: #1f1f1f;
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 999px;
-      font-size: 12px;
+      font-size: 0.85rem;
       font-weight: 500;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       white-space: nowrap;
+      transition: var(--transition);
+    }
+
+    .tag:hover {
+      transform: translateY(-2px);
     }
 
     .tag.movie-type {
@@ -224,14 +258,16 @@
     }
 
     .rating-tag {
-      background: #1f1f1f;
-      padding: 5px 12px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 6px 14px;
       border-radius: 999px;
-      font-size: 12px;
-      font-weight: 500;
+      font-size: 0.85rem;
+      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .rating-tag i {
@@ -240,30 +276,34 @@
 
     /* Quality Tag Styles */
     .quality-tag {
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
       font-weight: 700;
       margin-left: 5px;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .quality-720p { background-color: var(--color-720p); }
     .quality-1080p { background-color: var(--color-1080p); }
     .quality-4k { background-color: var(--color-4k); }
     .quality-cam { background-color: var(--color-cam); }
+    .quality-hdr { background-color: var(--color-hdr); }
+    .quality-dolby { background-color: var(--color-dolby); }
+    .quality-imax { background-color: var(--color-imax); }
 
     /* Button Styles */
     .btn {
       border: none;
       color: white;
-      font-weight: 700;
+      font-weight: 600;
       padding: 12px 25px;
-      font-size: 16px;
-      border-radius: 10px;
+      font-size: 0.95rem;
+      border-radius: var(--border-radius);
       cursor: pointer;
       text-decoration: none;
-      transition: all 0.3s;
+      transition: var(--transition);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -272,6 +312,8 @@
       box-shadow: var(--btn-shadow);
       position: relative;
       overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .btn::before {
@@ -281,7 +323,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
+      background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
       opacity: 0;
       transition: opacity 0.3s;
     }
@@ -290,33 +332,37 @@
       opacity: 1;
     }
 
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
     .btn-watch {
       background: var(--color-primary-gradient);
       color: black;
-      font-size: 16px;
-      padding: 12px 30px;
+      font-weight: 700;
     }
 
     .btn-watch:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(255, 77, 77, 0.3);
+      box-shadow: 0 6px 20px rgba(255, 77, 77, 0.4);
     }
 
     .btn-download {
       background: var(--color-secondary-gradient);
-      font-size: 16px;
-      padding: 12px 30px;
+      font-weight: 700;
     }
 
     .btn-download:hover {
-      transform: translateY(-3px);
       box-shadow: var(--btn-hover-shadow);
     }
 
     .btn-quality {
-      min-width: 120px;
-      padding: 10px 15px;
-      font-size: 14px;
+      min-width: 130px;
+      padding: 10px 20px;
+      font-size: 0.85rem;
       font-weight: 600;
     }
 
@@ -324,16 +370,19 @@
     .btn-quality-1080p { background-color: var(--color-1080p); }
     .btn-quality-4k { background-color: var(--color-4k); }
     .btn-quality-cam { background-color: var(--color-cam); }
+    .btn-quality-hdr { background-color: var(--color-hdr); }
+    .btn-quality-dolby { background-color: var(--color-dolby); }
+    .btn-quality-imax { background-color: var(--color-imax); }
 
     .btn-season {
       background: var(--color-season);
       min-width: 180px;
       margin-bottom: 10px;
+      font-weight: 700;
     }
 
     .btn-season:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(106, 17, 203, 0.3);
+      box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
     }
 
     .season-quality-btn {
@@ -345,7 +394,7 @@
     .button-container {
       display: flex;
       gap: 15px;
-      margin-top: 15px;
+      margin-top: 20px;
       width: 100%;
       flex-wrap: wrap;
     }
@@ -353,7 +402,7 @@
     .download-options {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 10px;
       width: 100%;
     }
 
@@ -362,72 +411,199 @@
       flex-direction: column;
       margin-bottom: 15px;
       border-left: 3px solid #2575fc;
-      padding-left: 10px;
+      padding-left: 15px;
+      width: 100%;
     }
 
     .no-options {
-      color: #aaa;
-      font-size: 14px;
+      color: var(--text-tertiary);
+      font-size: 0.9rem;
       padding: 10px 0;
+      font-style: italic;
     }
 
+    /* Synopsis Section */
     .synopsis {
       margin-top: 30px;
       width: 100%;
     }
 
     .synopsis-title {
-      font-size: 20px;
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      color: var(--text-primary);
+      position: relative;
+      padding-bottom: 8px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .synopsis-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--color-primary-gradient);
+      border-radius: 3px;
     }
 
     .synopsis-text {
-      font-size: 14px;
-      line-height: 1.6;
-      opacity: 0.85;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    /* Additional Info Section */
+    .additional-info {
+      margin-top: 30px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .info-block {
+      background: rgba(30, 30, 30, 0.5);
+      border-radius: var(--border-radius);
+      padding: 15px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .info-title {
+      font-size: 0.85rem;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .info-content {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Cast Section */
+    .cast-section {
+      margin-top: 40px;
+      width: 100%;
+    }
+
+    .cast-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      position: relative;
+      padding-bottom: 8px;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .cast-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--color-primary-gradient);
+      border-radius: 3px;
+    }
+
+    .cast-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 20px;
+    }
+
+    .cast-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .cast-photo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      transition: var(--transition);
+    }
+
+    .cast-photo:hover {
+      transform: scale(1.05);
+      border-color: var(--color-primary);
+    }
+
+    .cast-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .cast-character {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
     }
 
     /* Similar movies grid */
     .similar-section {
-      margin-top: 50px;
-      padding: 0 20px 30px;
-      max-width: 1100px;
+      margin-top: 60px;
+      padding: 0 20px 40px;
+      max-width: 1200px;
       margin-left: auto;
       margin-right: auto;
       width: 100%;
     }
 
     .similar-title {
-      font-size: 20px;
+      font-size: 1.5rem;
       font-weight: 700;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       padding-left: 10px;
+      position: relative;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .similar-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 10px;
+      width: 60px;
+      height: 3px;
+      background: var(--color-primary-gradient);
+      border-radius: 3px;
     }
 
     .similar-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 25px;
       justify-items: center;
-      padding: 0 10px;
     }
 
     .movie-card {
       position: relative;
       width: 100%;
-      max-width: 200px;
       background: var(--bg-card);
-      border-radius: 10px;
+      border-radius: var(--border-radius);
       overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
-      transition: transform 0.4s, box-shadow 0.4s;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+      transition: var(--transition);
       cursor: pointer;
     }
 
     .movie-card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+      transform: translateY(-5px);
+      background: var(--bg-card-hover);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.9);
     }
 
     .poster-wrapper {
@@ -446,37 +622,43 @@
       opacity: 0;
     }
 
-    .movie-poster.loaded { opacity: 1; }
+    .movie-poster.loaded { 
+      opacity: 1;
+    }
 
     .rating-star {
       position: absolute;
-      bottom: 8px;
-      left: 8px;
+      bottom: 10px;
+      left: 10px;
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 2px 6px;
+      gap: 5px;
+      padding: 4px 10px;
       border-radius: 20px;
       background: rgba(0, 0, 0, 0.7);
-      font-size: 11px;
+      font-size: 0.8rem;
       font-weight: 600;
       color: #fff;
       backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .rating-star img { width: 14px; height: 14px; }
+    .rating-star i { 
+      color: #FFD700;
+      font-size: 0.8rem;
+    }
 
     .movie-info {
-      padding: 10px;
+      padding: 15px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
 
     .title {
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.3em;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.3;
       max-height: 2.6em;
       overflow: hidden;
       display: -webkit-box;
@@ -488,76 +670,111 @@
     .tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
-      font-size: 11px;
-      opacity: 0.9;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
     }
 
     .tag {
-      padding: 2px 6px;
+      padding: 3px 8px;
       border-radius: 5px;
       background: #333;
+      font-size: 0.7rem;
     }
 
-    .tag.hd { background: #4CAF50; }
-    .tag.cam { background: #FF5722; }
-    .tag.fhd { background: #2196F3; }
-    .tag._4k { background: #9C27B0; }
-    .tag.zip { background: #1976D2; }
+    .tag.hd { background: var(--color-720p); }
+    .tag.cam { background: var(--color-cam); }
+    .tag.fhd { background: var(--color-1080p); }
+    .tag._4k { background: var(--color-4k); }
+    .tag.zip { background: var(--color-secondary); }
+    .tag.hdr { background: var(--color-hdr); }
+    .tag.dolby { background: var(--color-dolby); }
+    .tag.imax { background: var(--color-imax); }
+
+    /* Loading Animation */
+    .loading-skeleton {
+      animation: pulse 1.5s infinite ease-in-out;
+      background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%);
+      background-size: 200% 100%;
+      border-radius: 4px;
+    }
+
+    @keyframes pulse {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
 
     /* Mobile Responsive Styles */
+    @media (max-width: 991px) {
+      .movie-container {
+        margin-top: -100px;
+      }
+      
+      .poster {
+        width: var(--mobile-poster-width);
+        height: var(--mobile-poster-height);
+      }
+      
+      .movie-title {
+        font-size: 1.8rem;
+        text-align: center;
+      }
+      
+      .info-tags {
+        justify-content: center;
+      }
+    }
+
     @media (max-width: 767px) {
+      :root {
+        --border-radius: 10px;
+      }
+      
       body {
         font-size: 14px;
       }
 
       .banner {
         height: var(--banner-height-mobile);
-        min-height: 200px;
-        max-height: 250px;
+        min-height: 250px;
+        max-height: 300px;
       }
 
       .movie-container {
         margin-top: -80px;
-        padding: 12px;
+        padding: 15px;
       }
 
       .poster {
-        width: 170px;
-        height: 255px;
+        width: 160px;
+        height: 240px;
       }
 
       .movie-title {
-        font-size: 1.5rem;
-        text-align: center;
-        margin-bottom: 8px;
+        font-size: 1.6rem;
       }
 
       .info-tags {
-        justify-content: center;
-        gap: 5px;
-        margin-bottom: 8px;
+        gap: 8px;
       }
 
       .tag, .rating-tag {
         font-size: 0.75rem;
-        padding: 3px 8px;
+        padding: 5px 12px;
       }
 
       .button-container {
         flex-direction: column;
-        gap: 8px;
-        margin: 12px 0;
+        gap: 10px;
       }
 
       .btn-watch, .btn-download {
         width: 100%;
         padding: 12px;
-        font-size: 0.9rem;
       }
       
       .download-options {
-        flex-direction: column;
+        gap: 8px;
       }
 
       .btn-quality, .season-quality-btn {
@@ -566,79 +783,87 @@
       }
 
       .synopsis {
-        margin-top: 15px;
+        margin-top: 20px;
       }
 
       .synopsis-title {
-        font-size: 1.2rem;
-        margin-bottom: 8px;
+        font-size: 1.3rem;
       }
 
       .synopsis-text {
-        font-size: 0.85rem;
-        line-height: 1.5;
+        font-size: 0.9rem;
       }
 
       .similar-section {
-        margin-top: 30px;
-        padding: 0 12px 20px;
+        margin-top: 40px;
+        padding: 0 15px 30px;
       }
 
       .similar-title {
-        font-size: 1.2rem;
-        margin-bottom: 15px;
+        font-size: 1.3rem;
       }
 
       .similar-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
+      }
+      
+      .poster-wrapper {
+        height: 220px;
+      }
+
+      .nav-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        top: 15px;
+      }
+      .back-btn {
+        left: 15px;
+      }
+      .home-btn {
+        right: 15px;
+      }
+      
+      .additional-info {
+        grid-template-columns: 1fr;
+      }
+      
+      .cast-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 15px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .similar-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
         gap: 15px;
       }
       
       .poster-wrapper {
         height: 200px;
       }
-
-      .movie-info {
-        padding: 8px;
+      
+      .movie-title {
+        font-size: 1.5rem;
       }
-
-      .title {
-        font-size: 0.8rem;
-      }
-
-      .tags {
-        font-size: 0.7rem;
-      }
-
-      .back-btn, .home-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-        top: 10px;
-      }
-      .back-btn {
-        left: 10px;
-      }
-      .home-btn {
-        right: 10px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .similar-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      
+      .cast-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
         gap: 12px;
       }
       
-      .poster-wrapper {
-        height: 180px;
+      .cast-photo {
+        width: 70px;
+        height: 70px;
       }
     }
 
     @media (max-width: 360px) {
       .poster {
-        width: 150px;
-        height: 225px;
+        width: 140px;
+        height: 210px;
       }
 
       .similar-grid {
@@ -646,7 +871,11 @@
       }
 
       .poster-wrapper {
-        height: 240px;
+        height: 180px;
+      }
+      
+      .movie-title {
+        font-size: 1.4rem;
       }
     }
   </style>
@@ -655,10 +884,10 @@
 <body>
 
 <div class="banner" id="banner">
-  <div class="back-btn" id="backBtn">
+  <div class="nav-btn back-btn" id="backBtn">
     <i class="bi bi-arrow-left"></i>
   </div>
-  <div class="home-btn" id="homeBtn">
+  <div class="nav-btn home-btn" id="homeBtn">
     <i class="bi bi-house-door"></i>
   </div>
 </div>
@@ -684,6 +913,10 @@
       <h2 class="synopsis-title">Synopsis</h2>
       <p class="synopsis-text" id="synopsisText">Loading...</p>
     </div>
+    
+    <div class="additional-info" id="additionalInfo"></div>
+    
+    <div class="cast-section" id="castSection"></div>
   </div>
 </div>
 
@@ -701,15 +934,12 @@ const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
 
 // API endpoints
 const detailsUrl = mediaType === 'tv'
-  ? `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US`
-  : `https://api.themoviedb.org/3/movie/${mediaId}?api_key=${apiKey}&language=en-US`;
+  ? `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US&append_to_response=credits`
+  : `https://api.themoviedb.org/3/movie/${mediaId}?api_key=${apiKey}&language=en-US&append_to_response=credits`;
 
 const similarUrl = mediaType === 'tv'
   ? `https://api.themoviedb.org/3/tv/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`
   : `https://api.themoviedb.org/3/movie/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`;
-
-// Star image URL
-const starImageUrl = 'star.png';
 
 // Back button functionality
 document.getElementById('backBtn').addEventListener('click', () => {
@@ -926,6 +1156,75 @@ async function loadMediaDetails() {
     // Synopsis
     document.getElementById('synopsisText').textContent = media.overview || "No synopsis available.";
 
+    // Additional Info
+    const additionalInfo = document.getElementById('additionalInfo');
+    additionalInfo.innerHTML = '';
+    
+    if (mediaType === 'tv') {
+      additionalInfo.innerHTML = `
+        <div class="info-block">
+          <div class="info-title">Status</div>
+          <div class="info-content">${media.status || 'N/A'}</div>
+        </div>
+        <div class="info-block">
+          <div class="info-title">Last Air Date</div>
+          <div class="info-content">${media.last_air_date ? formatDate(media.last_air_date) : 'N/A'}</div>
+        </div>
+        <div class="info-block">
+          <div class="info-title">Episodes</div>
+          <div class="info-content">${media.number_of_episodes || 'N/A'}</div>
+        </div>
+        <div class="info-block">
+          <div class="info-title">Seasons</div>
+          <div class="info-content">${media.number_of_seasons || 'N/A'}</div>
+        </div>
+      `;
+    } else {
+      additionalInfo.innerHTML = `
+        <div class="info-block">
+          <div class="info-title">Status</div>
+          <div class="info-content">${media.status || 'N/A'}</div>
+        </div>
+        <div class="info-block">
+          <div class="info-title">Release Date</div>
+          <div class="info-content">${media.release_date ? formatDate(media.release_date) : 'N/A'}</div>
+        </div>
+        <div class="info-block">
+          <div class="info-title">Runtime</div>
+          <div class="info-content">${media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A'}</div>
+        </div>
+        <div class="info-block">
+          <div class="info-title">Budget</div>
+          <div class="info-content">${media.budget ? formatCurrency(media.budget) : 'N/A'}</div>
+        </div>
+      `;
+    }
+    
+    // Cast Section
+    if (media.credits && media.credits.cast && media.credits.cast.length > 0) {
+      const castSection = document.getElementById('castSection');
+      castSection.innerHTML = `
+        <h2 class="cast-title">Cast</h2>
+        <div class="cast-grid" id="castGrid"></div>
+      `;
+      
+      const castGrid = document.getElementById('castGrid');
+      media.credits.cast.slice(0, 10).forEach(person => {
+        const castCard = document.createElement('div');
+        castCard.className = 'cast-card';
+        castCard.innerHTML = `
+          <img class="cast-photo" src="${
+            person.profile_path 
+              ? `https://image.tmdb.org/t/p/w200${person.profile_path}`
+              : 'https://via.placeholder.com/200x200?text=No+Image'
+          }" alt="${person.name}" onerror="this.src='https://via.placeholder.com/200x200?text=No+Image'">
+          <div class="cast-name">${person.name}</div>
+          <div class="cast-character">${person.character || 'N/A'}</div>
+        `;
+        castGrid.appendChild(castCard);
+      });
+    }
+
     // Load content links from JSON
     await loadContentLinks();
 
@@ -978,7 +1277,7 @@ async function loadSimilarMedia() {
         <div class="poster-wrapper">
           <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')">
           <div class="rating-star">
-            <img src="${starImageUrl}" alt="star">
+            <i class="bi bi-star-fill"></i>
             ${rating}
           </div>
         </div>
@@ -1013,6 +1312,14 @@ function formatDate(dateString) {
     day: 'numeric', 
     year: 'numeric' 
   });
+}
+
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  }).format(amount);
 }
 
 // Initialize
