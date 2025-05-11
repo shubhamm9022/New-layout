@@ -1,9 +1,9 @@
 name: Update JSON from Google Sheets
 
 on:
+  workflow_dispatch:  # Allows manual trigger via GitHub UI
   schedule:
-    - cron: "0 0 * * *" # every day at 12 AM
-  workflow_dispatch:
+    - cron: "0 0 * * 0"  # Every Sunday at 12 AM (UTC)
 
 jobs:
   update-json:
