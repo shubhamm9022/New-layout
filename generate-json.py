@@ -30,37 +30,50 @@ def create_movie_json():
             "download_links": parse_download_links(row.get("main_downloads", ""))
         }
         if movie["id"]:  # Only add if ID exists
-            movies.insert(0, movie)
+            movies.insert(0, movie)  # Latest first
     with open("movies.json", "w", encoding="utf-8") as f:
         json.dump({"movies": movies}, f, indent=2, ensure_ascii=False)
 
 def create_series_json():
     data = fetch_data(SERIES_URL)
     series = []
+    
     for row in data:
-        series_entry = {
-            "id": int(row.get("IDs", 0)) if row.get("IDs") else 0,
-            "title": row.get("time_id", ""),
-            "stream_link": row.get("stream_link", ""),
-            "download_links": parse_download_links(row.get("main_downloads", "")),
-            "seasons": {}
-        }
-        
-        # Process sessions (seasons) 1-8
-        for season_num in range(1, 9):
-            session_key = f"session_{season_num}"
-            if session_key in row:
-                season_links = parse_download_links(row[session_key])
-                if season_links:
-                    series_entry["seasons"][str(season_num)] = {
-                        "download_links": season_links
-                    }
-        
-        if series_entry["id"]:  # Only add if ID exists
-            series.insert(0, series_entry)
+        # Skip rows without IDs or with empty IDs
+        if not row.get("IDs") or str(row.get("IDs", "")).strip() == "":
+            continue
+            
+        try:
+            series_entry = {
+                "id": int(row["IDs"]),
+                "title": row.get("time_id", "Untitled Series").strip(),
+                "stream_link": row.get("stream_link", "").strip(),
+                "download_links": parse_download_links(row.get("main_downloads", "")),
+                "seasons": {}
+            }
+            
+            # Process all available seasons (session_1 to session_8)
+            for season_num in range(1, 9):
+                session_key = f"session_{season_num}"
+                session_value = row.get(session_key, "").strip()
+                if session_value:
+                    season_data = parse_download_links(session_value)
+                    if season_data:
+                        series_entry["seasons"][str(season_num)] = {
+                            "download_links": season_data
+                        }
+            
+            # Only add if we have either main downloads or season downloads
+            if series_entry["download_links"] or series_entry["seasons"]:
+                series.insert(0, series_entry)  # Insert newest first
+                
+        except (ValueError, KeyError) as e:
+            print(f"Skipping row due to error: {e}")
+            continue
     
     with open("series.json", "w", encoding="utf-8") as f:
         json.dump({"series": series}, f, indent=2, ensure_ascii=False)
+    print(f"Successfully processed {len(series)} series entries")
 
 create_movie_json()
 create_series_json()
