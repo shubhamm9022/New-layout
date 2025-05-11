@@ -45,13 +45,13 @@
       "stream_link": "https://example.com/stream/weak-hero",
       "available_qualities": ["FHD", "1080p"],
       "download_links": {
-        "FHD": "https://gplinks.co/weakhero-fhd",
+        "720p": "https://gplinks.co/weakhero-fhd",
         "1080p": "https://gplinks.co/weakhero-1080p"
       },
       "seasons": {
         "1": {
           "download_links": {
-            "FHD": "https://gplinks.co/weakhero-s1-fhd",
+            "720p": "https://gplinks.co/weakhero-s1-fhd",
             "1080p": "https://gplinks.co/weakhero-s1-1080p"
           }
         }
