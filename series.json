@@ -1,34 +1,10 @@
 {
   "series": [
     {
-      "id": 1399,
-      "title": "Game of Thrones",
-      "available_qualities": ["1080p", "720p", "4K", "HDR"],
-      "stream_link": "https://example.com/stream/got",
-      "download_links": {
-        "1080p": "https://gplinks.co/got-all-1080p",
-        "720p": "https://gplinks.co/got-all-720p"
-      },
-      "seasons": {
-        "1": {
-          "download_links": {
-            "1080p": "https://gplinks.co/got-s1-1080p",
-            "720p": "https://gplinks.co/got-s1-720p"
-          }
-        },
-        "2": {
-          "download_links": {
-            "4K": "https://gplinks.co/got-s2-4k",
-            "HDR": "https://gplinks.co/got-s2-hdr"
-          }
-        }
-      }
-    },
-    {
       "id": 1101,
       "title": "My So-Called Life",
-      "available_qualities": ["HD"],
       "stream_link": "",
+      "available_qualities": ["HD"],
       "download_links": {
         "HD": "https://gplinks.co/mscl-hd"
       },
@@ -41,10 +17,33 @@
       }
     },
     {
+      "id": 1399,
+      "title": "Game of Thrones",
+      "stream_link": "https://example.com/stream/got",
+      "available_qualities": ["720p", "1080p", "4K"],
+      "download_links": {
+        "720p": "https://gplinks.co/got-720p",
+        "1080p": "https://gplinks.co/got-1080p"
+      },
+      "seasons": {
+        "1": {
+          "download_links": {
+            "720p": "https://gplinks.co/got-s1-720p",
+            "1080p": "https://gplinks.co/got-s1-1080p"
+          }
+        },
+        "2": {
+          "download_links": {
+            "4K": "https://gplinks.co/got-s2-4k"
+          }
+        }
+      }
+    },
+    {
       "id": 200709,
       "title": "Weak Hero",
-      "available_qualities": ["FHD", "1080p"],
       "stream_link": "https://example.com/stream/weak-hero",
+      "available_qualities": ["FHD", "1080p"],
       "download_links": {
         "FHD": "https://gplinks.co/weakhero-fhd",
         "1080p": "https://gplinks.co/weakhero-1080p"
@@ -54,29 +53,6 @@
           "download_links": {
             "FHD": "https://gplinks.co/weakhero-s1-fhd",
             "1080p": "https://gplinks.co/weakhero-s1-1080p"
-          }
-        }
-      }
-    },
-    {
-      "id": 82856,
-      "title": "The Mandalorian",
-      "available_qualities": ["4K", "Dolby", "1080p"],
-      "stream_link": "https://example.com/stream/mandalorian",
-      "download_links": {
-        "4K": "https://gplinks.co/mando-4k",
-        "Dolby": "https://gplinks.co/mando-dolby"
-      },
-      "seasons": {
-        "1": {
-          "download_links": {
-            "1080p": "https://gplinks.co/mando-s1-1080p"
-          }
-        },
-        "2": {
-          "download_links": {
-            "4K": "https://gplinks.co/mando-s2-4k",
-            "Dolby": "https://gplinks.co/mando-s2-dolby"
           }
         }
       }
