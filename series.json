@@ -4,91 +4,16 @@
       "id": 1101,
       "title": "My So-Called Life",
       "stream_link": "",
-      "seasons": {
-        "1": {
-          "download_links": {
-            "HD": "https://gplinks.co/season1-hd",
-            "FHD": "https://gplinks.co/season1-fhd",
-            "4K": "https://gplinks.co/season1-4k"
-          }
-        },
-        "2": {
-          "download_links": {
-            "HD": "https://gplinks.co/season2-hd",
-            "FHD": "https://gplinks.co/season2-fhd"
-          }
-        },
-        "Special": {
-          "download_links": {
-            "HD": "https://gplinks.co/special-hd",
-            "FHD": "https://gplinks.co/special-fhd",
-            "4K": "https://gplinks.co/special-4k"
-          }
-        }
+      "download_links": {
+        "HD": "https://gplinks.co/eqGf5I"
       }
     },
     {
       "id": 200709,
       "title": "Weak Hero",
       "stream_link": "https://gplinks.co/eqGf5I",
-      "seasons": {
-        "1": {
-          "download_links": {
-            "HD": "https://gplinks.co/weakhero-s1-hd",
-            "FHD": "https://gplinks.co/weakhero-s1-fhd"
-          }
-        },
-        "2": {
-          "download_links": {
-            "HD": "https://gplinks.co/weakhero-s2-hd",
-            "FHD": "https://gplinks.co/weakhero-s2-fhd",
-            "4K": "https://gplinks.co/weakhero-s2-4k"
-          }
-        }
-      }
-    },
-    {
-      "id": 45678,
-      "title": "Test Series with One Season",
-      "stream_link": "https://gplinks.co/testseries",
-      "seasons": {
-        "1": {
-          "download_links": {
-            "HD": "https://gplinks.co/test-s1-hd",
-            "4K": "https://gplinks.co/test-s1-4k"
-          }
-        }
-      }
-    },
-    {
-      "id": 98765,
-      "title": "Multi-Season Show",
-      "stream_link": "",
-      "seasons": {
-        "1": {
-          "download_links": {
-            "HD": "https://gplinks.co/multi-s1-hd"
-          }
-        },
-        "2": {
-          "download_links": {
-            "HD": "https://gplinks.co/multi-s2-hd",
-            "FHD": "https://gplinks.co/multi-s2-fhd"
-          }
-        },
-        "3": {
-          "download_links": {
-            "HD": "https://gplinks.co/multi-s3-hd",
-            "FHD": "https://gplinks.co/multi-s3-fhd",
-            "4K": "https://gplinks.co/multi-s3-4k"
-          }
-        },
-        "4": {
-          "download_links": {
-            "FHD": "https://gplinks.co/multi-s4-fhd",
-            "4K": "https://gplinks.co/multi-s4-4k"
-          }
-        }
+      "download_links": {
+        "FHD": "https://gplinks.co/eqGf5I"
       }
     }
   ]
