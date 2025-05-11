@@ -94,16 +94,17 @@
       color: white;
     }
     img, video {
-  pointer-events: none;
-  user-drag: none;
-  -webkit-user-drag: none;
-}
+      pointer-events: none;
+      user-drag: none;
+      -webkit-user-drag: none;
+    }
 
-body {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+    
     /* HEADER */
     header {
       position: fixed;
@@ -189,28 +190,30 @@ body {
       align-items: center;
       gap: 20px;
     }
+    
     .telegram-icon {
-  font-size: 18px;
-  color: #ffffff;
-  transition: all 0.3s ease;
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  text-decoration: none;
-  position: relative;
-}
+      font-size: 18px;
+      color: #ffffff;
+      transition: all 0.3s ease;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      text-decoration: none;
+      position: relative;
+    }
 
-.telegram-icon i {
-  font-size: 18px;
-  line-height: 1;
-}
+    .telegram-icon i {
+      font-size: 18px;
+      line-height: 1;
+    }
 
-.telegram-icon:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
+    .telegram-icon:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
     .search-icon {
       font-size: 16px;
       color: rgba(255, 255, 255, 0.8);
@@ -529,10 +532,15 @@ body {
       background: #333;
     }
     
-    .tag.hd { background: #4CAF50; }
-    .tag.cam { background: #FF5722; }
-    .tag.fhd { background: #2196F3; }
-    .tag.uhd { background: #9C27B0; }
+    /* Quality Tag Styles - Consistent for both movies and series */
+    .tag.hd { background: #4CAF50; }       /* 720p - Green */
+    .tag.fhd { background: #2196F3; }      /* 1080p - Blue */
+    .tag.uhd { background: #9C27B0; }      /* 4K - Purple */
+    .tag.hdr { background: #FF9800; }      /* HDR - Orange */
+    .tag.dolby { background: #E91E63; }    /* Dolby - Pink */
+    .tag.imax { background: #00BCD4; }     /* IMAX - Cyan */
+    .tag.cam { background: #FF5722; }      /* CAM - Deep Orange */
+    .tag.zip { background: #6a11cb; }      /* ZIP - Purple gradient (for series) */
     
     /* PAGINATION */
     .pagination {
@@ -744,7 +752,7 @@ body {
       <i class="fas fa-bullhorn"></i>
     </div>
     <div class="notice-content">
-      <strong>Important Notice:</strong> "If the site isn’t loading, change the DNS and try again."
+      <strong>Important Notice:</strong> "If the site isn't loading, change the DNS and try again."
     </div>
   </div>
 
@@ -880,7 +888,7 @@ body {
     document.querySelector('nav a:nth-child(2)').classList.add('active');
   });
   
-  // Updated movie/TV series fetching
+  // Updated movie/TV series fetching with consistent quality tags
   const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
   const moviesContainer = document.getElementById('movies-container');
   const loader = document.getElementById('loader');
@@ -889,6 +897,18 @@ body {
   const prevBtn = document.querySelector('.prev-btn');
   const nextBtn = document.querySelector('.next-btn');
   
+  // Quality tag colors (consistent for both movies and series)
+  const qualityColors = {
+    '720p': '#4CAF50',  // Green
+    '1080p': '#2196F3', // Blue
+    '4k': '#9C27B0',    // Purple
+    'hdr': '#FF9800',   // Orange
+    'dolby': '#E91E63', // Pink
+    'imax': '#00BCD4',  // Cyan
+    'cam': '#FF5722',   // Deep Orange
+    'zip': '#6a11cb'    // Purple gradient (for series)
+  };
+
   const starImageUrl = 'star.png';
   let allMedia = [];
   let currentPage = 1;
@@ -957,46 +977,46 @@ body {
     }
   }
 
-function generateStructuredData(mediaItems) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": mediaItems.map((item, index) => {
-      const schema = {
-        "@type": "ListItem",
-        "position": index + 1,
-        "item": {
-          "@type": item.type === 'tv' ? 'TVSeries' : 'Movie',
-          "name": item.title || item.name,
-          "url": `https://moviesvault.fun/[].html?id=${item.id}&type=${item.type}`,
-          "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
-          "description": item.overview || 'No description available',
-          "datePublished": item.release_date || item.first_air_date,
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": item.vote_average?.toFixed(1) || "N/A",
-            "bestRating": "10",
-            "ratingCount": item.vote_count || 0
-          },
-          "genre": item.genres?.map(g => g.name) || []
+  function generateStructuredData(mediaItems) {
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": mediaItems.map((item, index) => {
+        const schema = {
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": item.type === 'tv' ? 'TVSeries' : 'Movie',
+            "name": item.title || item.name,
+            "url": `https://moviesvault.fun/details.html?id=${item.id}&type=${item.type}`,
+            "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
+            "description": item.overview || 'No description available',
+            "datePublished": item.release_date || item.first_air_date,
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": item.vote_average?.toFixed(1) || "N/A",
+              "bestRating": "10",
+              "ratingCount": item.vote_count || 0
+            },
+            "genre": item.genres?.map(g => g.name) || []
+          }
+        };
+
+        // Add VideoObject schema if streaming link exists
+        if (item.stream_link) {
+          schema.item.contentUrl = item.stream_link;
+          schema.item.embedUrl = item.stream_link;
         }
-      };
 
-      // Add VideoObject schema if streaming link exists
-      if (item.stream_link) {
-        schema.item.contentUrl = item.stream_link;
-        schema.item.embedUrl = item.stream_link;
-      }
+        return schema;
+      })
+    };
 
-      return schema;
-    })
-  };
-
-  const script = document.createElement('script');
-  script.type = 'application/ld+json';
-  script.text = JSON.stringify(structuredData);
-  document.head.appendChild(script);
-}
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+  }
 
   function displayMedia(filteredMedia = allMedia) {
     moviesContainer.innerHTML = '';
@@ -1039,9 +1059,18 @@ function generateStructuredData(mediaItems) {
           <div class="tags">
             <div class="tag" itemprop="dateCreated">${formattedDate}</div>
             ${media.download_links ? Object.keys(media.download_links)
-              .map(quality => `<div class="tag ${quality.toLowerCase()}">${quality}</div>`)
+              .map(quality => {
+                // Normalize quality names for consistent styling
+                const normalizedQuality = quality.toLowerCase().replace(' ', '');
+                const tagClass = normalizedQuality === '4k' ? 'uhd' : 
+                               normalizedQuality === '1080p' ? 'fhd' : 
+                               normalizedQuality === '720p' ? 'hd' : 
+                               normalizedQuality;
+                return `<div class="tag ${tagClass}">${quality}</div>`;
+              })
               .join('') : ''}
             <div class="tag">${type}</div>
+            ${media.media_type === 'tv' ? '<div class="tag zip">ZIP</div>' : ''}
           </div>
           <meta itemprop="description" content="${media.overview || 'No description available'}">
         </div>
@@ -1056,7 +1085,7 @@ function generateStructuredData(mediaItems) {
           stream_link: media.stream_link,
           download_links: media.download_links
         }));
-        window.location.href = `[].html?id=${media.id}&type=${media.media_type}`;
+        window.location.href = `details.html?id=${media.id}&type=${media.media_type}`;
       });
       
       moviesContainer.appendChild(card);
@@ -1166,4 +1195,3 @@ function generateStructuredData(mediaItems) {
 </script>
 </body>
 </html>
-
