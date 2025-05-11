@@ -533,9 +533,9 @@
     }
     
     /* Quality Tag Styles - Consistent for both movies and series */
-    .tag.hd { background: #4CAF50; }       /* 720p - Green */
-    .tag.fhd { background: #2196F3; }      /* 1080p - Blue */
-    .tag.uhd { background: #9C27B0; }      /* 4K - Purple */
+    .tag.720p { background: #4CAF50; }       /* 720p - Green */
+    .tag.1080p { background: #2196F3; }      /* 1080p - Blue */
+    .tag.4k { background: #9C27B0; }      /* 4K - Purple */
     .tag.hdr { background: #FF9800; }      /* HDR - Orange */
     .tag.dolby { background: #E91E63; }    /* Dolby - Pink */
     .tag.imax { background: #00BCD4; }     /* IMAX - Cyan */
@@ -988,7 +988,7 @@
           "item": {
             "@type": item.type === 'tv' ? 'TVSeries' : 'Movie',
             "name": item.title || item.name,
-            "url": `https://moviesvault.fun/details.html?id=${item.id}&type=${item.type}`,
+            "url": `https://moviesvault.fun/[].html?id=${item.id}&type=${item.type}`,
             "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
             "description": item.overview || 'No description available',
             "datePublished": item.release_date || item.first_air_date,
