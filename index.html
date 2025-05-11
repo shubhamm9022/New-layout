@@ -987,7 +987,7 @@
           "item": {
             "@type": item.type === 'tv' ? 'TVSeries' : 'Movie',
             "name": item.title || item.name,
-            "url": `https://moviesvault.fun/[].html?id=${item.id}&type=${item.type}`,
+            "url": `https://moviesvault.fun/details.html?id=${item.id}&type=${item.type}`,
             "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : '',
             "description": item.overview || 'No description available',
             "datePublished": item.release_date || item.first_air_date,
@@ -1084,7 +1084,7 @@
           stream_link: media.stream_link,
           download_links: media.download_links
         }));
-        window.location.href = `[].html?id=${media.id}&type=${media.media_type}`;
+        window.location.href = `deatils.html?id=${media.id}&type=${media.media_type}`;
       });
       
       moviesContainer.appendChild(card);
