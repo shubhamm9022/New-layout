@@ -984,17 +984,20 @@ const similarUrl = mediaType === 'tv'
 
 // Navigation buttons
 document.getElementById('backBtn').addEventListener('click', () => {
-  window.history.back();
+  if (document.referrer.includes(window.location.hostname)) {
+    window.history.back();
+  } else {
+    window.location.href = 'index.html';
+  }
 });
 
 document.getElementById('homeBtn').addEventListener('click', () => {
   window.location.href = 'index.html';
 });
 
-// Load content from JSON files with improved error handling
 async function loadContentLinks() {
   try {
-    // Try to load both JSON files
+    // Try to load both JSON files with error handling
     const [moviesResponse, seriesResponse] = await Promise.all([
       fetch('movies.json').catch(e => {
         console.error('Failed to load movies.json:', e);
@@ -1006,7 +1009,6 @@ async function loadContentLinks() {
       })
     ]);
     
-    // Check if responses are ok
     const moviesData = moviesResponse.ok ? await moviesResponse.json() : { movies: [] };
     const seriesData = seriesResponse.ok ? await seriesResponse.json() : { series: [] };
     
@@ -1342,4 +1344,4 @@ document.onkeydown = function(e) {
 };
 </script>
 </body>
-</html>
+</html
