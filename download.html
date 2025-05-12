@@ -17,6 +17,7 @@
       --darker-color: #16213e;
       --light-color: #f8f9fa;
       --gray-color: #adb5bd;
+      --danger: #ff4444; /* Added danger color for error messages */
     }
 
     * {
@@ -78,10 +79,10 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .movie-card:hover {
+     .movie-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-    }
+     }
 
     .movie-card h2 {
       font-size: 22px;
@@ -297,17 +298,18 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // --- YOUR FIREBASE CONFIGURATION ---
+    // --- IMPORTANT: REPLACE WITH YOUR ACTUAL FIREBASE CONFIG ---
     const firebaseConfig = {
-      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
-      authDomain: "movievault-e650e.firebaseapp.com",
-      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
-      projectId: "movievault-e650e",
-      storageBucket: "movievault-e650e.appspot.com",
-      messagingSenderId: "61140580505",
-      appId: "1:61140580505:web:d3216ca8bd944662a22008"
+      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84", // <--- Replace with your actual API Key
+      authDomain: "movievault-e650e.firebaseapp.com", // <--- Replace with your actual Auth Domain
+      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com", // <--- Replace with your actual Database URL
+      projectId: "movievault-e650e", // <--- Replace with your actual Project ID
+      storageBucket: "movievault-e650e.appspot.com", // <--- Replace with your actual Storage Bucket
+      messagingSenderId: "61140580505", // <--- Replace with your actual Messaging Sender ID
+      appId: "1:61140580505:web:d3216ca8bd944662a22008" // <--- Replace with your actual App ID
     };
-    // --- END OF YOUR FIREBASE CONFIGURATION ---
+    // --- END OF IMPORTANT SECTION ---
+
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -338,14 +340,19 @@
       let movieIdentifier = '';
       let requestedQuality = '';
 
+      // Check if the hash has the expected format "MovieName (Year):Quality"
       if (parts.length === 2) {
-          // Expected format: MovieName (Year):Quality
           movieIdentifier = decodeURIComponent(parts[0]);
           requestedQuality = decodeURIComponent(parts[1]);
       } else {
-          // Handle cases where the format is incorrect or missing
-          movieIdentifier = decodeURIComponent(hash); // Still try to decode the whole hash
+          // If the format is incorrect, display an error message
+          const titleElement = document.getElementById("show-title");
+          const contentContainer = document.getElementById("content");
+          titleElement.innerText = "Invalid URL Format";
+          contentContainer.innerHTML = "<p style='color: var(--danger); text-align: center;'>The URL is missing the movie name, year, or quality information. Please use the format #Movie Name (Year):Quality</p>";
+          return; // Stop execution if format is wrong
       }
+
 
       const titleElement = document.getElementById("show-title");
       const contentContainer = document.getElementById("content");
@@ -357,12 +364,6 @@
         </div>
       `;
 
-      if (!movieIdentifier || !requestedQuality) {
-        titleElement.innerText = "Content Not Found";
-        contentContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>URL format incorrect. Please use #Movie Name (Year):Quality</p>";
-        return;
-      }
-
       // Display the requested content while loading
       titleElement.innerText = `Loading: ${movieIdentifier} - ${requestedQuality}`;
 
@@ -371,15 +372,18 @@
         // Fetch data for the specific quality under the movie key
         // Path will be like: movies/Movie Name (Year)/Quality
         const firebasePath = `movies/${movieIdentifier}/${requestedQuality}`;
+        console.log("Attempting to fetch data from Firebase path:", firebasePath); // Log the path being fetched
         const snapshot = await get(child(ref(db), firebasePath));
 
         if (!snapshot.exists()) {
+          console.warn("No data found at path:", firebasePath); // Log if data not found
           titleElement.innerText = "Content Not Found";
-          contentContainer.innerHTML = `<p style='color: #ccc; text-align: center;'>Content not found in database for: ${movieIdentifier} - ${requestedQuality}</p>`;
+          contentContainer.innerHTML = `<p style='color: #ccc; text-align: center;'>Content not found in database for: ${movieIdentifier} - ${requestedQuality}. Please check the movie name, year, and quality in the URL.</p>`;
           return;
         }
 
         const qualityData = snapshot.val(); // This is the links object for the specific quality
+        console.log("Fetched data:", qualityData); // Log the data that was fetched
         let contentHTML = '';
 
         // Set the main title to the movie name, year, and quality
@@ -397,16 +401,20 @@
                     <div class="button-group">${buttons}</div>
                 </div>
             `;
+        } else {
+             // If data was found but no valid links (filepress, neodrive, backup) were present
+             console.warn("Data found but no valid links:", qualityData);
+             contentHTML = `<p style='color: #ccc; text-align: center;'>No download links found for ${requestedQuality} for this movie.</p>`;
         }
 
 
-        // If no links were found for this specific quality
-        contentContainer.innerHTML = contentHTML || `<p style='color: #ccc; text-align: center;'>No download links found for ${requestedQuality} for this movie.</p>`;
+        // Update the content container with the generated HTML
+        contentContainer.innerHTML = contentHTML;
 
       } catch (err) {
-        console.error("Error loading data:", err);
+        console.error("Firebase Error loading data:", err); // Log the full error object
         titleElement.innerText = "Error Loading";
-        contentContainer.innerHTML = "<p style='color: var(--danger); text-align: center;'>Error loading data. Please check console for details.</p>";
+        contentContainer.innerHTML = "<p style='color: var(--danger); text-align: center;'>Error loading data. Please check the browser console for details.</p>";
       }
     }
 
