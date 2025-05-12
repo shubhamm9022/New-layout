@@ -68,7 +68,7 @@
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    /* Reusing movie-card style for the single quality block */
+    /* Style for the movie card displaying links */
     .movie-card {
       background-color: var(--dark-color);
       border-radius: 12px;
@@ -93,8 +93,8 @@
       align-items: center;
     }
 
-     .movie-card h2::before { /* Added back an icon for the quality heading */
-       content: "✨"; /* Or another icon like '⭐' */
+     .movie-card h2::before { /* Icon for the heading */
+       content: "🎬"; /* Movie reel icon */
        margin-right: 10px;
        font-size: 20px;
      }
@@ -298,18 +298,17 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // --- IMPORTANT: REPLACE WITH YOUR ACTUAL FIREBASE CONFIG ---
+    // --- YOUR FIREBASE CONFIGURATION ---
     const firebaseConfig = {
-      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84", // <--- Replace with your actual API Key
-      authDomain: "movievault-e650e.firebaseapp.com", // <--- Replace with your actual Auth Domain
-      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com", // <--- Replace with your actual Database URL
-      projectId: "movievault-e650e", // <--- Replace with your actual Project ID
-      storageBucket: "movievault-e650e.appspot.com", // <--- Replace with your actual Storage Bucket
-      messagingSenderId: "61140580505", // <--- Replace with your actual Messaging Sender ID
-      appId: "1:61140580505:web:d3216ca8bd944662a22008" // <--- Replace with your actual App ID
+      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
+      authDomain: "movievault-e650e.firebaseapp.com",
+      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
+      projectId: "movievault-e650e",
+      storageBucket: "movievault-e650e.appspot.com",
+      messagingSenderId: "61140580505",
+      appId: "1:61140580505:web:d3216ca8bd944662a22008"
     };
-    // --- END OF IMPORTANT SECTION ---
-
+    // --- END OF YOUR FIREBASE CONFIGURATION ---
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -318,6 +317,7 @@
     // Function to create download buttons for a given set of links
     function createButtons(links) {
       let buttons = '';
+      // Check if links is a valid object before trying to access properties
       if (links && typeof links === 'object') {
         if (links.filepress) {
           buttons += `<a href="${links.filepress}" class="btn filepress" target="_blank"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
@@ -332,28 +332,10 @@
       return buttons;
     }
 
-    // Function to load data based on the movie key and quality in the URL hash
+    // Function to load data based on the full movie key in the URL hash
     async function loadData() {
-      const hash = window.location.hash.slice(1); // Get the hash without the #
-      const parts = hash.split(':'); // Split the hash by the colon
-
-      let movieIdentifier = '';
-      let requestedQuality = '';
-
-      // Check if the hash has the expected format "MovieName (Year):Quality"
-      if (parts.length === 2) {
-          movieIdentifier = decodeURIComponent(parts[0]);
-          requestedQuality = decodeURIComponent(parts[1]);
-      } else {
-          // If the format is incorrect, display an error message
-          const titleElement = document.getElementById("show-title");
-          const contentContainer = document.getElementById("content");
-          titleElement.innerText = "Invalid URL Format";
-          contentContainer.innerHTML = "<p style='color: var(--danger); text-align: center;'>The URL is missing the movie name, year, or quality information. Please use the format #Movie Name (Year):Quality</p>";
-          return; // Stop execution if format is wrong
-      }
-
-
+      // The movieKey is now expected to be the full string like "Driver Jamuna (2022) 1080p"
+      const movieKey = decodeURIComponent(window.location.hash.slice(1));
       const titleElement = document.getElementById("show-title");
       const contentContainer = document.getElementById("content");
 
@@ -364,47 +346,56 @@
         </div>
       `;
 
-      // Display the requested content while loading
-      titleElement.innerText = `Loading: ${movieIdentifier} - ${requestedQuality}`;
+      if (!movieKey) {
+        titleElement.innerText = "Content Not Found";
+        contentContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>No content selected. Please navigate from the main page.</p>";
+        return;
+      }
 
+      // Display the movie key while loading
+      titleElement.innerText = "Loading: " + movieKey;
 
       try {
-        // Fetch data for the specific quality under the movie key
-        // Path will be like: movies/Movie Name (Year)/Quality
-        const firebasePath = `movies/${movieIdentifier}/${requestedQuality}`;
+        // Fetch data directly using the full movieKey
+        // Path will be like: movies/Driver Jamuna (2022) 1080p
+        const firebasePath = `movies/${movieKey}`;
         console.log("Attempting to fetch data from Firebase path:", firebasePath); // Log the path being fetched
         const snapshot = await get(child(ref(db), firebasePath));
 
         if (!snapshot.exists()) {
           console.warn("No data found at path:", firebasePath); // Log if data not found
           titleElement.innerText = "Content Not Found";
-          contentContainer.innerHTML = `<p style='color: #ccc; text-align: center;'>Content not found in database for: ${movieIdentifier} - ${requestedQuality}. Please check the movie name, year, and quality in the URL.</p>`;
+          contentContainer.innerHTML = `<p style='color: #ccc; text-align: center;'>Content not found in database for: ${movieKey}. Please check the URL.</p>`;
           return;
         }
 
-        const qualityData = snapshot.val(); // This is the links object for the specific quality
-        console.log("Fetched data:", qualityData); // Log the data that was fetched
+        const movieData = snapshot.val(); // This is the object containing links, name, year, quality, etc.
+        console.log("Fetched data:", movieData); // Log the data that was fetched
         let contentHTML = '';
 
-        // Set the main title to the movie name, year, and quality
-        titleElement.innerText = `${movieIdentifier} - ${requestedQuality}`;
+        // Set the main title using the name, year, and quality from the fetched data
+        if (movieData && movieData.name) {
+             titleElement.innerText = movieData.name + (movieData.year ? ' (' + movieData.year + ')' : '') + (movieData.quality ? ' - ' + movieData.quality : '');
+        } else {
+             titleElement.innerText = movieKey; // Fallback to movieKey if name is not in data
+        }
 
 
-        // Create buttons directly from the fetched qualityData (which contains the links)
-        const buttons = createButtons(qualityData);
+        // Create buttons directly from the fetched movieData (which contains the links at the top level)
+        const buttons = createButtons(movieData);
 
         if (buttons) {
-            // Display the links for the specific quality
+            // Display the links for the specific movie entry
             contentHTML = `
                 <div class="movie-card">
-                    <h2>${requestedQuality} Download Links</h2> {/* Heading for the specific quality */}
+                    <h2>Download Links</h2> {/* Generic heading */}
                     <div class="button-group">${buttons}</div>
                 </div>
             `;
         } else {
              // If data was found but no valid links (filepress, neodrive, backup) were present
-             console.warn("Data found but no valid links:", qualityData);
-             contentHTML = `<p style='color: #ccc; text-align: center;'>No download links found for ${requestedQuality} for this movie.</p>`;
+             console.warn("Data found but no valid links:", movieData);
+             contentHTML = `<p style='color: #ccc; text-align: center;'>No download links found for this content.</p>`;
         }
 
 
@@ -441,3 +432,4 @@
   </script>
 </body>
 </html>
+
