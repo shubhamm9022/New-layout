@@ -21,7 +21,7 @@
       "id": 1399,
       "title": "Game of Thrones",
       "stream_link": "https://example.com/stream/got",
-      "available_qualities": ["720p", "1080p", "4K"],
+      "available_qualities": ["720p", "1080p", "4k"],
       "genres": ["Sci-Fi & Fantasy", "Drama", "Action & Adventure"],
       "download_links": {
         "720p": "https://gplinks.co/got-720p",
@@ -132,7 +132,7 @@
       "id": 66732,
       "title": "Stranger Things",
       "stream_link": "https://example.com/stream/stranger-things",
-      "available_qualities": ["720p", "1080p", "4K"],
+      "available_qualities": ["720p", "1080p", "4k"],
       "genres": ["Drama", "Sci-Fi & Fantasy", "Mystery"],
       "download_links": {},
       "seasons": {
@@ -146,7 +146,7 @@
       "id": 82856,
       "title": "The Mandalorian",
       "stream_link": "https://example.com/stream/mandalorian",
-      "available_qualities": ["1080p", "4K"],
+      "available_qualities": ["1080p", "4k"],
       "genres": ["Sci-Fi & Fantasy", "Action & Adventure"],
       "download_links": {},
       "seasons": {
