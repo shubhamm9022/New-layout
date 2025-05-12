@@ -67,7 +67,8 @@
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .movie-card, .episode-card {
+    /* Style for individual quality sections */
+    .quality-section {
       background-color: var(--dark-color);
       border-radius: 12px;
       padding: 25px;
@@ -77,12 +78,12 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .movie-card:hover, .episode-card:hover {
+     .quality-section:hover {
       transform: translateY(-5px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-    }
+     }
 
-    .movie-card h2, .episode-card h2 {
+    .quality-section h3 {
       font-size: 22px;
       margin-bottom: 20px;
       color: var(--success-color);
@@ -91,27 +92,12 @@
       align-items: center;
     }
 
-     /* Removed ::before for movie card h2 as it was meant for episodes potentially */
-    /* .movie-card h2::before {
-      content: "🎥";
-      margin-right: 10px;
-      font-size: 20px;
-    } */
+     .quality-section h3::before {
+       content: "✨"; /* Or another icon like '⭐' */
+       margin-right: 10px;
+       font-size: 20px;
+     }
 
-    .episode-card h2::before {
-      content: "🎬";
-      margin-right: 10px;
-      font-size: 20px;
-    }
-
-    .season-title {
-      font-size: 26px;
-      margin: 30px 0 15px;
-      color: var(--warning-color);
-      font-weight: 600;
-      border-bottom: 2px solid var(--warning-color);
-      padding-bottom: 8px;
-    }
 
     .button-group {
       display: flex;
@@ -136,7 +122,7 @@
       position: relative;
       overflow: hidden;
       z-index: 1;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4屉 12px rgba(0, 0, 0, 0.15);
     }
 
     .btn::before {
@@ -263,7 +249,7 @@
         padding: 12px 20px;
       }
 
-      .movie-card, .episode-card {
+      .quality-section { /* Apply mobile padding to the new section class */
         padding: 20px;
       }
 
@@ -271,9 +257,10 @@
         font-size: 26px;
       }
 
-      .season-title {
-        font-size: 22px;
+      .quality-section h3 { /* Apply mobile font size to the new heading */
+        font-size: 20px;
       }
+
 
       .note, .footer-note {
         font-size: 14px;
@@ -310,6 +297,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
+    // --- YOUR FIREBASE CONFIGURATION ---
     const firebaseConfig = {
       apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
       authDomain: "movievault-e650e.firebaseapp.com",
@@ -319,117 +307,101 @@
       messagingSenderId: "61140580505",
       appId: "1:61140580505:web:d3216ca8bd944662a22008"
     };
+    // --- END OF YOUR FIREBASE CONFIGURATION ---
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Function to check if content is TV show (has seasons) or movie (direct links)
-    // NOTE: This function is still here, but with data structure from upload panel (movies/{key})
-    // it will likely always return false, treating everything as a movie structure.
-    function isTVShow(data) {
-      if (!data || typeof data !== 'object') return false; // Ensure data is a valid object
-
-      // Check if *any* key looks like a season
-      for (const key in data) {
-        if (key.toLowerCase().startsWith('season') || /^\d+$/.test(key)) {
-           // Further check if children of this potential season key are also objects (episodes)
-           if(data[key] && typeof data[key] === 'object' && !Array.isArray(data[key])) {
-              // Check if at least one child of the 'season' key looks like an episode (is an object)
-              const firstEpisodeKey = Object.keys(data[key])[0];
-              if(firstEpisodeKey && typeof data[key][firstEpisodeKey] === 'object' && !Array.isArray(data[key][firstEpisodeKey])) {
-                 return true; // Looks like a TV show structure
-              }
-           }
-        }
-      }
-      return false; // Doesn't look like a TV show structure
-    }
-
-
-    // Function to create download buttons
+    // Function to create download buttons for a given set of links
     function createButtons(links) {
       let buttons = '';
-      if (links && typeof links === 'object') { // Added check for links being a valid object
+      if (links && typeof links === 'object') {
         if (links.filepress) {
           buttons += `<a href="${links.filepress}" class="btn filepress" target="_blank"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
         }
         if (links.neodrive) {
           buttons += `<a href="${links.neodrive}" class="btn gdirect" target="_blank"><i class="fas fa-bolt"></i> G-Direct [Neodrive]</a>`;
         }
-         if (links.backup) { // Added backup button
+        if (links.backup) {
           buttons += `<a href="${links.backup}" class="btn backup-btn" target="_blank"><i class="fas fa-hdd"></i> Backup Link</a>`;
         }
       }
       return buttons;
     }
 
-    // Function to load data
+    // Function to load data based on the movie key in the URL hash
     async function loadData() {
-      const showKey = decodeURIComponent(window.location.hash.slice(1));
-      const title = document.getElementById("show-title");
-      const container = document.getElementById("content");
+      // The showKey is now expected to be "Movie Name (Year)"
+      const movieKey = decodeURIComponent(window.location.hash.slice(1));
+      const titleElement = document.getElementById("show-title");
+      const contentContainer = document.getElementById("content");
 
-      container.innerHTML = `
+      // Show loading spinner while fetching
+      contentContainer.innerHTML = `
         <div class="loading">
           <div class="spinner"></div>
         </div>
-      `; // Show loading spinner while fetching
+      `;
 
-      if (!showKey) {
-        title.innerText = "Content Not Found";
-        container.innerHTML = "<p style='color: #ccc; text-align: center;'>No content selected. Please navigate from the main page.</p>";
+      if (!movieKey) {
+        titleElement.innerText = "Content Not Found";
+        contentContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>No content selected. Please navigate from the main page.</p>";
         return;
       }
 
-      title.innerText = "Loading: " + showKey; // Indicate what's loading
+      // Display the movie key while loading
+      titleElement.innerText = "Loading: " + movieKey;
 
       try {
-        // *** MODIFIED THIS LINE TO FETCH FROM /movies ***
-        const snapshot = await get(child(ref(db), `movies/${showKey}`));
+        // Fetch data for the specific movie (e.g., movies/Driver Jamuna (2022))
+        const snapshot = await get(child(ref(db), `movies/${movieKey}`));
 
         if (!snapshot.exists()) {
-          title.innerText = "Content Not Found";
-          container.innerHTML = "<p style='color: #ccc; text-align: center;'>Content not found in database for: " + showKey + "</p>";
+          titleElement.innerText = "Content Not Found";
+          contentContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>Content not found in database for: " + movieKey + "</p>";
           return;
         }
 
-        const data = snapshot.val();
+        const movieData = snapshot.val();
         let contentHTML = '';
 
-        // Set the actual movie title from the fetched data if available
-        if (data && data.name) {
-             title.innerText = data.name + (data.year ? ' (' + data.year + ')' : '') + (data.quality ? ' - ' + data.quality : '');
-        } else {
-             title.innerText = showKey; // Fallback to showKey if name is not in data
+        // Set the main title to the movie name and year from the key
+        titleElement.innerText = movieKey; // The key itself contains name and year
+
+        // Iterate through the qualities available for this movie
+        // movieData is expected to be an object like { "1080p": { links }, "720p": { links } }
+        if (movieData && typeof movieData === 'object') {
+            // Get the quality keys and sort them if desired (e.g., 480p, 720p, 1080p, 4K)
+            const qualities = Object.keys(movieData);
+            // You might want to sort qualities in a specific order, e.g., numerically
+            // qualities.sort((a, b) => { /* custom sorting logic based on quality string */ });
+
+
+            qualities.forEach(quality => {
+                const links = movieData[quality]; // Get the links object for this quality
+                const buttons = createButtons(links); // Create buttons from these links
+
+                if (buttons) {
+                    // Create a section for each quality
+                    contentHTML += `
+                        <div class="quality-section">
+                            <h3>${quality}</h3> {/* Display the quality as a heading */}
+                            <div class="button-group">${buttons}</div>
+                        </div>
+                    `;
+                }
+            });
         }
 
 
-        // The structure from the upload panel (movies/{key}) doesn't match the complex TV show structure
-        // the isTVShow function was looking for. It's a flat object with links.
-        // So we will treat it directly as a movie/single entry.
-        // The previous isTVShow check and conditional rendering logic is largely unnecessary
-        // given the structure created by your *current* upload panel.
-        // We'll simplify to directly create buttons from the fetched data.
-
-        const buttons = createButtons(data); // Pass the whole data object, createButtons checks for links
-
-        if (buttons) {
-          contentHTML = `
-            <div class="movie-card">
-              <h2>Download Links</h2>
-              <div class="button-group">${buttons}</div>
-            </div>
-          `;
-        }
-
-
-        container.innerHTML = contentHTML || "<p style='color: #ccc; text-align: center;'>No download links found for this content.</p>";
+        // If no qualities or links were found, display a message
+        contentContainer.innerHTML = contentHTML || "<p style='color: #ccc; text-align: center;'>No download links found for this content.</p>";
 
       } catch (err) {
         console.error("Error loading data:", err);
-         title.innerText = "Error Loading";
-        container.innerHTML = "<p style='color: var(--danger); text-align: center;'>Error loading data. Please check console for details.</p>";
+        titleElement.innerText = "Error Loading";
+        contentContainer.innerHTML = "<p style='color: var(--danger); text-align: center;'>Error loading data. Please check console for details.</p>";
       }
     }
 
@@ -439,7 +411,7 @@
     // Also load data when hash changes (if user navigates without refresh)
     window.addEventListener('hashchange', loadData);
 
-    // Block F12, Ctrl+Shift+I/J/C
+    // Block developer tools (client-side only, easily bypassed)
     document.onkeydown = function(e) {
       if (e.key === "F12" ||
          (e.ctrlKey && e.shiftKey &&
@@ -449,7 +421,7 @@
       }
     };
 
-     // Disable right-click
+     // Disable right-click (client-side only, easily bypassed)
      document.addEventListener('contextmenu', function(e) {
        e.preventDefault();
      });
