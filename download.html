@@ -4,9 +4,7 @@
   <meta charset="UTF-8" />
   <title>Download Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -93,11 +91,12 @@
       align-items: center;
     }
 
-    .movie-card h2::before {
+     /* Removed ::before for movie card h2 as it was meant for episodes potentially */
+    /* .movie-card h2::before {
       content: "🎥";
       margin-right: 10px;
       font-size: 20px;
-    }
+    } */
 
     .episode-card h2::before {
       content: "🎬";
@@ -182,6 +181,17 @@
       box-shadow: 0 8px 20px rgba(247, 37, 133, 0.4);
     }
 
+     .backup-btn {
+      background: linear-gradient(135deg, var(--success-color), #0e7490); /* A different color for backup */
+      color: white;
+     }
+
+     .backup-btn:hover {
+       transform: translateY(-3px) scale(1.02);
+       box-shadow: 0 8px 20px rgba(76, 201, 240, 0.4);
+     }
+
+
     .loading {
       display: flex;
       justify-content: center;
@@ -242,29 +252,29 @@
       body {
         padding-top: 20px;
       }
-      
+
       .button-group {
         flex-direction: column;
         gap: 15px;
       }
-      
+
       .btn {
         width: 100%;
         padding: 12px 20px;
       }
-      
+
       .movie-card, .episode-card {
         padding: 20px;
       }
-      
+
       #show-title {
         font-size: 26px;
       }
-      
+
       .season-title {
         font-size: 22px;
       }
-      
+
       .note, .footer-note {
         font-size: 14px;
       }
@@ -296,7 +306,6 @@
     </div>
   </footer>
 
-  <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -316,20 +325,41 @@
     const db = getDatabase(app);
 
     // Function to check if content is TV show (has seasons) or movie (direct links)
+    // NOTE: This function is still here, but with data structure from upload panel (movies/{key})
+    // it will likely always return false, treating everything as a movie structure.
     function isTVShow(data) {
-      // Check if the first property is "Season" or starts with numbers (like "1")
-      const firstKey = Object.keys(data)[0];
-      return /^season|^\d+$/i.test(firstKey);
+      if (!data || typeof data !== 'object') return false; // Ensure data is a valid object
+
+      // Check if *any* key looks like a season
+      for (const key in data) {
+        if (key.toLowerCase().startsWith('season') || /^\d+$/.test(key)) {
+           // Further check if children of this potential season key are also objects (episodes)
+           if(data[key] && typeof data[key] === 'object' && !Array.isArray(data[key])) {
+              // Check if at least one child of the 'season' key looks like an episode (is an object)
+              const firstEpisodeKey = Object.keys(data[key])[0];
+              if(firstEpisodeKey && typeof data[key][firstEpisodeKey] === 'object' && !Array.isArray(data[key][firstEpisodeKey])) {
+                 return true; // Looks like a TV show structure
+              }
+           }
+        }
+      }
+      return false; // Doesn't look like a TV show structure
     }
+
 
     // Function to create download buttons
     function createButtons(links) {
       let buttons = '';
-      if (links.filepress) {
-        buttons += `<a href="${links.filepress}" class="btn filepress" target="_blank"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
-      }
-      if (links.neodrive) {
-        buttons += `<a href="${links.neodrive}" class="btn gdirect" target="_blank"><i class="fas fa-bolt"></i> G-Direct [Neodrive]</a>`;
+      if (links && typeof links === 'object') { // Added check for links being a valid object
+        if (links.filepress) {
+          buttons += `<a href="${links.filepress}" class="btn filepress" target="_blank"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
+        }
+        if (links.neodrive) {
+          buttons += `<a href="${links.neodrive}" class="btn gdirect" target="_blank"><i class="fas fa-bolt"></i> G-Direct [Neodrive]</a>`;
+        }
+         if (links.backup) { // Added backup button
+          buttons += `<a href="${links.backup}" class="btn backup-btn" target="_blank"><i class="fas fa-hdd"></i> Backup Link</a>`;
+        }
       }
       return buttons;
     }
@@ -340,63 +370,66 @@
       const title = document.getElementById("show-title");
       const container = document.getElementById("content");
 
+      container.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+        </div>
+      `; // Show loading spinner while fetching
+
       if (!showKey) {
         title.innerText = "Content Not Found";
         container.innerHTML = "<p style='color: #ccc; text-align: center;'>No content selected. Please navigate from the main page.</p>";
         return;
       }
 
-      title.innerText = showKey;
+      title.innerText = "Loading: " + showKey; // Indicate what's loading
 
       try {
-        const snapshot = await get(child(ref(db), `shows/${showKey}`));
-        
+        // *** MODIFIED THIS LINE TO FETCH FROM /movies ***
+        const snapshot = await get(child(ref(db), `movies/${showKey}`));
+
         if (!snapshot.exists()) {
-          container.innerHTML = "<p style='color: #ccc; text-align: center;'>Content not found in database.</p>";
+          title.innerText = "Content Not Found";
+          container.innerHTML = "<p style='color: #ccc; text-align: center;'>Content not found in database for: " + showKey + "</p>";
           return;
         }
 
         const data = snapshot.val();
         let contentHTML = '';
-        
-        if (isTVShow(data)) {
-          // TV Show Mode (with seasons and episodes)
-          for (const season in data) {
-            contentHTML += `<h3 class="season-title">${season.replace(/^\d+/, 'Season $&')}</h3>`;
-            
-            for (const episode in data[season]) {
-              const links = data[season][episode];
-              const buttons = createButtons(links);
 
-              if (buttons) {
-                contentHTML += `
-                  <div class="episode-card">
-                    <h2>Episode ${episode}</h2>
-                    <div class="button-group">${buttons}</div>
-                  </div>
-                `;
-              }
-            }
-          }
+        // Set the actual movie title from the fetched data if available
+        if (data && data.name) {
+             title.innerText = data.name + (data.year ? ' (' + data.year + ')' : '') + (data.quality ? ' - ' + data.quality : '');
         } else {
-          // Movie Mode (direct links)
-          const buttons = createButtons(data);
-          
-          if (buttons) {
-            contentHTML = `
-              <div class="movie-card">
-                <h2>Download Links</h2>
-                <div class="button-group">${buttons}</div>
-              </div>
-            `;
-          }
+             title.innerText = showKey; // Fallback to showKey if name is not in data
         }
 
+
+        // The structure from the upload panel (movies/{key}) doesn't match the complex TV show structure
+        // the isTVShow function was looking for. It's a flat object with links.
+        // So we will treat it directly as a movie/single entry.
+        // The previous isTVShow check and conditional rendering logic is largely unnecessary
+        // given the structure created by your *current* upload panel.
+        // We'll simplify to directly create buttons from the fetched data.
+
+        const buttons = createButtons(data); // Pass the whole data object, createButtons checks for links
+
+        if (buttons) {
+          contentHTML = `
+            <div class="movie-card">
+              <h2>Download Links</h2>
+              <div class="button-group">${buttons}</div>
+            </div>
+          `;
+        }
+
+
         container.innerHTML = contentHTML || "<p style='color: #ccc; text-align: center;'>No download links found for this content.</p>";
-        
+
       } catch (err) {
         console.error("Error loading data:", err);
-        container.innerHTML = "<p style='color: #ccc; text-align: center;'>Error loading data. Please try again.</p>";
+         title.innerText = "Error Loading";
+        container.innerHTML = "<p style='color: var(--danger); text-align: center;'>Error loading data. Please check console for details.</p>";
       }
     }
 
@@ -405,15 +438,21 @@
 
     // Also load data when hash changes (if user navigates without refresh)
     window.addEventListener('hashchange', loadData);
-      // Block F12, Ctrl+Shift+I/J/C
-  document.onkeydown = function(e) {
-    if (e.key === "F12" || 
-       (e.ctrlKey && e.shiftKey && 
-        (e.key === "I" || e.key === "J" || e.key === "C"))) {
-      e.preventDefault();
-      return false;
-    }
-  };
+
+    // Block F12, Ctrl+Shift+I/J/C
+    document.onkeydown = function(e) {
+      if (e.key === "F12" ||
+         (e.ctrlKey && e.shiftKey &&
+         (e.key === "I" || e.key === "J" || e.key === "C"))) {
+        e.preventDefault();
+        return false;
+      }
+    };
+
+     // Disable right-click
+     document.addEventListener('contextmenu', function(e) {
+       e.preventDefault();
+     });
   </script>
 </body>
 </html>
