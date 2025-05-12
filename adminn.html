@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Secure Admin Upload Panel</title>
+  <title>Secure Movie Upload Panel</title>
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
@@ -123,37 +123,31 @@
       display: none;
     }
     
-    .tabs {
-      display: flex;
-      background: #1a1a1a;
+    .logout-btn {
+      background: var(--danger);
+      color: white;
+      margin-top: 20px;
     }
     
-    .tab {
+    .quality-selector {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .quality-btn {
       flex: 1;
-      padding: 15px;
+      padding: 10px;
+      background: #333;
+      border-radius: 5px;
       text-align: center;
       cursor: pointer;
       transition: all 0.3s;
     }
     
-    .tab.active {
-      background: var(--darker);
-      color: var(--primary);
-      font-weight: bold;
-    }
-    
-    .tab-content {
-      display: none;
-    }
-    
-    .tab-content.active {
-      display: block;
-    }
-    
-    .logout-btn {
-      background: var(--danger);
-      color: white;
-      margin-top: 20px;
+    .quality-btn.active {
+      background: var(--primary);
+      color: #000;
     }
   </style>
 </head>
@@ -175,56 +169,42 @@
   </div>
 
   <div class="container hidden" id="upload-container">
-    <div class="tabs">
-      <div class="tab active" onclick="switchTab('tv')">TV Show</div>
-      <div class="tab" onclick="switchTab('movie')">Movie</div>
-    </div>
-    
     <div class="upload-container">
-      <!-- TV Show Upload Form -->
-      <div id="tv-form" class="tab-content active">
-        <h2><i class="fas fa-tv"></i> Upload TV Episode</h2>
-        <div class="form-group">
-          <label for="showName">Show Name</label>
-          <input type="text" id="showName" placeholder="e.g., Squid Game 1080p">
-        </div>
-        <div class="form-group">
-          <label for="season">Season</label>
-          <input type="text" id="season" placeholder="e.g., 1">
-        </div>
-        <div class="form-group">
-          <label for="episode">Episode</label>
-          <input type="text" id="episode" placeholder="e.g., 2">
-        </div>
-        <div class="form-group">
-          <label for="filepress">FilePress Link</label>
-          <input type="text" id="filepress" placeholder="https://filepress.link/...">
-        </div>
-        <div class="form-group">
-          <label for="neodrive">NeoDrive Link</label>
-          <input type="text" id="neodrive" placeholder="https://neodrive.link/...">
-        </div>
-        <button onclick="uploadContent('tv')"><i class="fas fa-upload"></i> Upload Episode</button>
+      <h2><i class="fas fa-film"></i> Upload Movie</h2>
+      
+      <div class="form-group">
+        <label for="movieName">Movie Name</label>
+        <input type="text" id="movieName" placeholder="e.g., Inception (2010)">
       </div>
       
-      <!-- Movie Upload Form -->
-      <div id="movie-form" class="tab-content">
-        <h2><i class="fas fa-film"></i> Upload Movie</h2>
-        <div class="form-group">
-          <label for="movieName">Movie Name</label>
-          <input type="text" id="movieName" placeholder="e.g., Inception (2010) 1080p">
-        </div>
-        <div class="form-group">
-          <label for="movie-filepress">FilePress Link</label>
-          <input type="text" id="movie-filepress" placeholder="https://filepress.link/...">
-        </div>
-        <div class="form-group">
-          <label for="movie-neodrive">NeoDrive Link</label>
-          <input type="text" id="movie-neodrive" placeholder="https://neodrive.link/...">
-        </div>
-        <button onclick="uploadContent('movie')"><i class="fas fa-upload"></i> Upload Movie</button>
+      <div class="form-group">
+        <label for="movieYear">Release Year</label>
+        <input type="text" id="movieYear" placeholder="e.g., 2010">
       </div>
       
+      <div class="quality-selector">
+        <div class="quality-btn active" onclick="selectQuality('480p')">480p</div>
+        <div class="quality-btn" onclick="selectQuality('720p')">720p</div>
+        <div class="quality-btn" onclick="selectQuality('1080p')">1080p</div>
+        <div class="quality-btn" onclick="selectQuality('4K')">4K</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="filepress">FilePress Link</label>
+        <input type="text" id="filepress" placeholder="https://filepress.link/...">
+      </div>
+      
+      <div class="form-group">
+        <label for="neodrive">NeoDrive Link</label>
+        <input type="text" id="neodrive" placeholder="https://neodrive.link/...">
+      </div>
+      
+      <div class="form-group">
+        <label for="backup">Backup Link (Optional)</label>
+        <input type="text" id="backup" placeholder="https://otherservice.link/...">
+      </div>
+      
+      <button onclick="uploadMovie()"><i class="fas fa-upload"></i> Upload Movie</button>
       <p id="status"></p>
       <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
@@ -250,6 +230,9 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
+    
+    // Global variable for selected quality
+    let selectedQuality = '480p';
 
     // Check auth state
     onAuthStateChanged(auth, (user) => {
@@ -308,66 +291,54 @@
       });
     };
 
-    // Switch between TV and Movie tabs
-    window.switchTab = function(tab) {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      
-      document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
-      document.getElementById(`${tab}-form`).classList.add('active');
+    // Select quality function
+    window.selectQuality = function(quality) {
+      selectedQuality = quality;
+      document.querySelectorAll('.quality-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
     };
 
-    // Upload content (TV or Movie)
-    window.uploadContent = function(type) {
-      let path, data = {};
-      
-      if (type === 'tv') {
-        const showName = document.getElementById("showName").value.trim();
-        const season = document.getElementById("season").value.trim();
-        const episode = document.getElementById("episode").value.trim();
-        const filepress = document.getElementById("filepress").value.trim();
-        const neodrive = document.getElementById("neodrive").value.trim();
+    // Upload movie function
+    window.uploadMovie = function() {
+      const movieName = document.getElementById("movieName").value.trim();
+      const movieYear = document.getElementById("movieYear").value.trim();
+      const filepress = document.getElementById("filepress").value.trim();
+      const neodrive = document.getElementById("neodrive").value.trim();
+      const backup = document.getElementById("backup").value.trim();
 
-        if (!showName || !season || !episode || (!filepress && !neodrive)) {
-          showStatus('Please fill all required fields', 'error');
-          return;
-        }
-
-        path = `shows/${showName}/Season ${season}/${episode}`;
-        if (filepress) data.filepress = filepress;
-        if (neodrive) data.neodrive = neodrive;
-      } 
-      else if (type === 'movie') {
-        const movieName = document.getElementById("movieName").value.trim();
-        const filepress = document.getElementById("movie-filepress").value.trim();
-        const neodrive = document.getElementById("movie-neodrive").value.trim();
-
-        if (!movieName || (!filepress && !neodrive)) {
-          showStatus('Please fill all required fields', 'error');
-          return;
-        }
-
-        path = `shows/${movieName}`;
-        if (filepress) data.filepress = filepress;
-        if (neodrive) data.neodrive = neodrive;
+      if (!movieName || !movieYear || (!filepress && !neodrive)) {
+        showStatus('Please fill all required fields', 'error');
+        return;
       }
 
-      const contentRef = ref(db, path);
+      // Format the movie name with year and quality
+      const formattedMovieName = `${movieName} (${movieYear}) ${selectedQuality}`;
+      
+      const data = {
+        name: movieName,
+        year: movieYear,
+        quality: selectedQuality,
+        timestamp: new Date().toISOString()
+      };
+      
+      if (filepress) data.filepress = filepress;
+      if (neodrive) data.neodrive = neodrive;
+      if (backup) data.backup = backup;
 
-      set(contentRef, data)
+      const path = `movies/${formattedMovieName}`;
+      const movieRef = ref(db, path);
+
+      set(movieRef, data)
         .then(() => {
-          showStatus(`${type === 'tv' ? 'Episode' : 'Movie'} uploaded successfully!`, 'success');
-          if (type === 'tv') {
-            document.getElementById("showName").value = '';
-            document.getElementById("season").value = '';
-            document.getElementById("episode").value = '';
-            document.getElementById("filepress").value = '';
-            document.getElementById("neodrive").value = '';
-          } else {
-            document.getElementById("movieName").value = '';
-            document.getElementById("movie-filepress").value = '';
-            document.getElementById("movie-neodrive").value = '';
-          }
+          showStatus(`Movie (${selectedQuality}) uploaded successfully!`, 'success');
+          // Clear form
+          document.getElementById("movieName").value = '';
+          document.getElementById("movieYear").value = '';
+          document.getElementById("filepress").value = '';
+          document.getElementById("neodrive").value = '';
+          document.getElementById("backup").value = '';
         })
         .catch(error => {
           showStatus("Error: " + error.message, 'error');
@@ -384,15 +355,21 @@
         element.classList.add('hidden');
       }, 5000);
     }
-         // Block F12, Ctrl+Shift+I/J/C
-  document.onkeydown = function(e) {
-    if (e.key === "F12" || 
-       (e.ctrlKey && e.shiftKey && 
-        (e.key === "I" || e.key === "J" || e.key === "C"))) {
+    
+    // Block developer tools
+    document.onkeydown = function(e) {
+      if (e.key === "F12" || 
+         (e.ctrlKey && e.shiftKey && 
+          (e.key === "I" || e.key === "J" || e.key === "C"))) {
+        e.preventDefault();
+        return false;
+      }
+    };
+    
+    // Disable right-click
+    document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
-      return false;
-    }
-  };
+    });
   </script>
 </body>
 </html>
