@@ -112,10 +112,10 @@
         "2": { "download_links": { "1080p": "https://gplinks.co/tgd-s2-1080p" } },
         "3": { "download_links": { "720p": "https://gplinks.co/tgd-s3-720p" } },
         "4": { "download_links": {} } ,
-         "5": { "download_links": { "1080p": "https://gplinks.co/tgd-s5-1080p" } }
+        "5": { "download_links": { "1080p": "https://gplinks.co/tgd-s5-1080p" } }
       }
     },
-     {
+    {
       "id": 75006,
       "title": "The Umbrella Academy",
       "stream_link": "https://example.com/stream/umbrella-academy",
@@ -126,6 +126,46 @@
         "1": { "download_links": { "1080p": "https://gplinks.co/ua-s1-1080p" } },
         "2": { "download_links": { "1080p": "https://gplinks.co/ua-s2-1080p" } },
         "3": { "download_links": { "1080p": "https://gplinks.co/ua-s3-1080p" } }
+      }
+    },
+    {
+      "id": 66732,
+      "title": "Stranger Things",
+      "stream_link": "https://example.com/stream/stranger-things",
+      "available_qualities": ["720p", "1080p", "4K"],
+      "genres": ["Drama", "Sci-Fi & Fantasy", "Mystery"],
+      "download_links": {},
+      "seasons": {
+        "1": { "download_links": { "1080p": "https://gplinks.co/st-s1-1080p" } },
+        "2": { "download_links": { "1080p": "https://gplinks.co/st-s2-1080p" } },
+        "3": { "download_links": { "1080p": "https://gplinks.co/st-s3-1080p" } },
+        "4": { "download_links": { "1080p": "https://gplinks.co/st-s4-1080p", "4K": "https://gplinks.co/st-s4-4k" } }
+      }
+    },
+    {
+      "id": 82856,
+      "title": "The Mandalorian",
+      "stream_link": "https://example.com/stream/mandalorian",
+      "available_qualities": ["1080p", "4K"],
+      "genres": ["Sci-Fi & Fantasy", "Action & Adventure"],
+      "download_links": {},
+      "seasons": {
+        "1": { "download_links": { "1080p": "https://gplinks.co/mando-s1-1080p", "4K": "https://gplinks.co/mando-s1-4k" } },
+        "2": { "download_links": { "1080p": "https://gplinks.co/mando-s2-1080p", "4K": "https://gplinks.co/mando-s2-4k" } },
+        "3": { "download_links": { "1080p": "https://gplinks.co/mando-s3-1080p", "4K": "https://gplinks.co/mando-s3-4k" } }
+      }
+    },
+    {
+      "id": 87108,
+      "title": "Chernobyl",
+      "stream_link": "https://example.com/stream/chernobyl",
+      "available_qualities": ["1080p"],
+      "genres": ["Drama", "History"],
+      "download_links": {
+         "1080p": "https://gplinks.co/chernobyl-1080p"
+      },
+      "seasons": {
+        "1": { "download_links": { "1080p": "https://gplinks.co/chernobyl-s1-1080p" } }
       }
     }
   ]
