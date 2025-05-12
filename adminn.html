@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>Secure Movie Upload Panel</title>
-  <!-- Font Awesome -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {
@@ -12,13 +12,13 @@
       --light: #ffffff;
       --danger: #ff4444;
     }
-    
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
+
     body {
       background: var(--dark);
       color: var(--light);
@@ -29,7 +29,7 @@
       align-items: center;
       padding: 20px;
     }
-    
+
     .container {
       width: 100%;
       max-width: 800px;
@@ -38,28 +38,28 @@
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       overflow: hidden;
     }
-    
+
     .auth-container, .upload-container {
       padding: 30px;
       transition: all 0.3s ease;
     }
-    
+
     h2 {
       margin-bottom: 20px;
       color: var(--primary);
       text-align: center;
     }
-    
+
     .form-group {
       margin-bottom: 20px;
     }
-    
+
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
     }
-    
+
     input, select {
       width: 100%;
       padding: 12px 15px;
@@ -70,12 +70,12 @@
       font-size: 16px;
       transition: all 0.3s;
     }
-    
+
     input:focus, select:focus {
       outline: none;
       border-color: var(--primary);
     }
-    
+
     button {
       width: 100%;
       padding: 14px;
@@ -92,51 +92,53 @@
       justify-content: center;
       gap: 10px;
     }
-    
+
     button:hover {
       opacity: 0.9;
       transform: translateY(-2px);
     }
-    
+
     button:active {
       transform: translateY(0);
     }
-    
+
     #status {
       margin-top: 20px;
       padding: 10px;
       border-radius: 5px;
       text-align: center;
     }
-    
+
     .success {
       background: rgba(0, 255, 0, 0.1);
       color: #0f0;
     }
-    
+
     .error {
       background: rgba(255, 0, 0, 0.1);
       color: var(--danger);
     }
-    
+
     .hidden {
       display: none;
     }
-    
+
     .logout-btn {
       background: var(--danger);
       color: white;
       margin-top: 20px;
     }
-    
+
     .quality-selector {
       display: flex;
+      flex-wrap: wrap; /* Allow wrapping on small screens */
       gap: 10px;
       margin-bottom: 20px;
     }
-    
+
     .quality-btn {
       flex: 1;
+      min-width: 80px; /* Ensure buttons don't get too small */
       padding: 10px;
       background: #333;
       border-radius: 5px;
@@ -144,7 +146,7 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-    
+
     .quality-btn.active {
       background: var(--primary);
       color: #000;
@@ -170,67 +172,67 @@
 
   <div class="container hidden" id="upload-container">
     <div class="upload-container">
-      <h2><i class="fas fa-film"></i> Upload Movie</h2>
-      
+      <h2><i class="fas fa-film"></i> Upload Movie Quality</h2>
+
       <div class="form-group">
         <label for="movieName">Movie Name</label>
-        <input type="text" id="movieName" placeholder="e.g., Inception (2010)">
+        <input type="text" id="movieName" placeholder="e.g., Inception">
       </div>
-      
+
       <div class="form-group">
         <label for="movieYear">Release Year</label>
         <input type="text" id="movieYear" placeholder="e.g., 2010">
       </div>
-      
+
       <div class="quality-selector">
-        <div class="quality-btn active" onclick="selectQuality('480p')">480p</div>
-        <div class="quality-btn" onclick="selectQuality('720p')">720p</div>
-        <div class="quality-btn" onclick="selectQuality('1080p')">1080p</div>
-        <div class="quality-btn" onclick="selectQuality('4K')">4K</div>
-      </div>
-      
+        <div class="quality-btn active" onclick="selectQuality(event, '480p')">480p</div>
+        <div class="quality-btn" onclick="selectQuality(event, '720p')">720p</div>
+        <div class="quality-btn" onclick="selectQuality(event, '1080p')">1080p</div>
+        <div class="quality-btn" onclick="selectQuality(event, '4K')">4K</div>
+         <div class="quality-btn" onclick="selectQuality(event, 'Other')">Other</div> </div>
+
       <div class="form-group">
         <label for="filepress">FilePress Link</label>
         <input type="text" id="filepress" placeholder="https://filepress.link/...">
       </div>
-      
+
       <div class="form-group">
         <label for="neodrive">NeoDrive Link</label>
         <input type="text" id="neodrive" placeholder="https://neodrive.link/...">
       </div>
-      
+
       <div class="form-group">
         <label for="backup">Backup Link (Optional)</label>
         <input type="text" id="backup" placeholder="https://otherservice.link/...">
       </div>
-      
-      <button onclick="uploadMovie()"><i class="fas fa-upload"></i> Upload Movie</button>
+
+      <button onclick="uploadMovie()"><i class="fas fa-upload"></i> Upload Quality</button>
       <p id="status"></p>
       <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </div>
   </div>
 
-  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    // Import update as well as ref and set
+    import { getDatabase, ref, set, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
-      authDomain: "movievault-e650e.firebaseapp.com",
-      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
-      projectId: "movievault-e650e",
-      storageBucket: "movievault-e650e.appspot.com",
-      messagingSenderId: "61140580505",
-      appId: "1:61140580505:web:d3216ca8bd944662a22008"
+      apiKey: "AIzaSyDv1KgOL_Cs4xV6KuYuk3TD6xqpnY-84", // Replace with your actual API Key
+      authDomain: "movievault-e650e.firebaseapp.com", // Replace with your actual Auth Domain
+      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com", // Replace with your actual Database URL
+      projectId: "movievault-e650e", // Replace with your actual Project ID
+      storageBucket: "movievault-e650e.appspot.com", // Replace with your actual Storage Bucket
+      messagingSenderId: "61140580505", // Replace with your actual Messaging Sender ID
+      appId: "1:61140580505:web:d3216ca8bd944662a22008" // Replace with your actual App ID
     };
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const auth = getAuth(app);
-    
+
     // Global variable for selected quality
     let selectedQuality = '480p';
 
@@ -252,12 +254,12 @@
       const email = document.getElementById('login-email').value.trim();
       const password = document.getElementById('login-password').value.trim();
       const status = document.getElementById('login-status');
-      
+
       if (!email || !password) {
         showStatus('Please enter both email and password', 'error', status);
         return;
       }
-      
+
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
           showStatus('Login successful!', 'success', status);
@@ -292,7 +294,7 @@
     };
 
     // Select quality function
-    window.selectQuality = function(quality) {
+    window.selectQuality = function(event, quality) {
       selectedQuality = quality;
       document.querySelectorAll('.quality-btn').forEach(btn => {
         btn.classList.remove('active');
@@ -308,64 +310,77 @@
       const neodrive = document.getElementById("neodrive").value.trim();
       const backup = document.getElementById("backup").value.trim();
 
-      if (!movieName || !movieYear || (!filepress && !neodrive)) {
-        showStatus('Please fill all required fields', 'error');
+      // Validate required fields
+      if (!movieName || !movieYear) {
+        showStatus('Please enter Movie Name and Release Year', 'error');
         return;
       }
 
-      // Format the movie name with year and quality
-      const formattedMovieName = `${movieName} (${movieYear}) ${selectedQuality}`;
-      
-      const data = {
-        name: movieName,
-        year: movieYear,
-        quality: selectedQuality,
+       if (!filepress && !neodrive && !backup) {
+         showStatus('Please provide at least one link (FilePress, NeoDrive, or Backup)', 'error');
+         return;
+       }
+
+
+      // Construct the base path for the movie (e.g., movies/Inception (2010))
+      const movieBasePath = `movies/${movieName} (${movieYear})`;
+
+      // Data for the specific quality level
+      const qualityData = {
         timestamp: new Date().toISOString()
       };
-      
-      if (filepress) data.filepress = filepress;
-      if (neodrive) data.neodrive = neodrive;
-      if (backup) data.backup = backup;
 
-      const path = `movies/${formattedMovieName}`;
-      const movieRef = ref(db, path);
+      // Add links only if they are provided
+      if (filepress) qualityData.filepress = filepress;
+      if (neodrive) qualityData.neodrive = neodrive;
+      if (backup) qualityData.backup = backup;
 
-      set(movieRef, data)
+
+      // Prepare the updates object for Firebase
+      const updates = {};
+      // Set the movie name and year directly under the base path (optional but can be useful)
+      updates[movieBasePath + '/name'] = movieName;
+      updates[movieBasePath + '/year'] = movieYear;
+      // Set the quality data under the quality sub-path
+      updates[movieBasePath + '/' + selectedQuality] = qualityData;
+
+
+      // Use update to add/modify data without deleting other qualities
+      update(ref(db), updates)
         .then(() => {
-          showStatus(`Movie (${selectedQuality}) uploaded successfully!`, 'success');
-          // Clear form
-          document.getElementById("movieName").value = '';
-          document.getElementById("movieYear").value = '';
+          showStatus(`Quality "${selectedQuality}" uploaded successfully for ${movieName} (${movieYear})!`, 'success');
+          // Clear link fields after successful upload (keep name/year for adding more qualities)
           document.getElementById("filepress").value = '';
           document.getElementById("neodrive").value = '';
           document.getElementById("backup").value = '';
+          // Keep the quality selection active
         })
         .catch(error => {
-          showStatus("Error: " + error.message, 'error');
+          showStatus("Error uploading quality: " + error.message, 'error');
         });
     };
 
     // Helper function to show status messages
     function showStatus(message, type, element = document.getElementById('status')) {
       element.textContent = message;
-      element.className = type;
+      element.className = type; // This will apply the class like 'success' or 'error'
       element.classList.remove('hidden');
-      
+
       setTimeout(() => {
         element.classList.add('hidden');
       }, 5000);
     }
-    
+
     // Block developer tools
     document.onkeydown = function(e) {
-      if (e.key === "F12" || 
-         (e.ctrlKey && e.shiftKey && 
-          (e.key === "I" || e.key === "J" || e.key === "C"))) {
+      if (e.key === "F12" ||
+         (e.ctrlKey && e.shiftKey &&
+         (e.key === "I" || e.key === "J" || e.key === "C"))) {
         e.preventDefault();
         return false;
       }
     };
-    
+
     // Disable right-click
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
