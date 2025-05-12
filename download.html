@@ -67,8 +67,8 @@
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    /* Style for individual quality sections */
-    .quality-section {
+    /* Reusing movie-card style for the single quality block */
+    .movie-card {
       background-color: var(--dark-color);
       border-radius: 12px;
       padding: 25px;
@@ -78,12 +78,12 @@
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-     .quality-section:hover {
+    .movie-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-     }
+    }
 
-    .quality-section h3 {
+    .movie-card h2 {
       font-size: 22px;
       margin-bottom: 20px;
       color: var(--success-color);
@@ -92,7 +92,7 @@
       align-items: center;
     }
 
-     .quality-section h3::before {
+     .movie-card h2::before { /* Added back an icon for the quality heading */
        content: "✨"; /* Or another icon like '⭐' */
        margin-right: 10px;
        font-size: 20px;
@@ -122,7 +122,7 @@
       position: relative;
       overflow: hidden;
       z-index: 1;
-      box-shadow: 0 4屉 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .btn::before {
@@ -249,7 +249,7 @@
         padding: 12px 20px;
       }
 
-      .quality-section { /* Apply mobile padding to the new section class */
+      .movie-card { /* Apply mobile padding to the movie card */
         padding: 20px;
       }
 
@@ -257,7 +257,7 @@
         font-size: 26px;
       }
 
-      .quality-section h3 { /* Apply mobile font size to the new heading */
+      .movie-card h2 { /* Apply mobile font size to the heading */
         font-size: 20px;
       }
 
@@ -330,10 +330,23 @@
       return buttons;
     }
 
-    // Function to load data based on the movie key in the URL hash
+    // Function to load data based on the movie key and quality in the URL hash
     async function loadData() {
-      // The showKey is now expected to be "Movie Name (Year)"
-      const movieKey = decodeURIComponent(window.location.hash.slice(1));
+      const hash = window.location.hash.slice(1); // Get the hash without the #
+      const parts = hash.split(':'); // Split the hash by the colon
+
+      let movieIdentifier = '';
+      let requestedQuality = '';
+
+      if (parts.length === 2) {
+          // Expected format: MovieName (Year):Quality
+          movieIdentifier = decodeURIComponent(parts[0]);
+          requestedQuality = decodeURIComponent(parts[1]);
+      } else {
+          // Handle cases where the format is incorrect or missing
+          movieIdentifier = decodeURIComponent(hash); // Still try to decode the whole hash
+      }
+
       const titleElement = document.getElementById("show-title");
       const contentContainer = document.getElementById("content");
 
@@ -344,59 +357,51 @@
         </div>
       `;
 
-      if (!movieKey) {
+      if (!movieIdentifier || !requestedQuality) {
         titleElement.innerText = "Content Not Found";
-        contentContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>No content selected. Please navigate from the main page.</p>";
+        contentContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>URL format incorrect. Please use #Movie Name (Year):Quality</p>";
         return;
       }
 
-      // Display the movie key while loading
-      titleElement.innerText = "Loading: " + movieKey;
+      // Display the requested content while loading
+      titleElement.innerText = `Loading: ${movieIdentifier} - ${requestedQuality}`;
+
 
       try {
-        // Fetch data for the specific movie (e.g., movies/Driver Jamuna (2022))
-        const snapshot = await get(child(ref(db), `movies/${movieKey}`));
+        // Fetch data for the specific quality under the movie key
+        // Path will be like: movies/Movie Name (Year)/Quality
+        const firebasePath = `movies/${movieIdentifier}/${requestedQuality}`;
+        const snapshot = await get(child(ref(db), firebasePath));
 
         if (!snapshot.exists()) {
           titleElement.innerText = "Content Not Found";
-          contentContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>Content not found in database for: " + movieKey + "</p>";
+          contentContainer.innerHTML = `<p style='color: #ccc; text-align: center;'>Content not found in database for: ${movieIdentifier} - ${requestedQuality}</p>`;
           return;
         }
 
-        const movieData = snapshot.val();
+        const qualityData = snapshot.val(); // This is the links object for the specific quality
         let contentHTML = '';
 
-        // Set the main title to the movie name and year from the key
-        titleElement.innerText = movieKey; // The key itself contains name and year
-
-        // Iterate through the qualities available for this movie
-        // movieData is expected to be an object like { "1080p": { links }, "720p": { links } }
-        if (movieData && typeof movieData === 'object') {
-            // Get the quality keys and sort them if desired (e.g., 480p, 720p, 1080p, 4K)
-            const qualities = Object.keys(movieData);
-            // You might want to sort qualities in a specific order, e.g., numerically
-            // qualities.sort((a, b) => { /* custom sorting logic based on quality string */ });
+        // Set the main title to the movie name, year, and quality
+        titleElement.innerText = `${movieIdentifier} - ${requestedQuality}`;
 
 
-            qualities.forEach(quality => {
-                const links = movieData[quality]; // Get the links object for this quality
-                const buttons = createButtons(links); // Create buttons from these links
+        // Create buttons directly from the fetched qualityData (which contains the links)
+        const buttons = createButtons(qualityData);
 
-                if (buttons) {
-                    // Create a section for each quality
-                    contentHTML += `
-                        <div class="quality-section">
-                            <h3>${quality}</h3> {/* Display the quality as a heading */}
-                            <div class="button-group">${buttons}</div>
-                        </div>
-                    `;
-                }
-            });
+        if (buttons) {
+            // Display the links for the specific quality
+            contentHTML = `
+                <div class="movie-card">
+                    <h2>${requestedQuality} Download Links</h2> {/* Heading for the specific quality */}
+                    <div class="button-group">${buttons}</div>
+                </div>
+            `;
         }
 
 
-        // If no qualities or links were found, display a message
-        contentContainer.innerHTML = contentHTML || "<p style='color: #ccc; text-align: center;'>No download links found for this content.</p>";
+        // If no links were found for this specific quality
+        contentContainer.innerHTML = contentHTML || `<p style='color: #ccc; text-align: center;'>No download links found for ${requestedQuality} for this movie.</p>`;
 
       } catch (err) {
         console.error("Error loading data:", err);
