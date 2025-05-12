@@ -227,7 +227,6 @@
 			width: 100%;
 		}
 
-		/* Base tag style */
 		.tag {
 			background: #1f1f1f;
 			padding: 6px 14px;
@@ -274,16 +273,44 @@
 			color: #FFD700;
 		}
 
-		/* Quality Tag Styles (from index page) */
-		.tag.hd { background: var(--color-720p); padding: 3px 8px; border-radius: 5px; font-size: 0.7rem; }
-		.tag.fhd { background: var(--color-1080p); padding: 3px 8px; border-radius: 5px; font-size: 0.7rem; }
-		.tag._4k { background: var(--color-4k); padding: 3px 8px; border-radius: 5px; font-size: 0.7rem; }
-		.tag.hdr { background: var(--color-hdr); padding: 3px 8px; border-radius: 5px; font-size: 0.7rem; }
-		.tag.dolby { background: var(--color-dolby); padding: 3px 8px; border-radius: 5px; font-size: 0.7rem; }
-		.tag.imax { background: var(--color-imax); padding: 3px 8px; border-radius: 5px; font-size: 0.7rem; }
-		.tag.cam { background: var(--color-cam); padding: 3px 8px; border-radius: 5px; font-size: 0.7rem; }
-		.tag.zip { background: var(--color-season); padding: 3px 8px; border-radius: 5px; font-size: 0.7rem; } /* Ensure zip tag style is consistent */
+		/* Quality Tag Styles */
+		.quality-tag {
+			padding: 4px 10px;
+			border-radius: 6px;
+			font-size: 0.75rem;
+			font-weight: 700;
+			margin-left: 5px;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
 
+		.quality-tag.quality-720p {
+			background-color: var(--color-720p);
+		}
+
+		.quality-tag.quality-1080p {
+			background-color: var(--color-1080p);
+		}
+
+		.quality-tag.quality-4k {
+			background-color: var(--color-4k);
+		}
+
+		.quality-tag.quality-cam {
+			background-color: var(--color-cam);
+		}
+
+		.quality-tag.quality-hdr {
+			background-color: var(--color-hdr);
+		}
+
+		.quality-tag.quality-dolby {
+			background-color: var(--color-dolby);
+		}
+
+		.quality-tag.quality-imax {
+			background-color: var(--color-imax);
+		}
 
 		/* Button Styles */
 		.btn {
@@ -358,13 +385,33 @@
 			font-weight: 600;
 		}
 
-		.btn-quality.hd { background-color: var(--color-720p); }
-		.btn-quality.fhd { background-color: var(--color-1080p); }
-		.btn-quality._4k { background-color: var(--color-4k); }
-		.btn-quality.cam { background-color: var(--color-cam); }
-		.btn-quality.hdr { background-color: var(--color-hdr); }
-		.btn-quality.dolby { background-color: var(--color-dolby); }
-		.btn-quality.imax { background-color: var(--color-imax); }
+		.btn-quality.btn-quality-720p {
+			background-color: var(--color-720p);
+		}
+
+		.btn-quality.btn-quality-1080p {
+			background-color: var(--color-1080p);
+		}
+
+		.btn-quality.btn-quality-4k {
+			background-color: var(--color-4k);
+		}
+
+		.btn-quality.btn-quality-cam {
+			background-color: var(--color-cam);
+		}
+
+		.btn-quality.btn-quality-hdr {
+			background-color: var(--color-hdr);
+		}
+
+		.btn-quality.btn-quality-dolby {
+			background-color: var(--color-dolby);
+		}
+
+		.btn-quality.btn-quality-imax {
+			background-color: var(--color-imax);
+		}
 
 
 		/* Season Accordion Styles */
@@ -566,7 +613,7 @@
 			color: var(--text-tertiary);
 		}
 
-		/* Similar content grid */
+		/* Similar movies grid */
 		.similar-section {
 			margin-top: 60px;
 			padding: 0 20px 40px;
@@ -603,24 +650,24 @@
 			justify-items: center;
 		}
 
-		/* Movie Card Styles (from index page) */
+		/* --- Movie Card Styles (Copied from Index for Consistency) --- */
 		.movie-card {
 			position: relative;
 			width: 100%;
-			max-width: 180px; /* Added max-width for consistency with index page */
+			max-width: 180px; /* Added max-width for consistency with index */
 			background: var(--bg-card);
-			border-radius: 10px; /* Adjusted border-radius to match index page */
+			border-radius: 10px; /* Adjusted border-radius for consistency with index */
 			overflow: hidden;
-			box-shadow: 0 8px 20px rgba(0,0,0,0.8); /* Adjusted box-shadow */
-			transition: transform 0.4s, box-shadow 0.4s; /* Adjusted transition */
-			display: flex;
-			flex-direction: column;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8); /* Adjusted shadow for consistency with index */
+			transition: transform 0.4s, box-shadow 0.4s; /* Adjusted transition for consistency with index */
+			display: flex; /* Added flex for consistency with index */
+			flex-direction: column; /* Added flex-direction for consistency with index */
 			cursor: pointer;
 		}
 
 		.movie-card:hover {
-			transform: scale(1.05); /* Adjusted transform */
-			box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2); /* Adjusted box-shadow */
+			transform: scale(1.05); /* Adjusted transform for consistency with index */
+			box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2); /* Adjusted shadow for consistency with index */
 		}
 
 		.poster-wrapper {
@@ -645,37 +692,40 @@
 
 		.rating-star {
 			position: absolute;
-			bottom: 8px; /* Adjusted bottom position */
-			left: 8px; /* Adjusted left position */
+			bottom: 8px; /* Adjusted bottom for consistency with index */
+			left: 8px; /* Adjusted left for consistency with index */
 			display: flex;
 			align-items: center;
-			gap: 4px; /* Adjusted gap */
-			padding: 2px 6px; /* Adjusted padding */
+			gap: 4px; /* Adjusted gap for consistency with index */
+			padding: 2px 6px; /* Adjusted padding for consistency with index */
 			border-radius: 20px;
 			background: rgba(0, 0, 0, 0.7);
-			font-size: 11px; /* Adjusted font-size */
+			font-size: 11px; /* Adjusted font-size for consistency with index */
 			font-weight: 600;
 			color: #fff;
 			backdrop-filter: blur(4px);
-			/* Removed border as per index page */
+			/* Removed border for consistency with index */
 		}
 
-		.rating-star img { width: 14px; height: 14px; } /* Style for star image */
-
+		.rating-star i { /* Changed from img to i */
+			color: #FFD700; /* Added star color */
+			font-size: 14px; /* Adjusted font-size for consistency with index */
+			line-height: 1; /* Added line-height for consistency with index */
+		}
 
 		.movie-info {
-			padding: 8px; /* Adjusted padding */
+			padding: 8px; /* Adjusted padding for consistency with index */
 			display: flex;
 			flex-direction: column;
-			gap: 6px; /* Adjusted gap */
-			min-height: 60px; /* Adjusted min-height */
+			gap: 6px; /* Adjusted gap for consistency with index */
+			min-height: 60px; /* Added min-height for consistency with index */
 		}
 
 		.title {
-			font-size: 13px; /* Adjusted font-size */
-			font-weight: 700; /* Adjusted font-weight */
-			line-height: 1.3em;
-			max-height: 2.6em;
+			font-size: 13px; /* Adjusted font-size for consistency with index */
+			font-weight: 700; /* Adjusted font-weight for consistency with index */
+			line-height: 1.3em; /* Adjusted line-height for consistency with index */
+			max-height: 2.6em; /* Adjusted max-height for consistency with index */
 			overflow: hidden;
 			display: -webkit-box;
 			-webkit-line-clamp: 2;
@@ -686,12 +736,30 @@
 		.tags {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 5px; /* Adjusted gap */
-			font-size: 11px; /* Adjusted font-size */
-			opacity: 0.9;
+			gap: 5px; /* Adjusted gap for consistency with index */
+			font-size: 11px; /* Adjusted font-size for consistency with index */
+			opacity: 0.9; /* Added opacity for consistency with index */
+			color: inherit; /* Inherit color from parent */
 		}
 
-		/* Tag styles are defined above to be consistent */
+		.tag {
+			padding: 2px 6px; /* Adjusted padding for consistency with index */
+			border-radius: 5px;
+			background: #333;
+			font-size: 0.7rem; /* Keep this or adjust to 11px like .tags */
+			color: white; /* Ensure tag text is white */
+		}
+
+		.tag.hd { background: var(--color-720p); }
+		.tag.cam { background: var(--color-cam); }
+		.tag.fhd { background: var(--color-1080p); }
+		.tag._4k { background: var(--color-4k); }
+		.tag.zip { background: var(--color-season); }
+		.tag.hdr { background: var(--color-hdr); }
+		.tag.dolby { background: var(--color-dolby); }
+		.tag.imax { background: var(--color-imax); }
+		/* --- End Movie Card Styles --- */
+
 
 		/* Loading Animation */
 		.loading-skeleton {
@@ -730,6 +798,49 @@
 			.info-tags {
 				justify-content: flex-start;
 			}
+
+			/* Adjusted similar grid for consistency on smaller screens */
+			.similar-grid {
+				grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Adjusted minmax */
+				gap: 20px; /* Adjusted gap */
+			}
+
+			.movie-card {
+				max-width: 100%; /* Allow cards to take available width */
+			}
+
+			.poster-wrapper {
+				height: 240px; /* Adjusted height */
+			}
+
+			.rating-star {
+				font-size: 11px; /* Ensure consistent font size */
+				padding: 2px 6px; /* Ensure consistent padding */
+			}
+
+			.rating-star i {
+				font-size: 14px; /* Ensure consistent icon size */
+			}
+
+			.movie-info {
+				padding: 8px; /* Ensure consistent padding */
+				gap: 6px; /* Ensure consistent gap */
+				min-height: 60px; /* Ensure consistent min-height */
+			}
+
+			.title {
+				font-size: 13px; /* Ensure consistent font size */
+			}
+
+			.tags {
+				font-size: 11px; /* Ensure consistent font size */
+				gap: 5px; /* Ensure consistent gap */
+			}
+
+			.tag {
+				padding: 2px 6px; /* Ensure consistent padding */
+			}
+
 		}
 
 		@media (max-width: 767px) {
@@ -813,58 +924,49 @@
 				font-size: 1.3rem;
 			}
 
+			/* Adjusted similar grid for consistency on extra small screens */
 			.similar-grid {
-				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-				gap: 20px;
+				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjusted minmax */
+				gap: 20px; /* Adjusted gap */
 			}
 
-			/* Mobile adjustments for movie cards in similar section */
 			.movie-card {
-				max-width: 150px; /* Match grid minmax size */
+				max-width: 100%; /* Allow cards to take available width */
 			}
 
 			.poster-wrapper {
-				height: 225px; /* Maintain aspect ratio */
+				height: 220px; /* Adjusted height */
 			}
 
 			.rating-star {
-				font-size: 10px;
-				padding: 1px 5px;
+				font-size: 10px; /* Adjusted font size */
+				padding: 2px 5px; /* Adjusted padding */
+				gap: 3px; /* Adjusted gap */
 			}
-			.rating-star img { width: 12px; height: 12px; }
+
+			.rating-star i {
+				font-size: 12px; /* Adjusted icon size */
+			}
 
 			.movie-info {
-				padding: 6px;
-				gap: 4px;
+				padding: 6px; /* Adjusted padding */
+				gap: 5px; /* Adjusted gap */
+				min-height: 50px; /* Adjusted min-height */
 			}
 
 			.title {
-				font-size: 12px;
+				font-size: 12px; /* Adjusted font size */
 			}
 
 			.tags {
-				gap: 4px;
-				font-size: 10px;
+				font-size: 10px; /* Adjusted font size */
+				gap: 4px; /* Adjusted gap */
 			}
 
 			.tag {
-				padding: 2px 5px;
+				padding: 1px 5px; /* Adjusted padding */
 			}
 
-			.nav-btn {
-				width: 36px;
-				height: 36px;
-				font-size: 16px;
-				top: 15px;
-			}
-
-			.back-btn {
-				left: 15px;
-			}
-
-			.home-btn {
-				right: 15px;
-			}
 
 			.additional-info {
 				grid-template-columns: 1fr;
@@ -877,16 +979,18 @@
 		}
 
 		@media (max-width: 480px) {
+			/* Adjusted similar grid for consistency on tiny screens */
 			.similar-grid {
 				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
 				gap: 15px;
 			}
 
 			.movie-card {
-				max-width: 130px;
+				max-width: 100%; /* Allow cards to take available width */
 			}
+
 			.poster-wrapper {
-				height: 195px; /* Maintain aspect ratio */
+				height: 200px;
 			}
 
 			.movie-title {
@@ -894,13 +998,13 @@
 			}
 
 			.cast-grid {
-				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Keep consistent or adjust as needed */
 				gap: 12px;
 			}
 
 			.cast-photo {
-				width: 70px;
-				height: 70px;
+				width: 70px; /* Keep consistent or adjust as needed */
+				height: 70px; /* Keep consistent or adjust as needed */
 			}
 		}
 
@@ -912,11 +1016,11 @@
 
 			.similar-grid {
 				grid-template-columns: repeat(2, 1fr);
-				gap: 10px;
+				gap: 15px; /* Ensure consistent gap */
 			}
 
 			.movie-card {
-				max-width: unset; /* Allow grid to control width */
+				max-width: 100%; /* Allow cards to take available width */
 			}
 
 			.poster-wrapper {
@@ -928,13 +1032,13 @@
 			}
 
 			.cast-grid {
-				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Keep consistent or adjust as needed */
 				gap: 12px;
 			}
 
 			.cast-photo {
-				width: 70px;
-				height: 70px;
+				width: 70px; /* Keep consistent or adjust as needed */
+				height: 70px; /* Keep consistent or adjust as needed */
 			}
 		}
 	</style>
@@ -1009,8 +1113,7 @@
 		// Default placeholder image URL
 		const PLACEHOLDER_POSTER_URL = 'https://via.placeholder.com/220x330?text=No+Poster';
 		const PLACEHOLDER_CAST_URL = 'https://via.placeholder.com/200x200?text=No+Image';
-		const PLACEHOLDER_SIMILAR_URL = 'https://via.placeholder.com/180x270?text=No+Image'; // Used in generated similar cards as well
-		const STAR_IMAGE_URL = 'star.png'; // Path to your star image
+		const PLACEHOLDER_SIMILAR_URL = 'https://via.placeholder.com/180x270?text=No+Image';
 
 
 		// --- DOM Elements ---
@@ -1029,10 +1132,8 @@
 		const castGridElement = document.getElementById('castGrid');
 		const similarMoviesElement = document.getElementById('similarMovies');
 
-
-		// --- Local Data Storage ---
-		let localMediaMap = new Map(); // Map to store local media for quick lookup
-
+		// Global variable to store combined local content for filtering
+		let localContentMap = new Map(); // Map: key = type_id, value = local item
 
 		// --- Error Handling ---
 		function showError(message = 'An unexpected error occurred.') {
@@ -1066,7 +1167,7 @@
 		// --- Navigation ---
 		backBtn.addEventListener('click', () => {
 			// Check if the referrer is from the same domain to prevent external redirects
-			if (document.referrer && document.referrer.includes(window.location.hostname)) {
+			if (document.referrer.includes(window.location.hostname)) {
 				window.history.back();
 			} else {
 				// Fallback to home page if no referrer or external referrer
@@ -1079,8 +1180,8 @@
 		});
 
 
-		// --- Load Local Content Links (from JSON files) and Populate Map ---
-		async function loadLocalContent() {
+		// --- Load Local Content Links (from JSON files) ---
+		async function loadLocalContentMap() {
 			try {
 				// Use Promise.allSettled to handle potential failures of one file without stopping the other
 				const [moviesResponse, seriesResponse] = await Promise.allSettled([
@@ -1088,44 +1189,47 @@
 					fetch('series.json').then(res => res.ok ? res.json() : Promise.reject(`Failed to load series.json: ${res.status}`))
 				]);
 
+				// Process results, handling rejections
 				const moviesData = moviesResponse.status === 'fulfilled' ? (moviesResponse.value?.movies || []) : [];
 				if (moviesResponse.status === 'rejected') console.error(moviesResponse.reason);
 
 				const seriesData = seriesResponse.status === 'fulfilled' ? (seriesResponse.value?.series || []) : [];
 				if (seriesResponse.status === 'rejected') console.error(seriesResponse.reason);
 
-				const combinedLocalItems = [
-					...moviesData.map(item => ({ ...item, type: 'movie' })),
-					...seriesData.map(item => ({ ...item, type: 'tv' }))
-				];
-
-				// Populate the map
-				combinedLocalItems.forEach(item => {
-					// Create a unique key like "movie_123" or "tv_456"
-					const key = `${item.type}_${item.id}`;
-					localMediaMap.set(key, item);
+				// Populate the global map
+				[
+					...moviesData.map(item => ({
+						...item,
+						type: 'movie'
+					})),
+					...seriesData.map(item => ({
+						...item,
+						type: 'tv'
+					}))
+				].forEach(item => {
+					localContentMap.set(`${item.type}_${item.id}`, item);
 				});
 
-				// Now that local data is loaded, proceed to load content links for the current item
-				loadContentLinksForCurrentItem();
+				// Now that local data is loaded, proceed with loading links
+				loadContentLinks();
 
 			} catch (error) {
+				// This catch block handles errors during initial fetch or JSON parsing
 				console.error('Error loading local content files:', error);
-				downloadOptionsElement.innerHTML = '<p class="no-options">Failed to load download options from local files.</p>';
-				watchBtn.style.display = 'none';
-				// If local data fails to load, similar media filtering will result in an empty list, which is the desired behavior.
+				// Decide how to handle this error - maybe show a message about limited functionality
 			}
 		}
 
-		// Separate the logic for finding and displaying links for the *current* item
-		function loadContentLinksForCurrentItem() {
-			const currentItemKey = `${mediaType}_${mediaId}`;
-			const mediaItem = localMediaMap.get(currentItemKey);
+		// This function now just uses the pre-loaded localContentMap
+		function loadContentLinks() {
+			// Find the current media item using the map
+			const mediaItem = localContentMap.get(`${mediaType}_${mediaId}`);
 
-			downloadOptionsElement.innerHTML = ''; // Clear initial loading text
+			// Clear initial loading text
+			downloadOptionsElement.innerHTML = '';
 
 			if (!mediaItem) {
-				downloadOptionsElement.innerHTML = '<p class="no-options">Content not found in local database (movies.json/series.json).</p>';
+				downloadOptionsElement.innerHTML = '<p class="no-options">Content not found in local database (movies.json/series.json). Download options are unavailable.</p>';
 				watchBtn.style.display = 'none'; // Hide watch button if no local data
 				return; // Stop if no local data found
 			}
@@ -1140,19 +1244,31 @@
 			}
 
 			// Add available quality tags to mainTagsElement (if not already added by loadMediaDetails)
+			// It's safer to clear mainTagsElement here and add all relevant tags (TMDB + Quality)
+			// Clearing and re-adding ensures all tags are present and avoids duplicates if TMDB provides some.
+			// However, to avoid disrupting the loading skeletons/initial state from loadMediaDetails,
+			// we'll stick to only adding quality tags here if they exist in local data.
+			// A better approach would be to build all tags after both TMDb and local data are loaded.
+			// For now, let's append quality tags if mainTagsElement already has content from TMDB.
+			// If mainTagsElement is empty, it means TMDB details might have failed, so append anyway.
 			if (mediaItem.available_qualities?.length > 0) {
+				// Check if mainTagsElement already has content from TMDB loading
+				const hasTmdbTags = mainTagsElement.children.length > 0;
+				if (!hasTmdbTags) {
+					// If no TMDB tags, clear the loading text first
+					mainTagsElement.innerHTML = '';
+				}
 				mediaItem.available_qualities.forEach(quality => {
 					const qualityTag = document.createElement('span');
-					// Normalize quality names for class names as in index page CSS
-					const normalizedQuality = quality.toLowerCase().replace(' ', '').replace('.', ''); // Remove spaces and dots
-					 const tagClass = normalizedQuality === '4k' ? '_4k' : // Match index page style rule `._4k`
-										normalizedQuality === '1080p' ? 'fhd' : // Match index page style rule `.fhd`
-										normalizedQuality === '720p' ? 'hd' :  // Match index page style rule `.hd`
-										normalizedQuality;
-					qualityTag.className = `tag ${tagClass}`; // Use 'tag' class and the specific quality class
+					qualityTag.className = `quality-tag quality-${quality.toLowerCase()}`;
 					qualityTag.textContent = quality;
-					mainTagsElement.appendChild(qualityTag); // Append to existing tags
+					mainTagsElement.appendChild(qualityTag); // Append quality tags
 				});
+			} else if (mainTagsElement.children.length === 0) {
+				// If no local quality tags and no TMDB tags loaded, add a fallback
+				// This case might be handled by showError in loadMediaDetails if TMDB fails
+				// But if TMDB succeeds without tags and local data has no quality tags, this is needed
+				// For now, let's assume loadMediaDetails handles main tags or they are added below
 			}
 
 
@@ -1174,13 +1290,7 @@
 						for (const [quality, url] of Object.entries(seasonData.download_links)) {
 							const qualityBtn = document.createElement('a');
 							qualityBtn.href = url;
-							// Normalize quality names for class names as in index page CSS
-							const normalizedQuality = quality.toLowerCase().replace(' ', '').replace('.', ''); // Remove spaces and dots
-							 const btnClass = normalizedQuality === '4k' ? '_4k' : // Match index page style rule `._4k`
-											normalizedQuality === '1080p' ? 'fhd' : // Match index page style rule `.fhd`
-											normalizedQuality === '720p' ? 'hd' :  // Match index page style rule `.hd`
-											normalizedQuality;
-							qualityBtn.className = `btn btn-quality btn-quality-${btnClass}`; // Use btn-quality base class + specific class
+							qualityBtn.className = `btn season-quality-btn btn-quality-${quality.toLowerCase()}`;
 							qualityBtn.target = '_blank';
 							qualityBtn.innerHTML = `<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}`;
 							seasonContent.appendChild(qualityBtn);
@@ -1191,10 +1301,15 @@
 
 					// Add event listener to toggle accordion
 					seasonBtn.addEventListener('click', () => {
+						// Close other open accordions
 						document.querySelectorAll('.season-accordion .season-btn.active').forEach(btn => {
 							if (btn !== seasonBtn) {
 								btn.classList.remove('active');
-								btn.nextElementSibling.classList.remove('active');
+								// Check if the next element is indeed the content before toggling
+								const nextContent = btn.nextElementSibling;
+								if(nextContent && nextContent.classList.contains('season-content')) {
+									nextContent.classList.remove('active');
+								}
 							}
 						});
 						seasonBtn.classList.toggle('active');
@@ -1205,19 +1320,16 @@
 					seasonAccordion.appendChild(seasonContent);
 					downloadOptionsElement.appendChild(seasonAccordion);
 				}
+				if (Object.keys(mediaItem.seasons).length === 0) {
+                     downloadOptionsElement.innerHTML = '<p class="no-options">No season information available in local database.</p>';
+                }
 			} else if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
 				// Movie or single-season show with direct download links
 				for (const [quality, url] of Object.entries(mediaItem.download_links)) {
 					const qualityBtn = document.createElement('a');
 					qualityBtn.href = url;
-					// Normalize quality names for class names as in index page CSS
-					const normalizedQuality = quality.toLowerCase().replace(' ', '').replace('.', ''); // Remove spaces and dots
-					 const btnClass = normalizedQuality === '4k' ? '_4k' : // Match index page style rule `._4k`
-											normalizedQuality === '1080p' ? 'fhd' : // Match index page style rule `.fhd`
-											normalizedQuality === '720p' ? 'hd' :  // Match index page style rule `.hd`
-											normalizedQuality;
-
-					qualityBtn.className = `btn btn-quality btn-quality-${btnClass}`; // Use btn-quality base class + specific class
+					// Use btn-quality class and specific quality class
+					qualityBtn.className = `btn btn-quality btn-quality-${quality.toLowerCase().replace(' ', '')}`;
 					qualityBtn.target = '_blank';
 					qualityBtn.innerHTML = mediaType === 'tv' ?
 						`<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}` :
@@ -1228,6 +1340,7 @@
 				// No download options found in local data
 				downloadOptionsElement.innerHTML = '<p class="no-options">No download options available in local database.</p>';
 			}
+
 		}
 
 
@@ -1268,7 +1381,7 @@
 				// Set title
 				titleElement.textContent = mediaType === 'tv' ? media.name || 'Untitled Series' : media.title || 'Untitled Movie';
 
-				// Clear and Set main tags from TMDB (Year, Runtime/Seasons, Type, Rating)
+				// Set main tags (Clearing existing content in case local links load first without TMDB data)
 				mainTagsElement.innerHTML = `
 					<div class="tag movie-type">${mediaType === 'tv' ? 'TV Series' : 'Movie'}</div>
 					<div class="tag"><i class="bi bi-calendar-event"></i> ${
@@ -1301,8 +1414,8 @@
 				// Set synopsis
 				synopsisTextElement.textContent = media.overview || "No synopsis available.";
 
-				// Set additional info
-				additionalInfoElement.innerHTML = ''; // Clear loading indicators
+				// Set additional info (Clearing loading indicators)
+				additionalInfoElement.innerHTML = '';
 				if (mediaType === 'tv') {
 					additionalInfoElement.innerHTML = `
 						<div class="info-block">
@@ -1345,7 +1458,7 @@
 
 				// Set cast section if available
 				if (media.credits?.cast?.length > 0) {
-					// Clear initial loading text
+					// Clear initial loading text and add title/grid container
 					castSectionElement.innerHTML = `<h2 class="cast-title">Cast</h2><div class="cast-grid" id="castGrid"></div>`;
 					const currentCastGrid = document.getElementById('castGrid');
 
@@ -1376,107 +1489,96 @@
 				showError('Failed to load media details from TMDB. ' + error.message);
 				console.error('Error loading media details:', error);
 				// Ensure other sections show error or are cleared
-				additionalInfoElement.innerHTML = '<p class="no-options">Failed to load additional info.</p>';
-				castSectionElement.innerHTML = '<p class="no-options">Failed to load cast info.</p>';
+				// additionalInfoElement.innerHTML = '<p class="no-options">Failed to load additional info.</p>'; // Redundant if showError is called
+				// castSectionElement.innerHTML = '<p class="no-options">Failed to load cast info.</p>'; // Redundant if showError is called
 			}
 		}
 
 
-		// --- Load Similar Media (from TMDB and Filtered by Local) ---
+		// --- Load Similar Media (from TMDB and filter by local content) ---
 		async function loadSimilarMedia() {
 			try {
-				// Ensure local data map is populated before filtering
-				// This ensures we only attempt to fetch similar if local data was at least tried
-				if (localMediaMap.size === 0) {
-					 console.warn('Local media map is empty. Cannot filter similar content. Check local JSON loading.');
-					 similarMoviesElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">Local content data not loaded or is empty.</p>';
-					 return; // Exit if local data isn't available for filtering
-				}
-
-
 				const response = await fetch(similarUrl);
 				if (!response.ok) {
+					// Throw an error if the HTTP status is not OK
 					throw new Error(`TMDB API error: ${response.status} - ${response.statusText}`);
 				}
 
 				const data = await response.json();
-				similarMoviesElement.innerHTML = ''; // Clear initial loading text
 
-				if (!data.results?.length) {
-					similarMoviesElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found on TMDB.</p>';
-					return; // Stop if no similar results from TMDB
-				}
-
-				// Filter TMDB results to only include items present in the localMediaMap
-				const similarLocalItems = data.results.filter(tmdbItem => {
-					// TMDB similar endpoint returns media_type as part of the result item
-					const itemType = tmdbItem.media_type || mediaType; // Use item's media_type or default
-					const key = `${itemType}_${tmdbItem.id}`;
-					return localMediaMap.has(key);
+				// --- Filter similar results based on localContentMap ---
+				const filteredSimilar = data.results.filter(tmdbItem => {
+					// Use the global localContentMap to check if the item exists locally
+					const localItem = localContentMap.get(`${tmdbItem.media_type || mediaType}_${tmdbItem.id}`);
+					return localItem !== undefined; // Keep item if found in local map
 				});
+				// --- End filtering ---
 
-				if (similarLocalItems.length === 0) {
-					 similarMoviesElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found in our library.</p>';
-					 return; // Stop if no similar results after filtering
+
+				// Clear initial loading text
+				similarMoviesElement.innerHTML = '';
+
+				if (!filteredSimilar?.length) {
+					similarMoviesElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found in local database.</p>';
+					return; // Stop if no filtered similar results
 				}
 
-
-				// Display filtered similar items (first 6)
-				similarLocalItems.slice(0, 6).forEach(tmdbItem => {
-					// Get the full local item data to access download_links for quality tags and season info
-					const localItem = localMediaMap.get(`${tmdbItem.media_type || mediaType}_${tmdbItem.id}`);
-
-					// Use TMDB data for display details
-					const posterPath = tmdbItem.poster_path ?
-						`https://image.tmdb.org/t/p/w500${tmdbItem.poster_path}` :
+				// Display the filtered similar items (limit to a reasonable number if needed, e.g., 6)
+				filteredSimilar.slice(0, 10).forEach(item => { // Limiting to 10 for example
+					// Set src directly to placeholder if poster_path is missing
+					const posterPath = item.poster_path ?
+						`https://image.tmdb.org/t/p/w500${item.poster_path}` :
 						PLACEHOLDER_SIMILAR_URL;
 
-					const title = tmdbItem.title || tmdbItem.name || 'Untitled';
-					const releaseDate = tmdbItem.release_date || tmdbItem.first_air_date;
+					// Use item.media_type if available from similar endpoint, otherwise default
+					const currentItemType = item.media_type || mediaType;
+					const title = currentItemType === 'tv' ? item.name || 'Untitled Series' : item.title || 'Untitled Movie';
+					const releaseDate = currentItemType === 'tv' ? item.first_air_date : item.release_date;
 					const formattedDate = formatDate(releaseDate);
-					const type = tmdbItem.media_type === 'tv' ? 'Series' : 'Movie';
-					const rating = tmdbItem.vote_average ? tmdbItem.vote_average.toFixed(1) : 'N/A';
+					const typeTagText = currentItemType === 'tv' ? 'Series' : 'Movie';
+					const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
 
-					// Construct the card HTML matching the index page structure
+                    // Get local item details to display quality tags
+                    const localItemDetails = localContentMap.get(`${currentItemType}_${item.id}`);
+                    const qualityTagsHTML = localItemDetails?.available_qualities?.length > 0 ?
+                        localItemDetails.available_qualities.map(quality => {
+                            const normalizedQuality = quality.toLowerCase().replace(' ', '');
+                            const tagClass = normalizedQuality === '4k' ? '_4k' : normalizedQuality; // Use _4k to avoid conflict with class '4k'
+                             return `<div class="tag ${tagClass}">${quality}</div>`;
+                        }).join('') : '';
+
+
 					const card = document.createElement('div');
-					card.className = 'movie-card'; // Use movie-card class from index page
+					card.className = 'movie-card';
 					card.innerHTML = `
 						<div class="poster-wrapper">
 							<img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${PLACEHOLDER_SIMILAR_URL}'; this.classList.add('loaded');">
 							<div class="rating-star">
-								<img src="${STAR_IMAGE_URL}" alt="star rating icon"> ${rating}
+								<i class="bi bi-star-fill"></i>
+								${rating}
 							</div>
 						</div>
 						<div class="movie-info">
 							<div class="title">${title}</div>
 							<div class="tags">
-								 ${formattedDate ? `<div class="tag">${formattedDate}</div>` : ''}
-								 ${type ? `<div class="tag">${type}</div>` : ''}
-								${localItem?.download_links ? Object.keys(localItem.download_links)
-									.map(quality => {
-										// Normalize quality names for consistent styling
-										const normalizedQuality = quality.toLowerCase().replace(' ', '').replace('.', ''); // Remove spaces and dots
-										const tagClass = normalizedQuality === '4k' ? '_4k' : // Match index page style rule `._4k`
-														normalizedQuality === '1080p' ? 'fhd' : // Match index page style rule `.fhd`
-														normalizedQuality === '720p' ? 'hd' :  // Match index page style rule `.hd`
-														normalizedQuality;
-										return `<div class="tag ${tagClass}">${quality}</div>`;
-									})
-									.join('') : ''}
-								 ${localItem?.seasons ? '<div class="tag zip">ZIP</div>' : ''} </div>
+								<div class="tag">${formattedDate}</div>
+								<div class="tag">${typeTagText}</div>
+								${qualityTagsHTML} ${currentItemType === 'tv' ? '<div class="tag zip">ZIP</div>' : ''}
+							</div>
 						</div>
 					`;
 
 					// Add click listener to navigate to the similar item's detail page
 					card.addEventListener('click', () => {
-						// Ensure the correct type is passed for navigation
-						window.location.href = `detail.html?id=${tmdbItem.id}&type=${tmdbItem.media_type || mediaType}`;
+						// Pass the correct type and id to the detail page
+						window.location.href = `detail.html?id=${item.id}&type=${currentItemType}`;
 					});
 
 					similarMoviesElement.appendChild(card);
 				});
 
 			} catch (error) {
+				// This catch block handles errors during TMDB similar fetch or JSON parsing
 				console.error('Error loading similar media:', error);
 				similarMoviesElement.innerHTML =
 					'<p style="color: white; text-align: center; grid-column: 1/-1;">Failed to load similar content.</p>';
@@ -1525,19 +1627,17 @@
 		document.addEventListener('DOMContentLoaded', () => {
 			// Check mediaId again just in case, though the throw at the top should prevent this
 			if (mediaId) {
-				// Load local data first, then trigger details and similar loading
-				loadLocalContent().then(() => {
-					 // Only load details and similar after local content is potentially loaded into the map
-					 loadMediaDetails(); // Load main details from TMDB
-					 loadSimilarMedia(); // Load and filter similar content
-				}).catch(error => {
-					 // Handle potential initial error during loadLocalContent if needed
-					 console.error("Initial local content load failed:", error);
-					 // The individual functions (loadMediaDetails, loadSimilarMedia, loadContentLinksForCurrentItem)
-					 // already handle showing errors in their respective sections if their data source fails.
-					 // A general error message here might be redundant or confusing.
-					 // Let's rely on the specific error handling in each function.
-				});
+				// Load local content first, then details and similar
+				loadLocalContentMap().then(() => {
+                    loadMediaDetails(); // Load main details after local data is potentially available
+                    loadSimilarMedia(); // Load and filter similar content after local data is available
+                }).catch(error => {
+                    // Handle errors during initial local data load if necessary
+                    console.error("Initial local data load failed:", error);
+                    // Proceed with loading details anyway, but similar content will be limited
+                    loadMediaDetails();
+                    loadSimilarMedia(); // This will likely show no similar content if local data failed
+                });
 			}
 		});
 
@@ -1548,17 +1648,25 @@
 
 		// Block common developer tools shortcuts
 		document.onkeydown = function(e) {
-			// Check for F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S
+			// Check for F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
 			if (e.key === "F12" ||
 				(e.ctrlKey && e.shiftKey &&
-					(e.key === "I" || e.key === "J" || e.key === "C")) ||
-				(e.ctrlKey && e.key === "U") ||
-				(e.ctrlKey && e.key === "S")) {
+					(e.key === "I" || e.key === "J" || e.key === "C"))) {
 				e.preventDefault();
 				// You might want to show a message to the user here
 				// alert("Developer tools are disabled on this page.");
 				return false;
 			}
+             // Check for Ctrl+U (View Source)
+             if (e.ctrlKey && e.key === "U") {
+                 e.preventDefault();
+                 return false;
+             }
+             // Check for Ctrl+S (Save Page)
+             if (e.ctrlKey && e.key === "S") {
+                 e.preventDefault();
+                 return false;
+             }
 		};
 	</script>
 </body>
