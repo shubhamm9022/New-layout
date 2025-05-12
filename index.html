@@ -817,8 +817,8 @@
 </div>
 <footer style="background:#111; color:#aaa; text-align:center; padding:20px 10px; font-size:14px; margin-top: 40px;">
   <p>
-    <a href="/contact.html" style="color:#f9cb28; text-decoration:none; margin-right:15px;">◗ Contact</a>
-    <a href="/dmca.html" style="color:#f9cb28; text-decoration:none; margin-left:15px;">◗ DMCA Removal</a>
+    <a href="/New-layout/contact.html" style="color:#f9cb28; text-decoration:none; margin-right:15px;">◗ Contact</a>
+    <a href="/New-layout/dmca.html" style="color:#f9cb28; text-decoration:none; margin-left:15px;">◗ DMCA Removal</a>
   </p>
   <p style="margin-top:10px;">© 2025 MoviesVault. All rights reserved.</p>
   <p style="margin-top:7px;">NOTE: This site does not store any files on its server. All contents are provided by non-affiliated third parties.</p>
@@ -920,8 +920,8 @@
       
       // Load both movies and series JSON files
       const [moviesResponse, seriesResponse] = await Promise.all([
-        fetch('/movies.json'),
-        fetch('/series.json')
+        fetch('movies.json'),
+        fetch('series.json')
       ]);
       
       const [moviesData, seriesData] = await Promise.all([
@@ -1084,7 +1084,7 @@
           stream_link: media.stream_link,
           download_links: media.download_links
         }));
-        window.location.href = `/detail.html?id=${media.id}&type=${media.media_type}`;
+        window.location.href = `detail.html?id=${media.id}&type=${media.media_type}`;
       });
       
       moviesContainer.appendChild(card);
