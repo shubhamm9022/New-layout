@@ -121,7 +121,7 @@
       "stream_link": "https://example.com/stream/umbrella-academy",
       "available_qualities": ["1080p"],
       "genres": ["Action & Adventure", "Sci-Fi & Fantasy", "Drama"],
-      "download_links": {"4k":},
+      "download_links": {"4k":""},
       "seasons": {
         "1": { "download_links": { "1080p": "https://gplinks.co/ua-s1-1080p" } },
         "2": { "download_links": { "1080p": "https://gplinks.co/ua-s2-1080p" } },
