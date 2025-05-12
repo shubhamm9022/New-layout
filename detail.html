@@ -1103,571 +1103,475 @@
 	</div>
 
 	<script>
-		// Improved version with better error handling and data loading
-		const urlParams = new URLSearchParams(window.location.search);
-		const mediaId = urlParams.get('id');
-		const mediaType = urlParams.get('type') || 'movie'; // Default to 'movie' if type is missing
-		// NOTE: Replace with your actual TMDB API key
-		const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa'; // Ensure this is correct
-
-		// Default placeholder image URL
-		const PLACEHOLDER_POSTER_URL = 'https://via.placeholder.com/220x330?text=No+Poster';
-		const PLACEHOLDER_CAST_URL = 'https://via.placeholder.com/200x200?text=No+Image';
-		const PLACEHOLDER_SIMILAR_URL = 'https://via.placeholder.com/180x270?text=No+Image';
-
-
-		// --- DOM Elements ---
-		const titleElement = document.getElementById('title');
-		const synopsisTextElement = document.getElementById('synopsisText');
-		const downloadOptionsElement = document.getElementById('downloadOptions');
-		const backBtn = document.getElementById('backBtn');
-		const homeBtn = document.getElementById('homeBtn');
-		const watchBtn = document.getElementById('watchBtn');
-		const bannerElement = document.getElementById('banner');
-		const posterElement = document.getElementById('poster');
-		const mainTagsElement = document.getElementById('mainTags');
-		const genreTagsElement = document.getElementById('genreTags');
-		const additionalInfoElement = document.getElementById('additionalInfo');
-		const castSectionElement = document.getElementById('castSection');
-		const castGridElement = document.getElementById('castGrid');
-		const similarMoviesElement = document.getElementById('similarMovies');
-
-		// Global variable to store combined local content for filtering
-		let localContentMap = new Map(); // Map: key = type_id, value = local item
-
-		// --- Error Handling ---
-		function showError(message = 'An unexpected error occurred.') {
-			console.error('Error:', message);
-			titleElement.textContent = 'Error loading content';
-			synopsisTextElement.textContent = message;
-			downloadOptionsElement.innerHTML = '<p class="no-options">' + message + '</p>';
-			additionalInfoElement.innerHTML = ''; // Clear loading indicators
-			castSectionElement.innerHTML = ''; // Clear loading indicators
-			similarMoviesElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">' + message + '</p>';
-			// You might want to hide other sections or display error states
-		}
-
-		// Check if we have required parameters early
-		if (!mediaId) {
-			showError('No content selected. Please go back and select a movie or TV show.');
-			// Stop further execution if mediaId is missing
-			throw new Error('Missing media ID');
-		}
-
-		// --- API Endpoints ---
-		const detailsUrl = mediaType === 'tv' ?
-			`https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US&append_to_response=credits` :
-			`https://api.themoviedb.org/3/movie/${mediaId}?api_key=${apiKey}&language=en-US&append_to_response=credits`;
-
-		const similarUrl = mediaType === 'tv' ?
-			`https://api.themoviedb.org/3/tv/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1` :
-			`https://api.themoviedb.org/3/movie/${mediaId}/similar?api_key=${apiKey}&language=en-US&page=1`;
-
-
-		// --- Navigation ---
-		backBtn.addEventListener('click', () => {
-			// Check if the referrer is from the same domain to prevent external redirects
-			if (document.referrer.includes(window.location.hostname)) {
-				window.history.back();
-			} else {
-				// Fallback to home page if no referrer or external referrer
-				window.location.href = 'index.html';
-			}
-		});
-
-		homeBtn.addEventListener('click', () => {
-			window.location.href = 'index.html';
-		});
-
-
-		// --- Load Local Content Links (from JSON files) ---
-		async function loadLocalContentMap() {
-			try {
-				// Use Promise.allSettled to handle potential failures of one file without stopping the other
-				const [moviesResponse, seriesResponse] = await Promise.allSettled([
-					fetch('movies.json').then(res => res.ok ? res.json() : Promise.reject(`Failed to load movies.json: ${res.status}`)),
-					fetch('series.json').then(res => res.ok ? res.json() : Promise.reject(`Failed to load series.json: ${res.status}`))
-				]);
-
-				// Process results, handling rejections
-				const moviesData = moviesResponse.status === 'fulfilled' ? (moviesResponse.value?.movies || []) : [];
-				if (moviesResponse.status === 'rejected') console.error(moviesResponse.reason);
-
-				const seriesData = seriesResponse.status === 'fulfilled' ? (seriesResponse.value?.series || []) : [];
-				if (seriesResponse.status === 'rejected') console.error(seriesResponse.reason);
-
-				// Populate the global map
-				[
-					...moviesData.map(item => ({
-						...item,
-						type: 'movie'
-					})),
-					...seriesData.map(item => ({
-						...item,
-						type: 'tv'
-					}))
-				].forEach(item => {
-					localContentMap.set(`${item.type}_${item.id}`, item);
-				});
-
-				// Now that local data is loaded, proceed with loading links
-				loadContentLinks();
-
-			} catch (error) {
-				// This catch block handles errors during initial fetch or JSON parsing
-				console.error('Error loading local content files:', error);
-				// Decide how to handle this error - maybe show a message about limited functionality
-			}
-		}
-
-		// This function now just uses the pre-loaded localContentMap
-		function loadContentLinks() {
-			// Find the current media item using the map
-			const mediaItem = localContentMap.get(`${mediaType}_${mediaId}`);
-
-			// Clear initial loading text
-			downloadOptionsElement.innerHTML = '';
-
-			if (!mediaItem) {
-				downloadOptionsElement.innerHTML = '<p class="no-options">Content not found in local database (movies.json/series.json). Download options are unavailable.</p>';
-				watchBtn.style.display = 'none'; // Hide watch button if no local data
-				return; // Stop if no local data found
-			}
-
-			// Set watch button if stream link exists
-			if (mediaItem.stream_link) {
-				watchBtn.href = mediaItem.stream_link;
-				watchBtn.target = '_blank';
-				watchBtn.style.display = 'inline-flex'; // Show watch button
-			} else {
-				watchBtn.style.display = 'none'; // Hide watch button
-			}
-
-			// Add available quality tags to mainTagsElement (if not already added by loadMediaDetails)
-			// It's safer to clear mainTagsElement here and add all relevant tags (TMDB + Quality)
-			// Clearing and re-adding ensures all tags are present and avoids duplicates if TMDB provides some.
-			// However, to avoid disrupting the loading skeletons/initial state from loadMediaDetails,
-			// we'll stick to only adding quality tags here if they exist in local data.
-			// A better approach would be to build all tags after both TMDb and local data are loaded.
-			// For now, let's append quality tags if mainTagsElement already has content from TMDB.
-			// If mainTagsElement is empty, it means TMDB details might have failed, so append anyway.
-			if (mediaItem.available_qualities?.length > 0) {
-				// Check if mainTagsElement already has content from TMDB loading
-				const hasTmdbTags = mainTagsElement.children.length > 0;
-				if (!hasTmdbTags) {
-					// If no TMDB tags, clear the loading text first
-					mainTagsElement.innerHTML = '';
-				}
-				mediaItem.available_qualities.forEach(quality => {
-					const qualityTag = document.createElement('span');
-					qualityTag.className = `quality-tag quality-${quality.toLowerCase()}`;
-					qualityTag.textContent = quality;
-					mainTagsElement.appendChild(qualityTag); // Append quality tags
-				});
-			} else if (mainTagsElement.children.length === 0) {
-				// If no local quality tags and no TMDB tags loaded, add a fallback
-				// This case might be handled by showError in loadMediaDetails if TMDB fails
-				// But if TMDB succeeds without tags and local data has no quality tags, this is needed
-				// For now, let's assume loadMediaDetails handles main tags or they are added below
-			}
-
-
-			// Handle download options based on media type
-			if (mediaItem.seasons) {
-				// TV show with seasons
-				for (const [seasonNumber, seasonData] of Object.entries(mediaItem.seasons)) {
-					const seasonAccordion = document.createElement('div');
-					seasonAccordion.className = 'season-accordion';
-
-					const seasonBtn = document.createElement('button');
-					seasonBtn.className = 'btn season-btn';
-					seasonBtn.innerHTML = `<i class="bi bi-collection-play"></i> Season ${seasonNumber}`;
-
-					const seasonContent = document.createElement('div');
-					seasonContent.className = 'season-content';
-
-					if (seasonData.download_links && Object.keys(seasonData.download_links).length > 0) {
-						for (const [quality, url] of Object.entries(seasonData.download_links)) {
-							const qualityBtn = document.createElement('a');
-							qualityBtn.href = url;
-							qualityBtn.className = `btn season-quality-btn btn-quality-${quality.toLowerCase()}`;
-							qualityBtn.target = '_blank';
-							qualityBtn.innerHTML = `<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}`;
-							seasonContent.appendChild(qualityBtn);
-						}
-					} else {
-						seasonContent.innerHTML = '<p class="no-options">No download options available for this season</p>';
-					}
-
-					// Add event listener to toggle accordion
-					seasonBtn.addEventListener('click', () => {
-						// Close other open accordions
-						document.querySelectorAll('.season-accordion .season-btn.active').forEach(btn => {
-							if (btn !== seasonBtn) {
-								btn.classList.remove('active');
-								// Check if the next element is indeed the content before toggling
-								const nextContent = btn.nextElementSibling;
-								if(nextContent && nextContent.classList.contains('season-content')) {
-									nextContent.classList.remove('active');
-								}
-							}
-						});
-						seasonBtn.classList.toggle('active');
-						seasonContent.classList.toggle('active');
-					});
-
-					seasonAccordion.appendChild(seasonBtn);
-					seasonAccordion.appendChild(seasonContent);
-					downloadOptionsElement.appendChild(seasonAccordion);
-				}
-				if (Object.keys(mediaItem.seasons).length === 0) {
-                     downloadOptionsElement.innerHTML = '<p class="no-options">No season information available in local database.</p>';
-                }
-			} else if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
-				// Movie or single-season show with direct download links
-				for (const [quality, url] of Object.entries(mediaItem.download_links)) {
-					const qualityBtn = document.createElement('a');
-					qualityBtn.href = url;
-					// Use btn-quality class and specific quality class
-					qualityBtn.className = `btn btn-quality btn-quality-${quality.toLowerCase().replace(' ', '')}`;
-					qualityBtn.target = '_blank';
-					qualityBtn.innerHTML = mediaType === 'tv' ?
-						`<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}` :
-						`<i class="bi bi-download"></i> ${quality.toUpperCase()}`;
-					downloadOptionsElement.appendChild(qualityBtn);
-				}
-			} else {
-				// No download options found in local data
-				downloadOptionsElement.innerHTML = '<p class="no-options">No download options available in local database.</p>';
-			}
-
-		}
-
-
-		// --- Load Media Details (from TMDB) ---
-		async function loadMediaDetails() {
-			try {
-				const response = await fetch(detailsUrl);
-				if (!response.ok) {
-					// Throw an error if the HTTP status is not OK
-					throw new Error(`TMDB API error: ${response.status} - ${response.statusText}`);
-				}
-
-				const media = await response.json();
-
-				// Set banner image
-				// Use a default if backdrop_path is missing
-				bannerElement.style.backgroundImage = media.backdrop_path ?
-					`url(https://image.tmdb.org/t/p/original${media.backdrop_path})` :
-					'linear-gradient(to right, #1a1a1a, #2a2a2a)'; // Fallback gradient
-
-				// Set poster image
-				// Set src directly to placeholder if poster_path is missing
-				posterElement.src = media.poster_path ?
-					`https://image.tmdb.org/t/p/w500${media.poster_path}` :
-					PLACEHOLDER_POSTER_URL;
-				// Add loaded class once image is loaded (or immediately if placeholder)
-				posterElement.onload = function() {
-					this.classList.add('loaded');
-				};
-				// Handle potential errors even with direct src set
-				posterElement.onerror = function() {
-					this.onerror = null; // Prevent infinite loop if placeholder also fails
-					this.src = PLACEHOLDER_POSTER_URL;
-					this.classList.add('loaded'); // Add loaded class even for placeholder
-				};
-
-
-				// Set title
-				titleElement.textContent = mediaType === 'tv' ? media.name || 'Untitled Series' : media.title || 'Untitled Movie';
-
-				// Set main tags (Clearing existing content in case local links load first without TMDB data)
-				mainTagsElement.innerHTML = `
-					<div class="tag movie-type">${mediaType === 'tv' ? 'TV Series' : 'Movie'}</div>
-					<div class="tag"><i class="bi bi-calendar-event"></i> ${
-						mediaType === 'tv'
-							? media.first_air_date ? new Date(media.first_air_date).getFullYear() : 'N/A'
-							: media.release_date ? new Date(media.release_date).getFullYear() : 'N/A'
-					}</div>
-					<div class="tag"><i class="bi ${
-						mediaType === 'tv' ? 'bi-collection' : 'bi-clock'
-					}"></i> ${
-						mediaType === 'tv'
-							? `${media.number_of_seasons || 'N/A'} season${media.number_of_seasons !== 1 ? 's' : ''}`
-							: media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A'
-					}</div>
-					${mediaType === 'tv' ? '<div class="tag zip-tag"><i class="bi bi-file-earmark-zip"></i> ZIP</div>' : ''}
-					<div class="rating-tag"><i class="bi bi-star-fill"></i> ${media.vote_average ? media.vote_average.toFixed(1) : 'N/A'}</div>
-				`;
-
-				// Set genre tags
-				genreTagsElement.innerHTML = ''; // Clear previous content
-				if (media.genres?.length) {
-					media.genres.forEach(genre => {
-						const tag = document.createElement('div');
-						tag.className = 'tag';
-						tag.textContent = genre.name;
-						genreTagsElement.appendChild(tag);
-					});
-				}
-
-				// Set synopsis
-				synopsisTextElement.textContent = media.overview || "No synopsis available.";
-
-				// Set additional info (Clearing loading indicators)
-				additionalInfoElement.innerHTML = '';
-				if (mediaType === 'tv') {
-					additionalInfoElement.innerHTML = `
-						<div class="info-block">
-							<div class="info-title">Status</div>
-							<div class="info-content">${media.status || 'N/A'}</div>
-						</div>
-						<div class="info-block">
-							<div class="info-title">Last Air Date</div>
-							<div class="info-content">${media.last_air_date ? formatDate(media.last_air_date) : 'N/A'}</div>
-						</div>
-						<div class="info-block">
-							<div class="info-title">Episodes</div>
-							<div class="info-content">${media.number_of_episodes || 'N/A'}</div>
-						</div>
-						<div class="info-block">
-							<div class="info-title">Seasons</div>
-							<div class="info-content">${media.number_of_seasons || 'N/A'}</div>
-						</div>
-					`;
-				} else { // Movie
-					additionalInfoElement.innerHTML = `
-						<div class="info-block">
-							<div class="info-title">Status</div>
-							<div class="info-content">${media.status || 'N/A'}</div>
-						</div>
-						<div class="info-block">
-							<div class="info-title">Release Date</div>
-							<div class="info-content">${media.release_date ? formatDate(media.release_date) : 'N/A'}</div>
-						</div>
-						<div class="info-block">
-							<div class="info-title">Runtime</div>
-							<div class="info-content">${media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A'}</div>
-						</div>
-						<div class="info-block">
-							<div class="info-title">Budget</div>
-							<div class="info-content">${media.budget ? formatCurrency(media.budget) : 'N/A'}</div>
-						</div>
-					`;
-				}
-
-				// Set cast section if available
-				if (media.credits?.cast?.length > 0) {
-					// Clear initial loading text and add title/grid container
-					castSectionElement.innerHTML = `<h2 class="cast-title">Cast</h2><div class="cast-grid" id="castGrid"></div>`;
-					const currentCastGrid = document.getElementById('castGrid');
-
-					media.credits.cast.slice(0, 10).forEach(person => { // Limit to top 10 cast members
-						const castCard = document.createElement('div');
-						castCard.className = 'cast-card';
-						// Set src directly to placeholder if profile_path is missing
-						const profilePath = person.profile_path ?
-							`https://image.tmdb.org/t/p/w200${person.profile_path}` :
-							PLACEHOLDER_CAST_URL;
-
-						castCard.innerHTML = `
-							<img class="cast-photo" src="${profilePath}" alt="${person.name || 'Unknown Actor'}" onerror="this.onerror=null; this.src='${PLACEHOLDER_CAST_URL}'">
-							<div class="cast-name">${person.name || 'Unknown'}</div>
-							<div class="cast-character">${person.character || 'N/A'}</div>
-						`;
-						currentCastGrid.appendChild(castCard);
-					});
-				} else {
-					// Hide cast section or show message if no cast data
-					castSectionElement.style.display = 'none';
-					// Or: castGridElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No cast information available.</p>';
-				}
-
-
-			} catch (error) {
-				// This catch block handles errors during TMDB fetch or JSON parsing
-				showError('Failed to load media details from TMDB. ' + error.message);
-				console.error('Error loading media details:', error);
-				// Ensure other sections show error or are cleared
-				// additionalInfoElement.innerHTML = '<p class="no-options">Failed to load additional info.</p>'; // Redundant if showError is called
-				// castSectionElement.innerHTML = '<p class="no-options">Failed to load cast info.</p>'; // Redundant if showError is called
-			}
-		}
-
-
-		// --- Load Similar Media (from TMDB and filter by local content) ---
-		async function loadSimilarMedia() {
-			try {
-				const response = await fetch(similarUrl);
-				if (!response.ok) {
-					// Throw an error if the HTTP status is not OK
-					throw new Error(`TMDB API error: ${response.status} - ${response.statusText}`);
-				}
-
-				const data = await response.json();
-
-				// --- Filter similar results based on localContentMap ---
-				const filteredSimilar = data.results.filter(tmdbItem => {
-					// Use the global localContentMap to check if the item exists locally
-					const localItem = localContentMap.get(`${tmdbItem.media_type || mediaType}_${tmdbItem.id}`);
-					return localItem !== undefined; // Keep item if found in local map
-				});
-				// --- End filtering ---
-
-
-				// Clear initial loading text
-				similarMoviesElement.innerHTML = '';
-
-				if (!filteredSimilar?.length) {
-					similarMoviesElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found in local database.</p>';
-					return; // Stop if no filtered similar results
-				}
-
-				// Display the filtered similar items (limit to a reasonable number if needed, e.g., 6)
-				filteredSimilar.slice(0, 10).forEach(item => { // Limiting to 10 for example
-					// Set src directly to placeholder if poster_path is missing
-					const posterPath = item.poster_path ?
-						`https://image.tmdb.org/t/p/w500${item.poster_path}` :
-						PLACEHOLDER_SIMILAR_URL;
-
-					// Use item.media_type if available from similar endpoint, otherwise default
-					const currentItemType = item.media_type || mediaType;
-					const title = currentItemType === 'tv' ? item.name || 'Untitled Series' : item.title || 'Untitled Movie';
-					const releaseDate = currentItemType === 'tv' ? item.first_air_date : item.release_date;
-					const formattedDate = formatDate(releaseDate);
-					const typeTagText = currentItemType === 'tv' ? 'Series' : 'Movie';
-					const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
-
-                    // Get local item details to display quality tags
-                    const localItemDetails = localContentMap.get(`${currentItemType}_${item.id}`);
-                    const qualityTagsHTML = localItemDetails?.available_qualities?.length > 0 ?
-                        localItemDetails.available_qualities.map(quality => {
-                            const normalizedQuality = quality.toLowerCase().replace(' ', '');
-                            const tagClass = normalizedQuality === '4k' ? '_4k' : normalizedQuality; // Use _4k to avoid conflict with class '4k'
-                             return `<div class="tag ${tagClass}">${quality}</div>`;
-                        }).join('') : '';
-
-
-					const card = document.createElement('div');
-					card.className = 'movie-card';
-					card.innerHTML = `
-						<div class="poster-wrapper">
-							<img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${PLACEHOLDER_SIMILAR_URL}'; this.classList.add('loaded');">
-							<div class="rating-star">
-								<i class="bi bi-star-fill"></i>
-								${rating}
-							</div>
-						</div>
-						<div class="movie-info">
-							<div class="title">${title}</div>
-							<div class="tags">
-								<div class="tag">${formattedDate}</div>
-								<div class="tag">${typeTagText}</div>
-								${qualityTagsHTML} ${currentItemType === 'tv' ? '<div class="tag zip">ZIP</div>' : ''}
-							</div>
-						</div>
-					`;
-
-					// Add click listener to navigate to the similar item's detail page
-					card.addEventListener('click', () => {
-						// Pass the correct type and id to the detail page
-						window.location.href = `detail.html?id=${item.id}&type=${currentItemType}`;
-					});
-
-					similarMoviesElement.appendChild(card);
-				});
-
-			} catch (error) {
-				// This catch block handles errors during TMDB similar fetch or JSON parsing
-				console.error('Error loading similar media:', error);
-				similarMoviesElement.innerHTML =
-					'<p style="color: white; text-align: center; grid-column: 1/-1;">Failed to load similar content.</p>';
-			}
-		}
-
-
-		// --- Helper Functions ---
-		function formatDate(dateString) {
-			if (!dateString) return 'Unknown';
-			try {
-				const date = new Date(dateString);
-				// Check if date is valid
-				if (isNaN(date.getTime())) {
-					return 'Invalid Date';
-				}
-				return date.toLocaleDateString('en-US', {
-					month: 'short',
-					day: 'numeric',
-					year: 'numeric'
-				});
-			} catch (e) {
-				console.error('Error formatting date:', e);
-				return 'Error';
-			}
-		}
-
-		function formatCurrency(amount) {
-			if (amount === null || amount === undefined || isNaN(amount) || amount === 0) {
-				return 'N/A';
-			}
-			try {
-				return new Intl.NumberFormat('en-US', {
-					style: 'currency',
-					currency: 'USD',
-					maximumFractionDigits: 0
-				}).format(amount);
-			} catch (e) {
-				console.error('Error formatting currency:', e);
-				return 'Error';
-			}
-		}
-
-
-		// --- Initialize on DOM Load ---
-		document.addEventListener('DOMContentLoaded', () => {
-			// Check mediaId again just in case, though the throw at the top should prevent this
-			if (mediaId) {
-				// Load local content first, then details and similar
-				loadLocalContentMap().then(() => {
-                    loadMediaDetails(); // Load main details after local data is potentially available
-                    loadSimilarMedia(); // Load and filter similar content after local data is available
-                }).catch(error => {
-                    // Handle errors during initial local data load if necessary
-                    console.error("Initial local data load failed:", error);
-                    // Proceed with loading details anyway, but similar content will be limited
-                    loadMediaDetails();
-                    loadSimilarMedia(); // This will likely show no similar content if local data failed
-                });
-			}
-		});
-
-
-		// --- Security (Optional) ---
-		// Disable right-click
-		document.addEventListener('contextmenu', e => e.preventDefault());
-
-		// Block common developer tools shortcuts
-		document.onkeydown = function(e) {
-			// Check for F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C
-			if (e.key === "F12" ||
-				(e.ctrlKey && e.shiftKey &&
-					(e.key === "I" || e.key === "J" || e.key === "C"))) {
-				e.preventDefault();
-				// You might want to show a message to the user here
-				// alert("Developer tools are disabled on this page.");
-				return false;
-			}
-             // Check for Ctrl+U (View Source)
-             if (e.ctrlKey && e.key === "U") {
-                 e.preventDefault();
-                 return false;
-             }
-             // Check for Ctrl+S (Save Page)
-             if (e.ctrlKey && e.key === "S") {
-                 e.preventDefault();
-                 return false;
-             }
-		};
-	</script>
+  // Improved version with better error handling and data loading
+  const urlParams = new URLSearchParams(window.location.search);
+  const mediaId = urlParams.get('id');
+  const mediaType = urlParams.get('type') || 'movie'; // Default to 'movie' if type is missing
+  // NOTE: Replace with your actual TMDB API key
+  const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa'; // Ensure this is correct
+
+  // Default placeholder image URL
+  const PLACEHOLDER_POSTER_URL = 'https://via.placeholder.com/220x330?text=No+Poster';
+  const PLACEHOLDER_CAST_URL = 'https://via.placeholder.com/200x200?text=No+Image';
+  const PLACEHOLDER_SIMILAR_URL = 'https://via.placeholder.com/180x270?text=No+Image';
+
+  // --- DOM Elements ---
+  const titleElement = document.getElementById('title');
+  const synopsisTextElement = document.getElementById('synopsisText');
+  const downloadOptionsElement = document.getElementById('downloadOptions');
+  const backBtn = document.getElementById('backBtn');
+  const homeBtn = document.getElementById('homeBtn');
+  const watchBtn = document.getElementById('watchBtn');
+  const bannerElement = document.getElementById('banner');
+  const posterElement = document.getElementById('poster');
+  const mainTagsElement = document.getElementById('mainTags');
+  const genreTagsElement = document.getElementById('genreTags');
+  const additionalInfoElement = document.getElementById('additionalInfo');
+  const castSectionElement = document.getElementById('castSection');
+  const castGridElement = document.getElementById('castGrid');
+  const similarMoviesElement = document.getElementById('similarMovies');
+
+  // --- Error Handling ---
+  function showError(message = 'An unexpected error occurred.') {
+    console.error('Error:', message);
+    titleElement.textContent = 'Error loading content';
+    synopsisTextElement.textContent = message;
+    downloadOptionsElement.innerHTML = '<p class="no-options">' + message + '</p>';
+    additionalInfoElement.innerHTML = ''; // Clear loading indicators
+    castSectionElement.innerHTML = ''; // Clear loading indicators
+    similarMoviesElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">' + message + '</p>';
+  }
+
+  // Check if we have required parameters early
+  if (!mediaId) {
+    showError('No content selected. Please go back and select a movie or TV show.');
+    // Stop further execution if mediaId is missing
+    throw new Error('Missing media ID');
+  }
+
+  // --- API Endpoints ---
+  const detailsUrl = mediaType === 'tv' ?
+    `https://api.themoviedb.org/3/tv/${mediaId}?api_key=${apiKey}&language=en-US&append_to_response=credits` :
+    `https://api.themoviedb.org/3/movie/${mediaId}?api_key=${apiKey}&language=en-US&append_to_response=credits`;
+
+  // --- Navigation ---
+  backBtn.addEventListener('click', () => {
+    if (document.referrer.includes(window.location.hostname)) {
+      window.history.back();
+    } else {
+      window.location.href = 'index.html';
+    }
+  });
+
+  homeBtn.addEventListener('click', () => {
+    window.location.href = 'index.html';
+  });
+
+  // --- Load Content Links (from JSON files) ---
+  async function loadContentLinks() {
+    try {
+      const [moviesResponse, seriesResponse] = await Promise.allSettled([
+        fetch('movies.json').then(res => res.ok ? res.json() : Promise.reject(`Failed to load movies.json: ${res.status}`)),
+        fetch('series.json').then(res => res.ok ? res.json() : Promise.reject(`Failed to load series.json: ${res.status}`))
+      ]);
+
+      const moviesData = moviesResponse.status === 'fulfilled' ? (moviesResponse.value?.movies || []) : [];
+      if (moviesResponse.status === 'rejected') console.error(moviesResponse.reason);
+
+      const seriesData = seriesResponse.status === 'fulfilled' ? (seriesResponse.value?.series || []) : [];
+      if (seriesResponse.status === 'rejected') console.error(seriesResponse.reason);
+
+      // Combine data
+      const combinedContent = [
+        ...moviesData.map(item => ({
+          ...item,
+          type: 'movie'
+        })),
+        ...seriesData.map(item => ({
+          ...item,
+          type: 'tv'
+        }))
+      ];
+
+      // Find the current media item
+      const mediaItem = combinedContent.find(item => item.id == mediaId && item.type === mediaType);
+
+      // Clear initial loading text
+      downloadOptionsElement.innerHTML = '';
+
+      if (!mediaItem) {
+        downloadOptionsElement.innerHTML = '<p class="no-options">Content not found in local database (movies.json/series.json).</p>';
+        watchBtn.style.display = 'none';
+        return;
+      }
+
+      // Set watch button if stream link exists
+      if (mediaItem.stream_link) {
+        watchBtn.href = mediaItem.stream_link;
+        watchBtn.target = '_blank';
+        watchBtn.style.display = 'inline-flex';
+      } else {
+        watchBtn.style.display = 'none';
+      }
+
+      // Add available quality tags to mainTagsElement
+      if (mediaItem.available_qualities?.length > 0) {
+        mediaItem.available_qualities.forEach(quality => {
+          const qualityTag = document.createElement('span');
+          qualityTag.className = `quality-tag quality-${quality.toLowerCase()}`;
+          qualityTag.textContent = quality;
+          mainTagsElement.appendChild(qualityTag);
+        });
+      }
+
+      // Handle download options based on media type
+      if (mediaItem.seasons) {
+        // TV show with seasons
+        for (const [seasonNumber, seasonData] of Object.entries(mediaItem.seasons)) {
+          const seasonAccordion = document.createElement('div');
+          seasonAccordion.className = 'season-accordion';
+
+          const seasonBtn = document.createElement('button');
+          seasonBtn.className = 'btn season-btn';
+          seasonBtn.innerHTML = `<i class="bi bi-collection-play"></i> Season ${seasonNumber}`;
+
+          const seasonContent = document.createElement('div');
+          seasonContent.className = 'season-content';
+
+          if (seasonData.download_links && Object.keys(seasonData.download_links).length > 0) {
+            for (const [quality, url] of Object.entries(seasonData.download_links)) {
+              const qualityBtn = document.createElement('a');
+              qualityBtn.href = url;
+              qualityBtn.className = `btn season-quality-btn btn-quality-${quality.toLowerCase()}`;
+              qualityBtn.target = '_blank';
+              qualityBtn.innerHTML = `<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}`;
+              seasonContent.appendChild(qualityBtn);
+            }
+          } else {
+            seasonContent.innerHTML = '<p class="no-options">No download options available for this season</p>';
+          }
+
+          seasonBtn.addEventListener('click', () => {
+            document.querySelectorAll('.season-accordion .season-btn.active').forEach(btn => {
+              if (btn !== seasonBtn) {
+                btn.classList.remove('active');
+                btn.nextElementSibling.classList.remove('active');
+              }
+            });
+            seasonBtn.classList.toggle('active');
+            seasonContent.classList.toggle('active');
+          });
+
+          seasonAccordion.appendChild(seasonBtn);
+          seasonAccordion.appendChild(seasonContent);
+          downloadOptionsElement.appendChild(seasonAccordion);
+        }
+      } else if (mediaItem.download_links && Object.keys(mediaItem.download_links).length > 0) {
+        // Movie or single-season show with direct download links
+        for (const [quality, url] of Object.entries(mediaItem.download_links)) {
+          const qualityBtn = document.createElement('a');
+          qualityBtn.href = url;
+          qualityBtn.className = `btn btn-quality btn-quality-${quality.toLowerCase()}`;
+          qualityBtn.target = '_blank';
+          qualityBtn.innerHTML = mediaType === 'tv' ?
+            `<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}` :
+            `<i class="bi bi-download"></i> ${quality.toUpperCase()}`;
+          downloadOptionsElement.appendChild(qualityBtn);
+        }
+      } else {
+        downloadOptionsElement.innerHTML = '<p class="no-options">No download options available in local database.</p>';
+      }
+
+      // Load similar content from our local JSON files
+      loadSimilarContent(combinedContent, mediaItem);
+
+    } catch (error) {
+      console.error('Error loading content links from JSON:', error);
+      downloadOptionsElement.innerHTML = '<p class="no-options">Failed to load download options from local files.</p>';
+      watchBtn.style.display = 'none';
+    }
+  }
+
+  // --- Load Similar Content (from our local JSON files) ---
+  async function loadSimilarContent(allContent, currentItem) {
+    try {
+      // Clear initial loading text
+      similarMoviesElement.innerHTML = '';
+
+      // Find similar content based on genres (simple matching)
+      const currentGenres = currentItem.genres || [];
+      const similarItems = allContent.filter(item => {
+        // Don't show the current item
+        if (item.id === currentItem.id && item.type === currentItem.type) return false;
+        
+        // Match at least one genre
+        const itemGenres = item.genres || [];
+        return currentGenres.some(genre => itemGenres.includes(genre));
+      });
+
+      if (similarItems.length === 0) {
+        similarMoviesElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found in local database</p>';
+        return;
+      }
+
+      // Display first 6 similar items (random selection if more than 6)
+      const shuffled = similarItems.sort(() => 0.5 - Math.random());
+      const selected = shuffled.slice(0, 6);
+
+      for (const item of selected) {
+        // Fetch TMDB details for each similar item to get poster and rating
+        const tmdbUrl = item.type === 'tv' ?
+          `https://api.themoviedb.org/3/tv/${item.id}?api_key=${apiKey}` :
+          `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}`;
+
+        try {
+          const response = await fetch(tmdbUrl);
+          if (!response.ok) continue; // Skip if TMDB fetch fails
+          
+          const tmdbData = await response.json();
+          
+          const title = item.type === 'tv' ? tmdbData.name || 'Untitled Series' : tmdbData.title || 'Untitled Movie';
+          const releaseDate = item.type === 'tv' ? tmdbData.first_air_date : tmdbData.release_date;
+          const formattedDate = formatDate(releaseDate);
+          const rating = tmdbData.vote_average ? tmdbData.vote_average.toFixed(1) : 'N/A';
+          
+          // Use poster from TMDB or placeholder
+          const posterPath = tmdbData.poster_path ?
+            `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}` :
+            PLACEHOLDER_SIMILAR_URL;
+
+          // Get available qualities from our local data
+          const qualityTags = item.available_qualities?.map(quality => {
+            const tagClass = quality.toLowerCase() === '4k' ? 'uhd' :
+                           quality.toLowerCase() === '1080p' ? 'fhd' :
+                           quality.toLowerCase() === '720p' ? 'hd' :
+                           quality.toLowerCase();
+            return `<div class="tag ${tagClass}">${quality}</div>`;
+          }).join('') || '';
+
+          const card = document.createElement('div');
+          card.className = 'movie-card';
+          card.innerHTML = `
+            <div class="poster-wrapper">
+              <img class="movie-poster" src="${posterPath}" alt="${title}" onload="this.classList.add('loaded')" onerror="this.onerror=null; this.src='${PLACEHOLDER_SIMILAR_URL}'; this.classList.add('loaded');">
+              <div class="rating-star">
+                <i class="bi bi-star-fill"></i>
+                ${rating}
+              </div>
+            </div>
+            <div class="movie-info">
+              <div class="title">${title}</div>
+              <div class="tags">
+                <div class="tag">${formattedDate}</div>
+                ${qualityTags}
+                <div class="tag">${item.type === 'tv' ? 'Series' : 'Movie'}</div>
+                ${item.type === 'tv' ? '<div class="tag zip">ZIP</div>' : ''}
+              </div>
+            </div>
+          `;
+
+          card.addEventListener('click', () => {
+            window.location.href = `detail.html?id=${item.id}&type=${item.type}`;
+          });
+
+          similarMoviesElement.appendChild(card);
+        } catch (error) {
+          console.error(`Error loading TMDB details for similar item ${item.id}:`, error);
+          // Skip this item if there's an error
+          continue;
+        }
+      }
+
+    } catch (error) {
+      console.error('Error loading similar content:', error);
+      similarMoviesElement.innerHTML =
+        '<p style="color: white; text-align: center; grid-column: 1/-1;">Failed to load similar content.</p>';
+    }
+  }
+
+  // --- Load Media Details (from TMDB) ---
+  async function loadMediaDetails() {
+    try {
+      const response = await fetch(detailsUrl);
+      if (!response.ok) {
+        throw new Error(`TMDB API error: ${response.status} - ${response.statusText}`);
+      }
+
+      const media = await response.json();
+
+      bannerElement.style.backgroundImage = media.backdrop_path ?
+        `url(https://image.tmdb.org/t/p/original${media.backdrop_path})` :
+        'linear-gradient(to right, #1a1a1a, #2a2a2a)';
+
+      posterElement.src = media.poster_path ?
+        `https://image.tmdb.org/t/p/w500${media.poster_path}` :
+        PLACEHOLDER_POSTER_URL;
+      posterElement.onload = function() {
+        this.classList.add('loaded');
+      };
+      posterElement.onerror = function() {
+        this.onerror = null;
+        this.src = PLACEHOLDER_POSTER_URL;
+        this.classList.add('loaded');
+      };
+
+      titleElement.textContent = mediaType === 'tv' ? media.name || 'Untitled Series' : media.title || 'Untitled Movie';
+
+      mainTagsElement.innerHTML = `
+        <div class="tag movie-type">${mediaType === 'tv' ? 'TV Series' : 'Movie'}</div>
+        <div class="tag"><i class="bi bi-calendar-event"></i> ${
+          mediaType === 'tv'
+            ? media.first_air_date ? new Date(media.first_air_date).getFullYear() : 'N/A'
+            : media.release_date ? new Date(media.release_date).getFullYear() : 'N/A'
+        }</div>
+        <div class="tag"><i class="bi ${
+          mediaType === 'tv' ? 'bi-collection' : 'bi-clock'
+        }"></i> ${
+          mediaType === 'tv'
+            ? `${media.number_of_seasons || 'N/A'} season${media.number_of_seasons !== 1 ? 's' : ''}`
+            : media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A'
+        }</div>
+        ${mediaType === 'tv' ? '<div class="tag zip-tag"><i class="bi bi-file-earmark-zip"></i> ZIP</div>' : ''}
+        <div class="rating-tag"><i class="bi bi-star-fill"></i> ${media.vote_average ? media.vote_average.toFixed(1) : 'N/A'}</div>
+      `;
+
+      genreTagsElement.innerHTML = '';
+      if (media.genres?.length) {
+        media.genres.forEach(genre => {
+          const tag = document.createElement('div');
+          tag.className = 'tag';
+          tag.textContent = genre.name;
+          genreTagsElement.appendChild(tag);
+        });
+      }
+
+      synopsisTextElement.textContent = media.overview || "No synopsis available.";
+
+      additionalInfoElement.innerHTML = '';
+      if (mediaType === 'tv') {
+        additionalInfoElement.innerHTML = `
+          <div class="info-block">
+            <div class="info-title">Status</div>
+            <div class="info-content">${media.status || 'N/A'}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-title">Last Air Date</div>
+            <div class="info-content">${media.last_air_date ? formatDate(media.last_air_date) : 'N/A'}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-title">Episodes</div>
+            <div class="info-content">${media.number_of_episodes || 'N/A'}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-title">Seasons</div>
+            <div class="info-content">${media.number_of_seasons || 'N/A'}</div>
+          </div>
+        `;
+      } else {
+        additionalInfoElement.innerHTML = `
+          <div class="info-block">
+            <div class="info-title">Status</div>
+            <div class="info-content">${media.status || 'N/A'}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-title">Release Date</div>
+            <div class="info-content">${media.release_date ? formatDate(media.release_date) : 'N/A'}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-title">Runtime</div>
+            <div class="info-content">${media.runtime ? `${Math.floor(media.runtime / 60)}h ${media.runtime % 60}m` : 'N/A'}</div>
+          </div>
+          <div class="info-block">
+            <div class="info-title">Budget</div>
+            <div class="info-content">${media.budget ? formatCurrency(media.budget) : 'N/A'}</div>
+          </div>
+        `;
+      }
+
+      if (media.credits?.cast?.length > 0) {
+        castSectionElement.innerHTML = `<h2 class="cast-title">Cast</h2><div class="cast-grid" id="castGrid"></div>`;
+        const currentCastGrid = document.getElementById('castGrid');
+
+        media.credits.cast.slice(0, 10).forEach(person => {
+          const profilePath = person.profile_path ?
+            `https://image.tmdb.org/t/p/w200${person.profile_path}` :
+            PLACEHOLDER_CAST_URL;
+
+          const castCard = document.createElement('div');
+          castCard.className = 'cast-card';
+          castCard.innerHTML = `
+            <img class="cast-photo" src="${profilePath}" alt="${person.name || 'Unknown Actor'}" onerror="this.onerror=null; this.src='${PLACEHOLDER_CAST_URL}'">
+            <div class="cast-name">${person.name || 'Unknown'}</div>
+            <div class="cast-character">${person.character || 'N/A'}</div>
+          `;
+          currentCastGrid.appendChild(castCard);
+        });
+      } else {
+        castSectionElement.style.display = 'none';
+      }
+
+    } catch (error) {
+      showError('Failed to load media details from TMDB. ' + error.message);
+      console.error('Error loading media details:', error);
+      additionalInfoElement.innerHTML = '<p class="no-options">Failed to load additional info.</p>';
+      castSectionElement.innerHTML = '<p class="no-options">Failed to load cast info.</p>';
+    }
+  }
+
+  // --- Helper Functions ---
+  function formatDate(dateString) {
+    if (!dateString) return 'Unknown';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    } catch (e) {
+      console.error('Error formatting date:', e);
+      return 'Error';
+    }
+  }
+
+  function formatCurrency(amount) {
+    if (amount === null || amount === undefined || isNaN(amount) || amount === 0) {
+      return 'N/A';
+    }
+    try {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
+      }).format(amount);
+    } catch (e) {
+      console.error('Error formatting currency:', e);
+      return 'Error';
+    }
+  }
+
+  // --- Initialize on DOM Load ---
+  document.addEventListener('DOMContentLoaded', () => {
+    if (mediaId) {
+      loadMediaDetails();
+      loadContentLinks(); // This will now also handle loading similar content
+    }
+  });
+
+  // --- Security (Optional) ---
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
+  document.onkeydown = function(e) {
+    if (e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey &&
+        (e.key === "I" || e.key === "J" || e.key === "C"))) {
+      e.preventDefault();
+      return false;
+    }
+  };
+</script>
 </body>
 </html>
