@@ -235,6 +235,15 @@
       color: var(--gray-color);
     }
 
+    /* Style for the expired session message */
+    .expired-message {
+        text-align: center;
+        font-size: 18px;
+        color: var(--danger);
+        margin-top: 30px;
+    }
+
+
     @media (max-width: 768px) {
       body {
         padding-top: 20px;
@@ -282,7 +291,8 @@
         <div class="spinner"></div>
       </div>
     </div>
-  </div>
+
+    </div>
 
   <footer>
     <div class="footer-content">
@@ -300,19 +310,98 @@
 
     // --- YOUR FIREBASE CONFIGURATION ---
     const firebaseConfig = {
-      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
-      authDomain: "movievault-e650e.firebaseapp.com",
-      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
-      projectId: "movievault-e650e",
-      storageBucket: "movievault-e650e.appspot.com",
-      messagingSenderId: "61140580505",
-      appId: "1:61140580505:web:d3216ca8bd944662a22008"
+      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84", // <--- Replace with your actual API Key
+      authDomain: "movievault-e650e.firebaseapp.com", // <--- Replace with your actual Auth Domain
+      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com", // <--- Replace with your actual Database URL
+      projectId: "movievault-e650e", // <--- Replace with your actual Project ID
+      storageBucket: "movievault-e650e.appspot.com", // <--- Replace with your actual Storage Bucket
+      messagingSenderId: "61140580505", // <--- Replace with your actual Messaging Sender ID
+      appId: "1:61140580505:web:d3216ca8bd944662a22008" // <--- Replace with your actual App ID
     };
     // --- END OF YOUR FIREBASE CONFIGURATION ---
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+
+    // Variable to hold the download session timer ID
+    let downloadTimerId = null;
+    const DOWNLOAD_DURATION_MS = 30 * 60 * 1000; // 30 minutes in milliseconds
+    const SESSION_STORAGE_KEY = 'downloadSessionStartTime'; // Key for sessionStorage
+
+    // Function to start or continue the download session timer
+    function manageDownloadSessionTimer() {
+        const now = Date.now();
+        let sessionStartTime = sessionStorage.getItem(SESSION_STORAGE_KEY);
+
+        if (!sessionStartTime) {
+            // No start time found, this is a new session
+            sessionStartTime = now;
+            sessionStorage.setItem(SESSION_STORAGE_KEY, sessionStartTime);
+            console.log("New download session started.");
+        } else {
+            // Session started previously, check elapsed time
+            sessionStartTime = parseInt(sessionStartTime);
+            const elapsedTime = now - sessionStartTime;
+
+            if (elapsedTime >= DOWNLOAD_DURATION_MS) {
+                // Session has expired
+                console.log("Existing download session expired.");
+                endDownloadSession(); // End the session immediately
+                return; // Stop here, don't load data
+            } else {
+                // Session is still active, calculate remaining time
+                const remainingTime = DOWNLOAD_DURATION_MS - elapsedTime;
+                console.log(`Continuing download session. Remaining time: ${remainingTime / 1000} seconds.`);
+                // Set the timer for the remaining time
+                 downloadTimerId = setTimeout(endDownloadSession, remainingTime);
+                 return true; // Indicate session is active and timer set
+            }
+        }
+
+        // If we reached here, it's a new session and we need to set the full timer
+        downloadTimerId = setTimeout(endDownloadSession, DOWNLOAD_DURATION_MS);
+        return true; // Indicate session is active and timer set
+    }
+
+
+    // Function to clear the download session timer (not strictly needed with sessionStorage but good practice)
+    function clearDownloadTimer() {
+        if (downloadTimerId) {
+            clearTimeout(downloadTimerId);
+            downloadTimerId = null;
+            console.log("Download session timer cleared.");
+        }
+         // We don't clear sessionStorage here, as the session persists per tab
+    }
+
+    // Function to end the download session (hide content and show message)
+    function endDownloadSession() {
+        const contentContainer = document.getElementById("content");
+        const titleElement = document.getElementById("show-title");
+
+        console.log("Ending download session.");
+        clearDownloadTimer(); // Ensure the timer is cleared
+
+        // Hide the content
+        contentContainer.innerHTML = ''; // Clear the links
+
+        // Display the expired message
+        contentContainer.innerHTML = `
+            <div class="expired-message">
+                <i class="fas fa-hourglass-end"></i>
+                <p>Your download session has expired.</p>
+                <p>Please revisit the original link to start a new session.</p>
+            </div>
+        `;
+
+        // Optionally update the title
+        titleElement.innerText = "Session Expired";
+
+        // Optionally clear the sessionStorage for this tab, forcing a new session next time
+        // sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    }
+
 
     // Function to create download buttons for a given set of links
     function createButtons(links) {
@@ -334,10 +423,23 @@
 
     // Function to load data based on the full movie key in the URL hash
     async function loadData() {
-      // The movieKey is now expected to be the full string like "Driver Jamuna (2022) 1080p"
       const movieKey = decodeURIComponent(window.location.hash.slice(1));
       const titleElement = document.getElementById("show-title");
       const contentContainer = document.getElementById("content");
+
+      // Clear previous content
+      contentContainer.innerHTML = '';
+
+
+      // --- Manage the session timer before attempting to load data ---
+      const sessionActive = manageDownloadSessionTimer();
+
+      if (!sessionActive) {
+          // If manageDownloadSessionTimer returned false (session expired), stop here
+          return;
+      }
+      // --- End Session Timer Management ---
+
 
       // Show loading spinner while fetching
       contentContainer.innerHTML = `
@@ -392,10 +494,13 @@
                     <div class="button-group">${buttons}</div>
                 </div>
             `;
+             // Timer is managed at the beginning of loadData, no need to start here
         } else {
              // If data was found but no valid links (filepress, neodrive, backup) were present
              console.warn("Data found but no valid links:", movieData);
              contentHTML = `<p style='color: #ccc; text-align: center;'>No download links found for this content.</p>`;
+             // If no links, no need for a timer for this specific view
+             clearDownloadTimer();
         }
 
 
@@ -406,6 +511,7 @@
         console.error("Firebase Error loading data:", err); // Log the full error object
         titleElement.innerText = "Error Loading";
         contentContainer.innerHTML = "<p style='color: var(--danger); text-align: center;'>Error loading data. Please check the browser console for details.</p>";
+         clearDownloadTimer(); // Clear timer on error
       }
     }
 
@@ -413,7 +519,12 @@
     document.addEventListener('DOMContentLoaded', loadData);
 
     // Also load data when hash changes (if user navigates without refresh)
-    window.addEventListener('hashchange', loadData);
+    window.addEventListener('hashchange', () => {
+        // When hash changes, clear existing timer and start the process again
+        clearDownloadTimer();
+        loadData();
+    });
+
 
     // Block developer tools (client-side only, easily bypassed)
     document.onkeydown = function(e) {
@@ -432,4 +543,3 @@
   </script>
 </body>
 </html>
-
