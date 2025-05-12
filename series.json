@@ -5,6 +5,7 @@
       "title": "My So-Called Life",
       "stream_link": "",
       "available_qualities": ["HD"],
+      "genres": ["Drama", "Comedy"],
       "download_links": {
         "HD": "https://gplinks.co/mscl-hd"
       },
@@ -21,6 +22,7 @@
       "title": "Game of Thrones",
       "stream_link": "https://example.com/stream/got",
       "available_qualities": ["720p", "1080p", "4K"],
+      "genres": ["Sci-Fi & Fantasy", "Drama", "Action & Adventure"],
       "download_links": {
         "720p": "https://gplinks.co/got-720p",
         "1080p": "https://gplinks.co/got-1080p"
@@ -41,20 +43,89 @@
     },
     {
       "id": 200709,
-      "title": "Weak Hero",
+      "title": "Weak Hero Class 1",
       "stream_link": "https://example.com/stream/weak-hero",
       "available_qualities": ["FHD", "1080p"],
+      "genres": ["Action & Adventure", "Drama"],
       "download_links": {
-        "720p": "https://gplinks.co/weakhero-fhd",
+        "FHD": "https://gplinks.co/weakhero-fhd",
         "1080p": "https://gplinks.co/weakhero-1080p"
       },
       "seasons": {
         "1": {
           "download_links": {
-            "720p": "https://gplinks.co/weakhero-s1-fhd",
+            "FHD": "https://gplinks.co/weakhero-s1-fhd",
             "1080p": "https://gplinks.co/weakhero-s1-1080p"
           }
         }
+      }
+    },
+    {
+      "id": 84958,
+      "title": "Loki",
+      "stream_link": "https://example.com/stream/loki",
+      "available_qualities": ["1080p", "4K"],
+      "genres": ["Sci-Fi & Fantasy", "Action & Adventure", "Mystery"],
+      "download_links": {},
+      "seasons": {
+        "1": {
+          "download_links": {
+            "1080p": "https://gplinks.co/loki-s1-1080p",
+            "4K": "https://gplinks.co/loki-s1-4k"
+          }
+        },
+        "2": {
+          "download_links": {
+            "1080p": "https://gplinks.co/loki-s2-1080p",
+            "4K": "https://gplinks.co/loki-s2-4k"
+          }
+        }
+      }
+    },
+    {
+      "id": 65494,
+      "title": "The Crown",
+      "stream_link": "",
+      "available_qualities": ["FHD", "HD"],
+      "genres": ["Drama", "History"],
+      "download_links": {},
+      "seasons": {
+        "1": { "download_links": { "FHD": "https://gplinks.co/crown-s1-fhd" } },
+        "2": { "download_links": { "FHD": "https://gplinks.co/crown-s2-fhd", "HD": "https://gplinks.co/crown-s2-hd" } },
+        "3": { "download_links": { "FHD": "https://gplinks.co/crown-s3-fhd" } },
+        "4": { "download_links": { "FHD": "https://gplinks.co/crown-s4-fhd" } },
+        "5": { "download_links": { "FHD": "https://gplinks.co/crown-s5-fhd" } },
+        "6": { "download_links": { "FHD": "https://gplinks.co/crown-s6-fhd" } }
+      }
+    },
+    {
+      "id": 71712,
+      "title": "The Good Doctor",
+      "stream_link": "https://example.com/stream/the-good-doctor",
+      "available_qualities": ["720p", "1080p"],
+      "genres": ["Drama"],
+      "download_links": {
+        "720p": "https://gplinks.co/tgd-720p"
+      },
+      "seasons": {
+        "1": { "download_links": { "720p": "https://gplinks.co/tgd-s1-720p", "1080p": "https://gplinks.co/tgd-s1-1080p" } },
+        "2": { "download_links": { "1080p": "https://gplinks.co/tgd-s2-1080p" } },
+        "3": { "download_links": { "720p": "https://gplinks.co/tgd-s3-720p" } },
+        "4": { "download_links": {} } ,
+         "5": { "download_links": { "1080p": "https://gplinks.co/tgd-s5-1080p" } }
+      }
+    },
+     {
+      "id": 75006,
+      "title": "The Umbrella Academy",
+      "stream_link": "https://example.com/stream/umbrella-academy",
+      "available_qualities": ["1080p"],
+      "genres": ["Action & Adventure", "Sci-Fi & Fantasy", "Drama"],
+      "download_links": {},
+      "seasons": {
+        "1": { "download_links": { "1080p": "https://gplinks.co/ua-s1-1080p" } },
+        "2": { "download_links": { "1080p": "https://gplinks.co/ua-s2-1080p" } },
+        "3": { "download_links": { "1080p": "https://gplinks.co/ua-s3-1080p" } }
       }
     }
   ]
