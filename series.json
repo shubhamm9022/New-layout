@@ -4,15 +4,21 @@
       "id": 100088,
       "title": "the last of us",
       "stream_link": "dfsdf",
-      "download_links": {"4k":""},
+      "download_links": {},
       "seasons": {
         "1": {
           "download_links": {
             "4k": "dd"
           }
+        },
+        "5": {
+          "download_links": {
+            "720p": "fsdfsdfsd"
+          }
         }
       },
       "available_qualities": [
+        "720p",
         "4k"
       ]
     },
