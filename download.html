@@ -32,12 +32,16 @@
       color: var(--light-color);
       line-height: 1.6;
       padding-top: 30px;
+      min-height: 100vh; /* Ensure body takes at least full viewport height */
+      display: flex; /* Use flexbox for layout */
+      flex-direction: column; /* Stack children vertically */
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
+      flex-grow: 1; /* Allow container to grow and push footer down */
     }
 
     .note {
@@ -142,6 +146,7 @@
       opacity: 0.8;
     }
 
+
     .btn i {
       margin-right: 10px;
       font-size: 18px;
@@ -202,7 +207,7 @@
     footer {
       background: linear-gradient(135deg, var(--dark-color), #0f3460);
       padding: 40px 0;
-      margin-top: 60px;
+      margin-top: auto; /* Push footer to the bottom */
       text-align: center;
       font-size: 15px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -234,11 +239,16 @@
       color: var(--gray-color);
     }
 
-    .expired-message {
+    .expired-message, .error-message {
         text-align: center;
         font-size: 18px;
         color: var(--danger);
         margin-top: 30px;
+    }
+
+    .error-message i {
+         margin-right: 8px;
+         color: var(--danger);
     }
 
 
@@ -306,49 +316,66 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // --- YOUR FIREBASE CONFIGURATION ---
+    // --- YOUR FIREBASE CONFIGURATION (EXPOSED - CONSIDER SERVER-SIDE) ---
     const firebaseConfig = {
-      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84", // <--- Replace with your actual API Key
-      authDomain: "movievault-e650e.firebaseapp.com", // <--- Replace with your actual Auth Domain
-      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com", // <--- Replace with your actual Database URL
-      projectId: "movievault-e650e", // <--- Replace with your actual Project ID
-      storageBucket: "movievault-e650e.appspot.com", // <--- Replace with your actual Storage Bucket
-      messagingSenderId: "61140580505", // <--- Replace with your actual Messaging Sender ID
-      appId: "1:61140580505:web:d3216ca8bd944662a22008" // <--- Replace with your actual App ID
+      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84", // <-- Replace with your actual API Key
+      authDomain: "movievault-e650e.firebaseapp.com", // <-- Replace with your actual Auth Domain
+      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com", // <-- Replace with your actual Database URL
+      projectId: "movievault-e650e", // <-- Replace with your actual Project ID
+      storageBucket: "movievault-e650e.appspot.com", // <-- Replace with your actual Storage Bucket
+      messagingSenderId: "61140580505", // <-- Replace with your actual Messaging Sender ID
+      appId: "1:61140580505:web:d3216ca8bd944662a22008" // <-- Replace with your actual App ID
     };
     // --- END OF YOUR FIREBASE CONFIGURATION ---
+
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
     const DOWNLOAD_DURATION_MS = 30 * 60 * 1000; // 30 minutes in milliseconds
-    const SESSION_STORAGE_KEY_PREFIX = 'downloadSessionStartTime_'; // Prefix for sessionStorage key
+    // Use a session storage key based on movie details
+    const SESSION_STORAGE_KEY_PREFIX = 'downloadSessionStartTime_';
 
-    // Function to get the movie key from URL parameters
-    function getMovieKeyFromUrl() {
+    // Function to get movie details from URL parameters (name, year, quality)
+    function getMovieDetailsFromUrl() {
         const urlParams = new URLSearchParams(window.location.search);
-        // We expect a parameter named 'movie' containing the full key
-        const movieKey = urlParams.get('movie');
-        return movieKey ? decodeURIComponent(movieKey) : null;
+        const name = urlParams.get('name');
+        const year = urlParams.get('year');
+        const quality = urlParams.get('quality');
+
+        // Decode parameters to handle spaces (%20) etc.
+        const decodedName = name ? decodeURIComponent(name) : null;
+        const decodedYear = year ? decodeURIComponent(year) : null;
+        const decodedQuality = quality ? decodeURIComponent(quality) : null;
+
+        // Return object with details, or null if any required detail is missing
+        if (decodedName && decodedYear && decodedQuality) {
+            return { name: decodedName, year: decodedYear, quality: decodedQuality };
+        }
+        return null; // Missing required parameters
     }
 
 
     // Function to manage the download session timer using sessionStorage
-    function manageDownloadSessionTimer(movieKey) {
-        if (!movieKey) return false; // Cannot manage session without a movie key
+    function manageDownloadSessionTimer(details) {
+        if (!details || !details.name || !details.year || !details.quality) {
+             console.error("manageDownloadSessionTimer: Invalid movie details provided.");
+             return false; // Cannot manage session without full movie details
+        }
 
-        const sessionKey = SESSION_STORAGE_KEY_PREFIX + movieKey; // Unique key for this movie
+        // Create a unique session key based on the movie details
+        const sessionKey = `${SESSION_STORAGE_KEY_PREFIX}${details.name}_${details.year}_${details.quality}`;
         const now = Date.now();
         let sessionStartTime = sessionStorage.getItem(sessionKey);
 
         if (!sessionStartTime) {
-            // No start time found for this movie in this session, start a new one
+            // No start time found for this movie/quality in this session, start a new one
             sessionStartTime = now;
             sessionStorage.setItem(sessionKey, sessionStartTime);
-            console.log(`New download session started for ${movieKey}.`);
-            // Set a timeout to end the session for this specific movie key
-             setTimeout(() => endDownloadSession(movieKey), DOWNLOAD_DURATION_MS);
+            console.log(`New download session started for ${details.name} (${details.year}) - ${details.quality}.`);
+            // Set a timeout to end the session for this specific entry
+             setTimeout(() => endDownloadSession(details), DOWNLOAD_DURATION_MS);
              return true; // Session is active
         } else {
             // Session started previously, check elapsed time
@@ -356,27 +383,29 @@
             const elapsedTime = now - sessionStartTime;
 
             if (elapsedTime >= DOWNLOAD_DURATION_MS) {
-                // Session has expired for this movie key
-                console.log(`Existing download session expired for ${movieKey}.`);
-                endDownloadSession(movieKey); // End the session immediately for this movie key
+                // Session has expired for this movie/quality entry
+                console.log(`Existing download session expired for ${details.name} (${details.year}) - ${details.quality}.`);
+                endDownloadSession(details); // End the session immediately
                 return false; // Session is expired
             } else {
                 // Session is still active, calculate remaining time and set timeout
                 const remainingTime = DOWNLOAD_DURATION_MS - elapsedTime;
-                console.log(`Continuing download session for ${movieKey}. Remaining time: ${remainingTime / 1000} seconds.`);
-                 setTimeout(() => endDownloadSession(movieKey), remainingTime);
+                console.log(`Continuing download session for ${details.name} (${details.year}) - ${details.quality}. Remaining time: ${remainingTime / 1000} seconds.`);
+                 setTimeout(() => endDownloadSession(details), remainingTime);
                  return true; // Session is active
             }
         }
     }
 
 
-    // Function to end the download session for a specific movie key
-    function endDownloadSession(movieKey) {
+    // Function to end the download session for a specific movie entry
+    function endDownloadSession(details) {
         const contentContainer = document.getElementById("content");
         const titleElement = document.getElementById("show-title");
 
-        console.log(`Ending download session for ${movieKey}.`);
+        const movieTitle = details ? `${details.name} (${details.year}) - ${details.quality}` : "Content";
+
+        console.log(`Ending download session for ${movieTitle}.`);
 
         // Hide the content
         contentContainer.innerHTML = ''; // Clear the links
@@ -385,7 +414,7 @@
         contentContainer.innerHTML = `
             <div class="expired-message">
                 <i class="fas fa-hourglass-end"></i>
-                <p>Your download session for this movie has expired.</p>
+                <p>Your download session for "${movieTitle}" has expired.</p>
                 <p>Please revisit the original link to start a new session.</p>
             </div>
         `;
@@ -393,32 +422,37 @@
         // Optionally update the title
         titleElement.innerText = "Session Expired";
 
-        // Optionally clear the sessionStorage for this specific movie key
-        // sessionStorage.removeItem(SESSION_STORAGE_KEY_PREFIX + movieKey);
+        // Optionally clear the sessionStorage for this specific entry
+        // if (details) {
+        //    const sessionKey = `${SESSION_STORAGE_KEY_PREFIX}${details.name}_${details.year}_${details.quality}`;
+        //    sessionStorage.removeItem(sessionKey);
+        // }
     }
 
 
     // Function to create download buttons for a given set of links
-    function createButtons(links) {
+    // This now expects the data for a specific quality directly
+    function createButtons(qualityLinks) {
       let buttons = '';
-      if (links && typeof links === 'object') {
-        if (links.filepress) {
-          buttons += `<a href="${links.filepress}" class="btn filepress" target="_blank"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
-        }
-        if (links.neodrive) {
-          buttons += `<a href="${links.neodrive}" class="btn gdirect" target="_blank"><i class="fas fa-bolt"></i> G-Direct [Neodrive]</a>`;
-        }
-        if (links.backup) {
-          buttons += `<a href="${links.backup}" class="btn backup-btn" target="_blank"><i class="fas fa-hdd"></i> Backup Link</a>`;
-        }
+      // Check if qualityLinks is a valid object and has link properties
+      if (qualityLinks && typeof qualityLinks === 'object') {
+          // We are now expecting qualityLinks to contain filepress, neodrive, backup properties
+          if (qualityLinks.filepress) {
+            buttons += `<a href="${qualityLinks.filepress}" class="btn filepress" target="_blank"><i class="fas fa-cloud-download-alt"></i> Filepress [G-Drive]</a>`;
+          }
+          if (qualityLinks.neodrive) {
+            buttons += `<a href="${qualityLinks.neodrive}" class="btn gdirect" target="_blank"><i class="fas fa-bolt"></i> G-Direct [Neodrive]</a>`;
+          }
+          if (qualityLinks.backup) {
+            buttons += `<a href="${qualityLinks.backup}" class="btn backup-btn" target="_blank"><i class="fas fa-hdd"></i> Backup Link</a>`;
+          }
       }
       return buttons;
     }
 
-    // Function to load data based on the movie key from URL parameters
+    // Function to load data based on the movie details from URL parameters
     async function loadData() {
-      // Get the movie key from URL parameters instead of the hash
-      const movieKey = getMovieKeyFromUrl();
+      const movieDetails = getMovieDetailsFromUrl();
       const titleElement = document.getElementById("show-title");
       const contentContainer = document.getElementById("content");
 
@@ -427,15 +461,27 @@
 
 
       // --- Manage the session timer before attempting to load data ---
-      // Pass the movieKey to the timer management function
-      const sessionActive = manageDownloadSessionTimer(movieKey);
-
-      if (!sessionActive) {
-          // If manageDownloadSessionTimer returned false (session expired), stop here
+      // Pass the movieDetails object to the timer management function
+      if (movieDetails) {
+         const sessionActive = manageDownloadSessionTimer(movieDetails);
+         if (!sessionActive) {
+             // If manageDownloadSessionTimer returned false (session expired), stop here
+             return; // endDownloadSession already displayed message
+         }
+         // Display the movie title with loading indicator
+         titleElement.innerText = `Loading: ${movieDetails.name} (${movieDetails.year}) - ${movieDetails.quality}`;
+      } else {
+         // If movie details are missing from the URL
+          titleElement.innerText = "Invalid URL";
+          contentContainer.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Missing movie details in the URL.</p>
+                <p>Please use a link like ?name=...&year=...&quality=...</p>
+            </div>
+          `;
           return;
       }
-      // --- End Session Timer Management ---
-
 
       // Show loading spinner while fetching
       contentContainer.innerHTML = `
@@ -444,46 +490,44 @@
         </div>
       `;
 
-      if (!movieKey) {
-        titleElement.innerText = "Content Not Found";
-        contentContainer.innerHTML = "<p style='color: #ccc; text-align: center;'>No content specified in the URL. Please use a link with ?movie=...</p>";
-        return;
-      }
 
-      // Display the movie key while loading
-      titleElement.innerText = "Loading: " + movieKey;
+      // Construct the Firebase path using the extracted details
+      // Assumes database structure like: movies/Movie Name (Year)/Quality/links
+      const firebasePath = `movies/${movieDetails.name} (${movieDetails.year})/${movieDetails.quality}`;
+      console.log("Attempting to fetch data from Firebase path:", firebasePath); // Log the path being fetched
 
       try {
-        // Fetch data directly using the full movieKey
-        // Path will be like: movies/Driver Jamuna (2022) 1080p
-        const firebasePath = `movies/${movieKey}`;
-        console.log("Attempting to fetch data from Firebase path:", firebasePath); // Log the path being fetched
+        // Fetch data specifically for the given quality path
         const snapshot = await get(child(ref(db), firebasePath));
 
         if (!snapshot.exists()) {
           console.warn("No data found at path:", firebasePath); // Log if data not found
           titleElement.innerText = "Content Not Found";
-          contentContainer.innerHTML = `<p style='color: #ccc; text-align: center;'>Content not found in database for: ${movieKey}. Please check the URL.</p>`;
+          contentContainer.innerHTML = `
+            <div class="error-message">
+                 <i class="fas fa-sad-tear"></i>
+                 <p>Content not found in database for: ${movieDetails.name} (${movieDetails.year}) ${movieDetails.quality}.</p>
+                 <p>Please check the URL parameters.</p>
+            </div>
+          `;
           return;
         }
 
-        const movieData = snapshot.val(); // This is the object containing links, name, year, quality, etc.
-        console.log("Fetched data:", movieData); // Log the data that was fetched
+        // The fetched data is the object containing the links (filepress, neodrive, backup)
+        const qualityLinks = snapshot.val();
+        console.log("Fetched data (quality links):", qualityLinks); // Log the data that was fetched
+
         let contentHTML = '';
 
-        // Set the main title using the name, year, and quality from the fetched data
-        if (movieData && movieData.name) {
-             titleElement.innerText = movieData.name + (movieData.year ? ' (' + movieData.year + ')' : '') + (movieData.quality ? ' - ' + movieData.quality : '');
-        } else {
-             titleElement.innerText = movieKey; // Fallback to movieKey if name is not in data
-        }
+        // Set the main title using the parsed details
+        titleElement.innerText = `${movieDetails.name} (${movieDetails.year}) - ${movieDetails.quality}`;
 
 
-        // Create buttons directly from the fetched movieData (which contains the links at the top level)
-        const buttons = createButtons(movieData);
+        // Create buttons directly from the fetched qualityLinks object
+        const buttons = createButtons(qualityLinks);
 
         if (buttons) {
-            // Display the links for the specific movie entry
+            // Display the links for the specific quality entry
             contentHTML = `
                 <div class="movie-card">
                     <h2>Download Links</h2> {/* Generic heading */}
@@ -492,11 +536,15 @@
             `;
              // Timer is managed at the beginning of loadData, no need to start here
         } else {
-             // If data was found but no valid links (filepress, neodrive, backup) were present
-             console.warn("Data found but no valid links:", movieData);
-             contentHTML = `<p style='color: #ccc; text-align: center;'>No download links found for this content.</p>`;
+             // If data was found at the quality path, but no valid links were present within it
+             console.warn("Data found at quality path but no valid links (filepress, neodrive, backup) present:", qualityLinks);
+             contentHTML = `
+                <div class="error-message">
+                    <i class="fas fa-unlink"></i>
+                    <p>No download links found for this specific quality (${movieDetails.quality}).</p>
+                </div>
+             `;
         }
-
 
         // Update the content container with the generated HTML
         contentContainer.innerHTML = contentHTML;
@@ -504,7 +552,13 @@
       } catch (err) {
         console.error("Firebase Error loading data:", err); // Log the full error object
         titleElement.innerText = "Error Loading";
-        contentContainer.innerHTML = "<p style='color: var(--danger); text-align: center;'>Error loading data. Please check the browser console for details.</p>";
+        contentContainer.innerHTML = `
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>An error occurred while loading data.</p>
+                <p>Please try again or check the browser console for details.</p>
+            </div>
+        `;
       }
     }
 
@@ -515,19 +569,21 @@
     window.addEventListener('popstate', loadData);
 
 
-    // Block developer tools (client-side only, easily bypassed)
+    // Block developer tools (client-side only, easily bypassed - REMOVE FOR PRODUCTION)
     document.onkeydown = function(e) {
       if (e.key === "F12" ||
          (e.ctrlKey && e.shiftKey &&
          (e.key === "I" || e.key === "J" || e.key === "C"))) {
         e.preventDefault();
+        // alert("Developer tools are disabled on this page."); // Optional: add an alert
         return false;
       }
     };
 
-     // Disable right-click (client-side only, easily bypassed)
+     // Disable right-click (client-side only, easily bypassed - REMOVE FOR PRODUCTION)
      document.addEventListener('contextmenu', function(e) {
        e.preventDefault();
+       // alert("Right-click is disabled."); // Optional: add an alert
      });
   </script>
 </body>
