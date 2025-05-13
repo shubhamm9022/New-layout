@@ -613,7 +613,7 @@
 			color: var(--text-tertiary);
 		}
 
-		/* Similar movies grid - UPDATED FOR BETTER MOBILE DISPLAY */
+		/* Similar movies grid */
 		.similar-section {
 			margin-top: 60px;
 			padding: 0 20px 40px;
@@ -643,32 +643,31 @@
 			border-radius: 3px;
 		}
 
-		/* Desktop Grid (unchanged) */
 		.similar-grid {
 			display: grid;
 			grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-			gap: 25px;
+			gap: 20px;
 			justify-items: center;
 		}
 
-		/* Movie Card Styles - UPDATED FOR BETTER VISIBILITY */
+		/* --- Movie Card Styles (Copied from Index for Consistency) --- */
 		.movie-card {
 			position: relative;
 			width: 100%;
-			max-width: 180px;
+			max-width: 180px; /* Added max-width for consistency with index */
 			background: var(--bg-card);
-			border-radius: 10px;
+			border-radius: 10px; /* Adjusted border-radius for consistency with index */
 			overflow: hidden;
-			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
-			transition: transform 0.4s, box-shadow 0.4s;
-			display: flex;
-			flex-direction: column;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8); /* Adjusted shadow for consistency with index */
+			transition: transform 0.4s, box-shadow 0.4s; /* Adjusted transition for consistency with index */
+			display: flex; /* Added flex for consistency with index */
+			flex-direction: column; /* Added flex-direction for consistency with index */
 			cursor: pointer;
 		}
 
 		.movie-card:hover {
-			transform: scale(1.05);
-			box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+			transform: scale(1.05); /* Adjusted transform for consistency with index */
+			box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2); /* Adjusted shadow for consistency with index */
 		}
 
 		.poster-wrapper {
@@ -693,39 +692,40 @@
 
 		.rating-star {
 			position: absolute;
-			bottom: 8px;
-			left: 8px;
+			bottom: 8px; /* Adjusted bottom for consistency with index */
+			left: 8px; /* Adjusted left for consistency with index */
 			display: flex;
 			align-items: center;
-			gap: 4px;
-			padding: 2px 6px;
+			gap: 4px; /* Adjusted gap for consistency with index */
+			padding: 2px 6px; /* Adjusted padding for consistency with index */
 			border-radius: 20px;
 			background: rgba(0, 0, 0, 0.7);
-			font-size: 11px;
+			font-size: 11px; /* Adjusted font-size for consistency with index */
 			font-weight: 600;
 			color: #fff;
 			backdrop-filter: blur(4px);
+			/* Removed border for consistency with index */
 		}
 
-		.rating-star i {
-			color: #FFD700;
-			font-size: 14px;
-			line-height: 1;
+		.rating-star i { /* Changed from img to i */
+			color: #FFD700; /* Added star color */
+			font-size: 14px; /* Adjusted font-size for consistency with index */
+			line-height: 1; /* Added line-height for consistency with index */
 		}
 
 		.movie-info {
-			padding: 8px;
+			padding: 8px; /* Adjusted padding for consistency with index */
 			display: flex;
 			flex-direction: column;
-			gap: 6px;
-			min-height: 60px;
+			gap: 6px; /* Adjusted gap for consistency with index */
+			min-height: 60px; /* Added min-height for consistency with index */
 		}
 
 		.title {
-			font-size: 13px;
-			font-weight: 700;
-			line-height: 1.3em;
-			max-height: 2.6em;
+			font-size: 13px; /* Adjusted font-size for consistency with index */
+			font-weight: 700; /* Adjusted font-weight for consistency with index */
+			line-height: 1.3em; /* Adjusted line-height for consistency with index */
+			max-height: 2.6em; /* Adjusted max-height for consistency with index */
 			overflow: hidden;
 			display: -webkit-box;
 			-webkit-line-clamp: 2;
@@ -736,17 +736,18 @@
 		.tags {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 5px;
-			font-size: 11px;
-			opacity: 0.9;
+			gap: 5px; /* Adjusted gap for consistency with index */
+			font-size: 11px; /* Adjusted font-size for consistency with index */
+			opacity: 0.9; /* Added opacity for consistency with index */
+			color: inherit; /* Inherit color from parent */
 		}
 
 		.tag {
-			padding: 2px 6px;
+			padding: 2px 6px; /* Adjusted padding for consistency with index */
 			border-radius: 5px;
 			background: #333;
-			font-size: 0.7rem;
-			color: white;
+			font-size: 0.7rem; /* Keep this or adjust to 11px like .tags */
+			color: white; /* Ensure tag text is white */
 		}
 
 		.tag.hd { background: var(--color-720p); }
@@ -757,8 +758,28 @@
 		.tag.hdr { background: var(--color-hdr); }
 		.tag.dolby { background: var(--color-dolby); }
 		.tag.imax { background: var(--color-imax); }
+		/* --- End Movie Card Styles --- */
 
-		/* Mobile Responsive Styles - UPDATED FOR BETTER MOBILE DISPLAY */
+
+		/* Loading Animation */
+		.loading-skeleton {
+			animation: pulse 1.5s infinite ease-in-out;
+			background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%);
+			background-size: 200% 100%;
+			border-radius: 4px;
+		}
+
+		@keyframes pulse {
+			0% {
+				background-position: 200% 0;
+			}
+
+			100% {
+				background-position: -200% 0;
+			}
+		}
+
+		/* Mobile Responsive Styles */
 		@media (max-width: 991px) {
 			.movie-container {
 				margin-top: -100px;
@@ -778,19 +799,48 @@
 				justify-content: flex-start;
 			}
 
-			/* Adjusted similar grid for mobile */
+			/* Adjusted similar grid for consistency on smaller screens */
 			.similar-grid {
-				grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-				gap: 20px;
+				grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Adjusted minmax */
+				gap: 15px; /* Adjusted gap */
 			}
 
 			.movie-card {
-				max-width: 100%;
+				max-width: 100%; /* Allow cards to take available width */
 			}
 
 			.poster-wrapper {
-				height: 240px;
+				height: 270px; /* Adjusted height */
 			}
+
+			.rating-star {
+				font-size: 11px; /* Ensure consistent font size */
+				padding: 2px 6px; /* Ensure consistent padding */
+			}
+
+			.rating-star i {
+				font-size: 14px; /* Ensure consistent icon size */
+			}
+
+			.movie-info {
+				padding: 8px; /* Ensure consistent padding */
+				gap: 6px; /* Ensure consistent gap */
+				min-height: 60px; /* Ensure consistent min-height */
+			}
+
+			.title {
+				font-size: 13px; /* Ensure consistent font size */
+			}
+
+			.tags {
+				font-size: 11px; /* Ensure consistent font size */
+				gap: 5px; /* Ensure consistent gap */
+			}
+
+			.tag {
+				padding: 2px 6px; /* Ensure consistent padding */
+			}
+
 		}
 
 		@media (max-width: 767px) {
@@ -874,35 +924,49 @@
 				font-size: 1.3rem;
 			}
 
-			/* Adjusted similar grid for mobile */
+			/* Adjusted similar grid for consistency on extra small screens */
 			.similar-grid {
-				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-				gap: 20px;
+				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjusted minmax */
+				gap: 20px; /* Adjusted gap */
+			}
+
+			.movie-card {
+				max-width: 100%; /* Allow cards to take available width */
 			}
 
 			.poster-wrapper {
-				height: 220px;
-			}
-		}
-
-		@media (max-width: 480px) {
-			/* Make cards slightly bigger on small mobile */
-			.similar-grid {
-				grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-				gap: 15px;
+				height: 220px; /* Adjusted height */
 			}
 
-			.poster-wrapper {
-				height: 200px;
+			.rating-star {
+				font-size: 10px; /* Adjusted font size */
+				padding: 2px 5px; /* Adjusted padding */
+				gap: 3px; /* Adjusted gap */
+			}
+
+			.rating-star i {
+				font-size: 12px; /* Adjusted icon size */
 			}
 
 			.movie-info {
-				padding: 8px;
+				padding: 6px; /* Adjusted padding */
+				gap: 5px; /* Adjusted gap */
+				min-height: 50px; /* Adjusted min-height */
 			}
 
 			.title {
-				font-size: 12px;
+				font-size: 12px; /* Adjusted font size */
 			}
+
+			.tags {
+				font-size: 10px; /* Adjusted font size */
+				gap: 4px; /* Adjusted gap */
+			}
+
+			.tag {
+				padding: 1px 5px; /* Adjusted padding */
+			}
+
 
 			.additional-info {
 				grid-template-columns: 1fr;
@@ -914,20 +978,53 @@
 			}
 		}
 
+		@media (max-width: 480px) {
+			/* Adjusted similar grid for consistency on tiny screens */
+			.similar-grid {
+				grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+				gap: 15px;
+			}
+
+			.movie-card {
+				max-width: 100%; /* Allow cards to take available width */
+			}
+
+			.poster-wrapper {
+				height: 200px;
+			}
+
+			.movie-title {
+				font-size: 1.5rem;
+			}
+
+			.cast-grid {
+				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Keep consistent or adjust as needed */
+				gap: 12px;
+			}
+
+			.cast-photo {
+				width: 70px; /* Keep consistent or adjust as needed */
+				height: 70px; /* Keep consistent or adjust as needed */
+			}
+		}
+
 		@media (max-width: 360px) {
 			.poster {
 				width: 160px;
 				height: 240px;
 			}
 
-			/* For very small screens, show 2 cards per row */
 			.similar-grid {
 				grid-template-columns: repeat(2, 1fr);
-				gap: 15px;
+				gap: 15px; /* Ensure consistent gap */
+			}
+
+			.movie-card {
+				max-width: 100%; /* Allow cards to take available width */
 			}
 
 			.poster-wrapper {
-				height: 190px;
+				height: 180px;
 			}
 
 			.movie-title {
@@ -935,31 +1032,13 @@
 			}
 
 			.cast-grid {
-				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Keep consistent or adjust as needed */
 				gap: 12px;
 			}
 
 			.cast-photo {
-				width: 70px;
-				height: 70px;
-			}
-		}
-
-		/* Loading Animation */
-		.loading-skeleton {
-			animation: pulse 1.5s infinite ease-in-out;
-			background: linear-gradient(90deg, #1a1a1a 25%, #252525 50%, #1a1a1a 75%);
-			background-size: 200% 100%;
-			border-radius: 4px;
-		}
-
-		@keyframes pulse {
-			0% {
-				background-position: 200% 0;
-			}
-
-			100% {
-				background-position: -200% 0;
+				width: 70px; /* Keep consistent or adjust as needed */
+				height: 70px; /* Keep consistent or adjust as needed */
 			}
 		}
 	</style>
@@ -1263,7 +1342,7 @@
 
           // Get available qualities from our local data
           const qualityTags = item.available_qualities?.map(quality => {
-            const tagClass = quality.toLowerCase() === '4k' ? '_4k' :
+            const tagClass = quality.toLowerCase() === '4k' ? 'uhd' :
                            quality.toLowerCase() === '1080p' ? 'fhd' :
                            quality.toLowerCase() === '720p' ? 'hd' :
                            quality.toLowerCase();
