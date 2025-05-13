@@ -65,8 +65,6 @@
       margin-bottom: 1rem;
     }
 
-    /* Debug info box styles removed as the element is removed */
-
     .content-box {
       background: rgba(0,0,0,0.3);
       backdrop-filter: blur(10px);
@@ -99,7 +97,7 @@
       vertical-align: middle;
       flex-shrink: 0;
     }
-    
+
     .movie-year {
         font-size: 1rem;
         color: rgba(255,255,255,0.7);
@@ -140,7 +138,7 @@
       transition: all 0.3s ease;
       border-left: 4px solid var(--primary);
     }
-    
+
     .download-link:last-child {
         margin-bottom: 0;
     }
@@ -155,7 +153,7 @@
       font-size: 1.2rem;
       flex-shrink: 0;
     }
-    
+
     .download-link span {
         flex-grow: 1;
         word-break: break-word;
@@ -200,6 +198,7 @@
     .loading-text {
       color: var(--secondary);
       margin-top: 1rem;
+      font-weight: 400;
     }
 
     .error-box {
@@ -207,13 +206,20 @@
       border-left: 4px solid var(--danger);
       padding: 1.5rem;
       border-radius: 8px;
+      color: var(--light); /* Ensure text color is readable */
     }
+     .error-box p { /* Ensure text color is readable */
+        color: rgba(255,255,255,0.8);
+     }
+
 
     .error-title {
       color: var(--danger);
       margin-bottom: 0.5rem;
       display: flex;
       align-items: center;
+      font-weight: 600;
+      font-size: 1.2rem;
     }
 
     .error-title i {
@@ -278,6 +284,11 @@
           margin-right: 0.6rem;
       }
 
+      .error-title {
+          font-size: 1.1rem;
+      }
+
+
       footer {
           padding: 1rem;
           font-size: 0.8rem;
@@ -311,11 +322,7 @@
     </header>
 
     <div id="content">
-      <div class="loading">
-        <div class="spinner"></div>
-        <p class="loading-text">Connecting to secure server...</p>
       </div>
-    </div>
   </div>
 
   <footer>
@@ -332,102 +339,186 @@
       console.log(`[${type.toUpperCase()}] [${timestamp}] ${message}`);
     }
 
-    debugLog("Initializing MovieVault download system...");
+    debugLog("MovieVault download system script starting...");
 
-    try {
-      // Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
-        authDomain: "movievault-e650e.firebaseapp.com",
-        databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
-        projectId: "movievault-e650e",
-        storageBucket: "movievault-e650e.firebasestorage.app",
-        messagingSenderId: "61140580505",
-        appId: "1:61140580505:web:d3216ca8bd944662a22008"
-      };
+    const contentDiv = document.getElementById('content');
+    const timerDuration = 30 * 60 * 1000; // 30 minutes in milliseconds
+    const storageKey = 'movieVaultLinkExpiry'; // Key for sessionStorage
 
-      debugLog("Initializing Firebase connection...");
-      const app = initializeApp(firebaseConfig);
-      const db = getDatabase(app);
-      debugLog("Firebase initialized successfully", 'success');
-
-      // Parse URL parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const movieId = urlParams.get('id');
-      debugLog(`URL parameter received: id=${movieId || 'none'}`);
-
-      if (!movieId || !movieId.match(/^.+-.+-.+$/)) {
-        throw new Error("Invalid URL format. Please use: ?id=MovieName-Year-Quality");
-      }
-
-      const [name, year, quality] = movieId.split('-');
-      debugLog(`Parsed parameters: Name="${name}", Year="${year}", Quality="${quality}"`);
-
-      const dbPath = `movies/${name} (${year})/${quality}`;
-      debugLog(`Attempting to fetch from Firebase path: "${dbPath}"`);
-
-      debugLog("Establishing secure connection to database...");
-      const dbRef = ref(db, dbPath);
-      const snapshot = await get(dbRef);
-
-      if (!snapshot.exists()) {
-        throw new Error(`No download links found for ${quality} quality`);
-      }
-
-      const data = snapshot.val();
-      debugLog("Data retrieved successfully", 'success');
-      debugLog("Data payload: " + JSON.stringify(data, null, 2)); // Log data payload
-
-      // Display content with premium styling
-      document.getElementById('content').innerHTML = `
-        <div class="content-box">
-          <h2 class="movie-title">${name.replace(/-/g, ' ')} <span class="quality-badge">${quality}</span></h2>
-          <p class="movie-year"><i class="fas fa-calendar-alt"></i> ${year}</p>
-
-          <div class="links-container">
-            <h3 class="links-title"><i class="fas fa-download"></i> Download Links</h3>
-            ${data.filepress ? `
-              <a href="${data.filepress}" class="download-link filepress-link" target="_blank">
-                <i class="fab fa-google-drive"></i>
-                <span>FilePress (G-Drive Mirror)</span>
-              </a>
-            ` : ''}
-
-            ${data.neodrive || data.needdive ? `
-              <a href="${data.neodrive || data.needdive}" class="download-link neodrive-link" target="_blank">
-                <i class="fas fa-bolt"></i>
-                <span>NeoDrive (High Speed)</span>
-              </a>
-            ` : ''}
-
-            ${data.backup ? `
-              <a href="${data.backup}" class="download-link backup-link" target="_blank">
-                <i class="fas fa-server"></i>
-                <span>Backup Server</span>
-              </a>
-            ` : ''}
-          </div>
-        </div>
-      `;
-
-      debugLog("Download page rendered successfully", 'success');
-
-    } catch (error) {
-      debugLog(`ERROR: ${error.message}`, 'error');
-      document.getElementById('content').innerHTML = `
-        <div class="content-box">
-          <div class="error-box">
-            <h3 class="error-title"><i class="fas fa-exclamation-triangle"></i> Error Loading Content</h3>
-            <p>${error.message}</p>
-            <p style="margin-top: 1rem; font-size: 0.9rem;">
-              <i class="fas fa-info-circle"></i> Check the browser console for details (F12).
-            </p>
-          </div>
-        </div>
-      `;
+    // Function to display the loading state
+    function showLoading(message = 'Connecting to secure server...') {
+        contentDiv.innerHTML = `
+            <div class="loading">
+                <div class="spinner"></div>
+                <p class="loading-text">${message}</p>
+            </div>
+        `;
     }
+
+    // Function to display an error message
+    function showError(message) {
+        contentDiv.innerHTML = `
+            <div class="content-box">
+                <div class="error-box">
+                    <h3 class="error-title"><i class="fas fa-exclamation-triangle"></i> Error Loading Content</h3>
+                    <p>${message}</p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">
+                      <i class="fas fa-info-circle"></i> Check the browser console (F12) for technical details if needed.
+                    </p>
+                </div>
+            </div>
+        `;
+    }
+
+    // Function to display the links expired message
+    function showExpired() {
+        debugLog("Timer reached. Showing expired message.", 'info');
+        contentDiv.innerHTML = `
+            <div class="content-box">
+                <div class="error-box" style="border-left-color: var(--warning); background: rgba(253, 203, 110, 0.1);">
+                    <h3 class="error-title" style="color: var(--warning);"><i class="fas fa-hourglass-end"></i> Links Expired</h3>
+                    <p>For security and server load management, the download links have expired.</p>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">
+                        Please return to the main site or the previous page to generate new links.
+                    </p>
+                </div>
+            </div>
+        `;
+        // Clear the session expiry timer so a new session can start if they return
+        sessionStorage.removeItem(storageKey);
+        debugLog("Session expiry key removed from sessionStorage.", 'info');
+    }
+
+    // Function to render the download links once data is ready
+    function renderDownloadLinks(data, movieDetails) {
+         const { name, year, quality } = movieDetails;
+         debugLog("Rendering download links...", 'info');
+
+         contentDiv.innerHTML = `
+             <div class="content-box">
+               <h2 class="movie-title">${name.replace(/-/g, ' ')} <span class="quality-badge">${quality}</span></h2>
+               <p class="movie-year"><i class="fas fa-calendar-alt"></i> ${year}</p>
+
+               <div class="links-container">
+                 <h3 class="links-title"><i class="fas fa-download"></i> Download Links</h3>
+                 ${data.filepress ? `
+                   <a href="${data.filepress}" class="download-link filepress-link" target="_blank" rel="noopener noreferrer">
+                     <i class="fab fa-google-drive"></i>
+                     <span>FilePress (G-Drive Mirror)</span>
+                   </a>
+                 ` : ''}
+
+                 ${data.neodrive || data.needdive ? `
+                   <a href="${data.neodrive || data.needdive}" class="download-link neodrive-link" target="_blank" rel="noopener noreferrer">
+                     <i class="fas fa-bolt"></i>
+                     <span>NeoDrive (High Speed)</span>
+                   </a>
+                 ` : ''}
+
+                 ${data.backup ? `
+                   <a href="${data.backup}" class="download-link backup-link" target="_blank" rel="noopener noreferrer">
+                     <i class="fas fa-server"></i>
+                     <span>Backup Server</span>
+                   </a>
+                 ` : ''}
+               </div>
+             </div>
+         `;
+
+         // Set the timer to hide links after the duration expires
+         setTimeout(showExpired, timerDuration);
+         debugLog(`Links displayed. Timer set to expire in ${timerDuration / 60000} minutes.`, 'success');
+    }
+
+
+    // Main function to handle the page logic
+    async function initializePage() {
+        showLoading(); // Show initial loading spinner immediately
+
+        const storedExpiry = sessionStorage.getItem(storageKey);
+        const now = Date.now();
+
+        // Check if an expiry time is stored and if it's in the past
+        if (storedExpiry && parseInt(storedExpiry) < now) {
+            debugLog("Found expired timestamp in sessionStorage. Showing expired message.", 'warning');
+            showExpired();
+            return; // Stop the function execution
+        }
+
+        // If no expiry or expiry is in the future, proceed to fetch/display
+        try {
+            // Firebase configuration (keep your actual config)
+            const firebaseConfig = {
+              apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
+              authDomain: "movievault-e650e.firebaseapp.com",
+              databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
+              projectId: "movievault-e650e",
+              storageBucket: "movievault-e650e.firebasestorage.app",
+              messagingSenderId: "61140580505",
+              appId: "1:61140580505:web:d3216ca8bd944662a22008"
+            };
+
+            debugLog("Initializing Firebase connection...");
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase(app);
+            debugLog("Firebase initialized successfully.", 'success');
+
+            // Parse URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('id');
+            debugLog(`URL parameter received: id=${movieId || 'none'}`);
+
+            if (!movieId || !movieId.match(/^.+-.+-.+$/)) {
+              throw new Error("Invalid URL format. Please use: ?id=MovieName-Year-Quality");
+            }
+
+            const [name, year, quality] = movieId.split('-');
+            const movieDetails = { name, year, quality };
+            debugLog(`Parsed parameters: Name="${name}", Year="${year}", Quality="${quality}"`);
+
+            const dbPath = `movies/${name} (${year})/${quality}`;
+            debugLog(`Attempting to fetch from Firebase path: "${dbPath}"`);
+
+            showLoading("Retrieving secure links..."); // Update loading message
+            const dbRef = ref(db, dbPath);
+            const snapshot = await get(dbRef); // Wait for the data fetch
+
+            if (!snapshot.exists()) {
+              throw new Error(`No download links found for "${quality}" quality for this movie.`);
+            }
+
+            const data = snapshot.val();
+            debugLog("Data retrieved successfully.", 'success');
+            // debugLog("Data payload:", data); // Uncomment for detailed data logging
+
+            // Set the expiry timestamp in sessionStorage ONLY if it wasn't already set
+            // or if the existing one was in the future (which shouldn't happen if logic is followed)
+            if (!storedExpiry) {
+                 const newExpiryTime = Date.now() + timerDuration;
+                 sessionStorage.setItem(storageKey, newExpiryTime.toString());
+                 debugLog(`Setting new expiry timestamp in sessionStorage: ${new Date(newExpiryTime).toLocaleString()}`, 'info');
+            } else {
+                 debugLog(`Using existing future expiry timestamp from sessionStorage: ${new Date(parseInt(storedExpiry)).toLocaleString()}`, 'info');
+            }
+
+
+            // Simulate a brief processing delay before rendering links for effect
+            showLoading("Generating secure download links..."); // Update message again
+            setTimeout(() => {
+                 renderDownloadLinks(data, movieDetails); // Render the links
+            }, 2000); // 2-second delay before showing links
+
+        } catch (error) {
+            debugLog(`Caught ERROR: ${error.message}`, 'error');
+             // On error, maybe we don't clear sessionStorage, so the timer continues if it was already set.
+             // This prevents simple errors from resetting the timer window.
+            showError(error.message); // Show the error message
+        }
+    }
+
+    // Start the main process
+    initializePage();
+
   </script>
 </body>
 </html>
-
-
