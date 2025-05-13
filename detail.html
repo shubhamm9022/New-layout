@@ -34,7 +34,7 @@
 			--desktop-poster-width: 260px;
 			--desktop-poster-height: 390px;
 			--mobile-poster-width: 180px;
-			--mobile-poster-height: 380px;
+			--mobile-poster-height: 310px;
 			--banner-height-desktop: 55vh;
 			--banner-height-mobile: 35vh;
 			--color-primary: #ff4d4d;
@@ -651,31 +651,29 @@
 		}
 
 		/* --- Movie Card Styles (Copied from Index for Consistency) --- */
-		/* These styles apply to .movie-card globally, including similar-grid,
-           but we need to refine height for similar-grid specifically on mobile. */
 		.movie-card {
 			position: relative;
 			width: 100%;
-			max-width: 380px;
+			max-width: 380px; /* Added max-width for consistency with index */
 			background: var(--bg-card);
-			border-radius: 10px;
+			border-radius: 10px; /* Adjusted border-radius for consistency with index */
 			overflow: hidden;
-			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
-			transition: transform 0.4s, box-shadow 0.4s;
-			display: flex;
-			flex-direction: column;
+			box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8); /* Adjusted shadow for consistency with index */
+			transition: transform 0.4s, box-shadow 0.4s; /* Adjusted transition for consistency with index */
+			display: flex; /* Added flex for consistency with index */
+			flex-direction: column; /* Added flex-direction for consistency with index */
 			cursor: pointer;
 		}
 
 		.movie-card:hover {
-			transform: scale(1.05);
-			box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+			transform: scale(1.05); /* Adjusted transform for consistency with index */
+			box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2); /* Adjusted shadow for consistency with index */
 		}
 
 		.poster-wrapper {
 			position: relative;
 			width: 100%;
-			height: 270px; /* Default Desktop Height */
+			height: 270px;
 			background: #2a2a2a;
 			overflow: hidden;
 		}
@@ -694,39 +692,40 @@
 
 		.rating-star {
 			position: absolute;
-			bottom: 8px;
-			left: 8px;
+			bottom: 8px; /* Adjusted bottom for consistency with index */
+			left: 8px; /* Adjusted left for consistency with index */
 			display: flex;
 			align-items: center;
-			gap: 4px;
-			padding: 2px 6px;
+			gap: 4px; /* Adjusted gap for consistency with index */
+			padding: 2px 6px; /* Adjusted padding for consistency with index */
 			border-radius: 20px;
 			background: rgba(0, 0, 0, 0.7);
-			font-size: 11px;
+			font-size: 11px; /* Adjusted font-size for consistency with index */
 			font-weight: 600;
 			color: #fff;
 			backdrop-filter: blur(4px);
+			/* Removed border for consistency with index */
 		}
 
-		.rating-star i {
-			color: #FFD700;
-			font-size: 14px;
-			line-height: 1;
+		.rating-star i { /* Changed from img to i */
+			color: #FFD700; /* Added star color */
+			font-size: 14px; /* Adjusted font-size for consistency with index */
+			line-height: 1; /* Added line-height for consistency with index */
 		}
 
 		.movie-info {
-			padding: 8px;
+			padding: 8px; /* Adjusted padding for consistency with index */
 			display: flex;
 			flex-direction: column;
-			gap: 6px;
-			min-height: 60px;
+			gap: 6px; /* Adjusted gap for consistency with index */
+			min-height: 60px; /* Added min-height for consistency with index */
 		}
 
 		.title {
-			font-size: 13px;
-			font-weight: 700;
-			line-height: 1.3em;
-			max-height: 2.6em;
+			font-size: 13px; /* Adjusted font-size for consistency with index */
+			font-weight: 700; /* Adjusted font-weight for consistency with index */
+			line-height: 1.3em; /* Adjusted line-height for consistency with index */
+			max-height: 2.6em; /* Adjusted max-height for consistency with index */
 			overflow: hidden;
 			display: -webkit-box;
 			-webkit-line-clamp: 2;
@@ -737,18 +736,18 @@
 		.tags {
 			display: flex;
 			flex-wrap: wrap;
-			gap: 5px;
-			font-size: 11px;
-			opacity: 0.9;
-			color: inherit;
+			gap: 5px; /* Adjusted gap for consistency with index */
+			font-size: 11px; /* Adjusted font-size for consistency with index */
+			opacity: 0.9; /* Added opacity for consistency with index */
+			color: inherit; /* Inherit color from parent */
 		}
 
 		.tag {
-			padding: 2px 6px;
+			padding: 2px 6px; /* Adjusted padding for consistency with index */
 			border-radius: 5px;
 			background: #333;
-			font-size: 0.7rem;
-			color: white;
+			font-size: 0.7rem; /* Keep this or adjust to 11px like .tags */
+			color: white; /* Ensure tag text is white */
 		}
 
 		.tag.hd { background: var(--color-720p); }
@@ -802,46 +801,46 @@
 
 			/* Adjusted similar grid for consistency on smaller screens */
 			.similar-grid {
-				grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-				gap: 15px;
+				grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* Adjusted minmax */
+				gap: 15px; /* Adjusted gap */
 			}
 
 			.movie-card {
-				max-width: 100%;
+				max-width: 100%; /* Allow cards to take available width */
 			}
 
-			/* Ensure similar card poster height is consistent with index page mobile */
-			.similar-grid .movie-card .poster-wrapper {
-				height: 240px; /* Set to index page mobile height */
+			.poster-wrapper {
+				height: 270px; /* Adjusted height */
 			}
 
 			.rating-star {
-				font-size: 11px;
-				padding: 2px 6px;
+				font-size: 11px; /* Ensure consistent font size */
+				padding: 2px 6px; /* Ensure consistent padding */
 			}
 
 			.rating-star i {
-				font-size: 14px;
+				font-size: 14px; /* Ensure consistent icon size */
 			}
 
 			.movie-info {
-				padding: 8px;
-				gap: 6px;
-				min-height: 60px;
+				padding: 8px; /* Ensure consistent padding */
+				gap: 6px; /* Ensure consistent gap */
+				min-height: 60px; /* Ensure consistent min-height */
 			}
 
 			.title {
-				font-size: 13px;
+				font-size: 13px; /* Ensure consistent font size */
 			}
 
 			.tags {
-				font-size: 11px;
-				gap: 5px;
+				font-size: 11px; /* Ensure consistent font size */
+				gap: 5px; /* Ensure consistent gap */
 			}
 
 			.tag {
-				padding: 2px 6px;
+				padding: 2px 6px; /* Ensure consistent padding */
 			}
+
 		}
 
 		@media (max-width: 767px) {
@@ -927,47 +926,45 @@
 
 			/* Adjusted similar grid for consistency on extra small screens */
 			.similar-grid {
-				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-				gap: 20px;
+				grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Adjusted minmax */
+				gap: 20px; /* Adjusted gap */
 			}
 
 			.movie-card {
-				max-width: 100%;
+				max-width: 100%; /* Allow cards to take available width */
 			}
 
-			/* Smaller poster height for very small mobile screens */
-			.similar-grid .movie-card .poster-wrapper {
-				height: 220px; /* Keep scaling down for smaller screens */
+			.poster-wrapper {
+				height: 220px; /* Adjusted height */
 			}
-
 
 			.rating-star {
-				font-size: 10px;
-				padding: 2px 5px;
-				gap: 3px;
+				font-size: 10px; /* Adjusted font size */
+				padding: 2px 5px; /* Adjusted padding */
+				gap: 3px; /* Adjusted gap */
 			}
 
 			.rating-star i {
-				font-size: 12px;
+				font-size: 12px; /* Adjusted icon size */
 			}
 
 			.movie-info {
-				padding: 6px;
-				gap: 5px;
-				min-height: 50px;
+				padding: 6px; /* Adjusted padding */
+				gap: 5px; /* Adjusted gap */
+				min-height: 50px; /* Adjusted min-height */
 			}
 
 			.title {
-				font-size: 12px;
+				font-size: 12px; /* Adjusted font size */
 			}
 
 			.tags {
-				font-size: 10px;
-				gap: 4px;
+				font-size: 10px; /* Adjusted font size */
+				gap: 4px; /* Adjusted gap */
 			}
 
 			.tag {
-				padding: 1px 5px;
+				padding: 1px 5px; /* Adjusted padding */
 			}
 
 
@@ -989,11 +986,11 @@
 			}
 
 			.movie-card {
-				max-width: 100%;
+				max-width: 100%; /* Allow cards to take available width */
 			}
 
-			.similar-grid .movie-card .poster-wrapper {
-				height: 200px; /* Keep scaling down for smaller screens */
+			.poster-wrapper {
+				height: 200px;
 			}
 
 			.movie-title {
@@ -1001,13 +998,13 @@
 			}
 
 			.cast-grid {
-				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Keep consistent or adjust as needed */
 				gap: 12px;
 			}
 
 			.cast-photo {
-				width: 70px;
-				height: 70px;
+				width: 70px; /* Keep consistent or adjust as needed */
+				height: 70px; /* Keep consistent or adjust as needed */
 			}
 		}
 
@@ -1019,15 +1016,15 @@
 
 			.similar-grid {
 				grid-template-columns: repeat(2, 1fr);
-				gap: 15px;
+				gap: 15px; /* Ensure consistent gap */
 			}
 
 			.movie-card {
-				max-width: 100%;
+				max-width: 100%; /* Allow cards to take available width */
 			}
 
-			.similar-grid .movie-card .poster-wrapper {
-				height: 180px; /* Keep scaling down for smaller screens */
+			.poster-wrapper {
+				height: 180px;
 			}
 
 			.movie-title {
@@ -1035,13 +1032,13 @@
 			}
 
 			.cast-grid {
-				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+				grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); /* Keep consistent or adjust as needed */
 				gap: 12px;
 			}
 
 			.cast-photo {
-				width: 70px;
-				height: 70px;
+				width: 70px; /* Keep consistent or adjust as needed */
+				height: 70px; /* Keep consistent or adjust as needed */
 			}
 		}
 	</style>
@@ -1221,7 +1218,7 @@
       if (mediaItem.available_qualities?.length > 0) {
         mediaItem.available_qualities.forEach(quality => {
           const qualityTag = document.createElement('span');
-          qualityTag.className = `quality-tag quality-${quality.toLowerCase().replace('.', '-')}`; // Sanitize class name
+          qualityTag.className = `quality-tag quality-${quality.toLowerCase()}`;
           qualityTag.textContent = quality;
           mainTagsElement.appendChild(qualityTag);
         });
@@ -1245,9 +1242,7 @@
             for (const [quality, url] of Object.entries(seasonData.download_links)) {
               const qualityBtn = document.createElement('a');
               qualityBtn.href = url;
-               // Sanitize quality name for class
-              const qualityClass = `btn-quality-${quality.toLowerCase().replace('.', '-')}`;
-              qualityBtn.className = `btn season-quality-btn btn-quality ${qualityClass}`;
+              qualityBtn.className = `btn season-quality-btn btn-quality-${quality.toLowerCase()}`;
               qualityBtn.target = '_blank';
               qualityBtn.innerHTML = `<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}`;
               seasonContent.appendChild(qualityBtn);
@@ -1276,9 +1271,7 @@
         for (const [quality, url] of Object.entries(mediaItem.download_links)) {
           const qualityBtn = document.createElement('a');
           qualityBtn.href = url;
-           // Sanitize quality name for class
-          const qualityClass = `btn-quality-${quality.toLowerCase().replace('.', '-')}`;
-          qualityBtn.className = `btn btn-quality ${qualityClass}`;
+          qualityBtn.className = `btn btn-quality btn-quality-${quality.toLowerCase()}`;
           qualityBtn.target = '_blank';
           qualityBtn.innerHTML = mediaType === 'tv' ?
             `<i class="bi bi-file-earmark-zip"></i> ${quality.toUpperCase()}` :
@@ -1310,7 +1303,7 @@
       const similarItems = allContent.filter(item => {
         // Don't show the current item
         if (item.id === currentItem.id && item.type === currentItem.type) return false;
-
+        
         // Match at least one genre
         const itemGenres = item.genres || [];
         return currentGenres.some(genre => itemGenres.includes(genre));
@@ -1334,14 +1327,14 @@
         try {
           const response = await fetch(tmdbUrl);
           if (!response.ok) continue; // Skip if TMDB fetch fails
-
+          
           const tmdbData = await response.json();
-
+          
           const title = item.type === 'tv' ? tmdbData.name || 'Untitled Series' : tmdbData.title || 'Untitled Movie';
           const releaseDate = item.type === 'tv' ? tmdbData.first_air_date : tmdbData.release_date;
           const formattedDate = formatDate(releaseDate);
           const rating = tmdbData.vote_average ? tmdbData.vote_average.toFixed(1) : 'N/A';
-
+          
           // Use poster from TMDB or placeholder
           const posterPath = tmdbData.poster_path ?
             `https://image.tmdb.org/t/p/w500${tmdbData.poster_path}` :
@@ -1349,10 +1342,10 @@
 
           // Get available qualities from our local data
           const qualityTags = item.available_qualities?.map(quality => {
-            const tagClass = quality.toLowerCase().replace('.', '-') === '4k' ? '_4k' : // Ensure 4k is _4k for class
-                           quality.toLowerCase().replace('.', '-') === '1080p' ? 'fhd' : // Ensure 1080p is fhd
-                           quality.toLowerCase().replace('.', '-') === '720p' ? 'hd' : // Ensure 720p is hd
-                           quality.toLowerCase().replace('.', '-'); // Sanitize others
+            const tagClass = quality.toLowerCase() === '4k' ? 'uhd' :
+                           quality.toLowerCase() === '1080p' ? 'fhd' :
+                           quality.toLowerCase() === '720p' ? 'hd' :
+                           quality.toLowerCase();
             return `<div class="tag ${tagClass}">${quality}</div>`;
           }).join('') || '';
 
@@ -1581,4 +1574,4 @@
   };
 </script>
 </body>
-	</html>
+</html>
