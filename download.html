@@ -2,34 +2,332 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Movie Download Debug</title>
+  <title>MovieVault | Premium Downloads</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    .debug-info { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 5px; }
-    .error { color: red; }
-    .success { color: green; }
+    :root {
+      --primary: #6c5ce7;
+      --primary-dark: #5649c0;
+      --secondary: #00cec9;
+      --dark: #2d3436;
+      --darker: #1e272e;
+      --light: #f5f6fa;
+      --danger: #ff7675;
+      --success: #55efc4;
+      --warning: #fdcb6e;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, var(--darker), var(--dark));
+      color: var(--light);
+      min-height: 100vh;
+      line-height: 1.6;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      flex: 1;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      color: var(--secondary);
+      font-weight: 300;
+      margin-bottom: 1rem;
+    }
+
+    .debug-info {
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-left: 4px solid var(--primary);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .debug-info p {
+      margin-bottom: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px dashed rgba(255,255,255,0.1);
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+    }
+
+    .debug-info p:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .info {
+      color: var(--secondary);
+    }
+
+    .success {
+      color: var(--success);
+    }
+
+    .error {
+      color: var(--danger);
+    }
+
+    .warning {
+      color: var(--warning);
+    }
+
+    .content-box {
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .movie-title {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--light);
+      font-weight: 600;
+    }
+
+    .quality-badge {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .links-container {
+      margin-top: 1.5rem;
+    }
+
+    .links-title {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+    }
+
+    .links-title i {
+      margin-right: 0.5rem;
+    }
+
+    .download-link {
+      display: block;
+      background: rgba(255,255,255,0.1);
+      color: var(--light);
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 4px solid var(--primary);
+      display: flex;
+      align-items: center;
+    }
+
+    .download-link:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateX(5px);
+    }
+
+    .download-link i {
+      margin-right: 0.8rem;
+      font-size: 1.2rem;
+    }
+
+    .filepress-link {
+      border-left-color: var(--warning);
+    }
+
+    .neodrive-link {
+      border-left-color: var(--success);
+    }
+
+    .backup-link {
+      border-left-color: var(--danger);
+    }
+
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(255,255,255,0.1);
+      border-top: 5px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--secondary);
+      margin-top: 1rem;
+    }
+
+    .error-box {
+      background: rgba(255,118,117,0.1);
+      border-left: 4px solid var(--danger);
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+
+    .error-title {
+      color: var(--danger);
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .error-title i {
+      margin-right: 0.5rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(0,0,0,0.3);
+      margin-top: auto;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .content-box, .debug-info {
+        padding: 1rem;
+      }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-dark);
+    }
   </style>
 </head>
 <body>
-  <h1>Movie Download Debug</h1>
-  <div id="debug-console" class="debug-info"></div>
-  <div id="content"></div>
+  <div class="container">
+    <header>
+      <h1>MovieVault</h1>
+      <p class="subtitle">Premium Quality Movie Downloads</p>
+    </header>
+
+    <div id="debug-console" class="debug-info"></div>
+
+    <div id="content">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p class="loading-text">Connecting to secure server...</p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2024 MovieVault. All rights reserved. | Secure encrypted connections</p>
+  </footer>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // Debug logging function
+    // Debug logging function with timestamp and type
     function debugLog(message, type = 'info') {
       const consoleDiv = document.getElementById('debug-console');
-      consoleDiv.innerHTML += `<p class="${type}">${new Date().toLocaleTimeString()}: ${message}</p>`;
-      console.log(message);
+      const timestamp = new Date().toLocaleTimeString();
+      const icon = {
+        info: 'ℹ️',
+        success: '✅',
+        error: '❌',
+        warning: '⚠️'
+      }[type];
+      
+      consoleDiv.innerHTML += `
+        <p class="${type}">
+          <span class="timestamp">[${timestamp}]</span>
+          <span class="icon">${icon}</span>
+          ${message}
+        </p>
+      `;
+      console.log(`[${type.toUpperCase()}] ${message}`);
+      
+      // Auto-scroll to bottom
+      consoleDiv.scrollTop = consoleDiv.scrollHeight;
     }
 
-    debugLog("Starting script execution...");
+    debugLog("Initializing MovieVault download system...");
 
     try {
+      // Firebase configuration
       const firebaseConfig = {
         apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
         authDomain: "movievault-e650e.firebaseapp.com",
@@ -40,52 +338,83 @@
         appId: "1:61140580505:web:d3216ca8bd944662a22008"
       };
 
-      debugLog("Initializing Firebase...");
+      debugLog("Initializing Firebase connection...");
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
       debugLog("Firebase initialized successfully", 'success');
 
+      // Parse URL parameters
       const urlParams = new URLSearchParams(window.location.search);
       const movieId = urlParams.get('id');
-      debugLog(`URL Parameter 'id': ${movieId}`);
+      debugLog(`URL parameter received: id=${movieId || 'none'}`);
 
       if (!movieId || !movieId.match(/^.+-.+-.+$/)) {
-        throw new Error("Invalid URL format. Use: ?id=MovieName-Year-Quality");
+        throw new Error("Invalid URL format. Please use: ?id=MovieName-Year-Quality");
       }
 
       const [name, year, quality] = movieId.split('-');
-      debugLog(`Parsed: Name=${name}, Year=${year}, Quality=${quality}`);
+      debugLog(`Parsed parameters: Name="${name}", Year="${year}", Quality="${quality}"`);
 
       const dbPath = `movies/${name} (${year})/${quality}`;
-      debugLog(`Attempting to fetch from Firebase path: ${dbPath}`);
+      debugLog(`Attempting to fetch from Firebase path: "${dbPath}"`);
 
+      debugLog("Establishing secure connection to database...");
       const dbRef = ref(db, dbPath);
       const snapshot = await get(dbRef);
       
       if (!snapshot.exists()) {
-        throw new Error("No data found at this path");
+        throw new Error(`No download links found for ${quality} quality`);
       }
 
       const data = snapshot.val();
-      debugLog("Retrieved data:", 'success');
+      debugLog("Data retrieved successfully:", 'success');
       debugLog(JSON.stringify(data, null, 2));
 
-      // Display content
+      // Display content with premium styling
       document.getElementById('content').innerHTML = `
-        <h2>${name} (${year}) - ${quality}</h2>
-        <h3>Download Links:</h3>
-        ${data.filepress ? `<p><a href="${data.filepress}" target="_blank">FilePress</a></p>` : ''}
-        ${data.neodrive ? `<p><a href="${data.neodrive}" target="_blank">NeoDrive</a></p>` : ''}
-        ${data.backup ? `<p><a href="${data.backup}" target="_blank">Backup</a></p>` : ''}
+        <div class="content-box">
+          <h2 class="movie-title">${name} <span class="quality-badge">${quality}</span></h2>
+          <p class="movie-year"><i class="fas fa-calendar-alt"></i> ${year}</p>
+          
+          <div class="links-container">
+            <h3 class="links-title"><i class="fas fa-download"></i> Download Links</h3>
+            ${data.filepress ? `
+              <a href="${data.filepress}" class="download-link filepress-link" target="_blank">
+                <i class="fab fa-google-drive"></i>
+                <span>FilePress (G-Drive Mirror)</span>
+              </a>
+            ` : ''}
+            
+            ${data.neodrive || data.needdive ? `
+              <a href="${data.neodrive || data.needdive}" class="download-link neodrive-link" target="_blank">
+                <i class="fas fa-bolt"></i>
+                <span>NeoDrive (High Speed)</span>
+              </a>
+            ` : ''}
+            
+            ${data.backup ? `
+              <a href="${data.backup}" class="download-link backup-link" target="_blank">
+                <i class="fas fa-server"></i>
+                <span>Backup Server</span>
+              </a>
+            ` : ''}
+          </div>
+        </div>
       `;
+
+      debugLog("Download page rendered successfully", 'success');
 
     } catch (error) {
       debugLog(`ERROR: ${error.message}`, 'error');
       document.getElementById('content').innerHTML = `
-        <div class="error">
-          <h2>Error Loading Content</h2>
-          <p>${error.message}</p>
-          <p>Check console for details</p>
+        <div class="content-box">
+          <div class="error-box">
+            <h3 class="error-title"><i class="fas fa-exclamation-triangle"></i> Error Loading Content</h3>
+            <p>${error.message}</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">
+              <i class="fas fa-info-circle"></i> Please check the debug console below for technical details.
+            </p>
+          </div>
         </div>
       `;
     }
