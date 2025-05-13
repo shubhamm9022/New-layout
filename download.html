@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Moviesvault | Secure Downloads</title>
+  <title>Moviesvault | Downloads Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -64,6 +64,8 @@
       font-weight: 300;
       margin-bottom: 1rem;
     }
+
+    /* Debug info box styles removed as the element is removed */
 
     .content-box {
       background: rgba(0,0,0,0.3);
@@ -158,6 +160,7 @@
         flex-grow: 1;
         word-break: break-word;
     }
+
 
     .filepress-link {
       border-left-color: var(--warning);
@@ -304,260 +307,127 @@
   <div class="container">
     <header>
       <h1>Moviesvault</h1>
-      <p class="subtitle">Secure Premium Downloads</p>
+      <p class="subtitle">Premium Quality Movie Downloads</p>
     </header>
 
     <div id="content">
       <div class="loading">
         <div class="spinner"></div>
-        <p class="loading-text">Verifying download request...</p>
+        <p class="loading-text">Connecting to secure server...</p>
       </div>
     </div>
   </div>
 
   <footer>
-    <p>&copy; 2024 Moviesvault. All rights reserved. | Protected by anti-leech technology</p>
+    <p>&copy; 2024 Moviesvault. All rights reserved. | Secure encrypted connections</p>
   </footer>
 
   <script type="module">
-    // ======================
-    // SECURITY CONFIGURATION
-    // ======================
-    const SECURITY_CONFIG = {
-      // Enable/disable security features
-      ANTI_HOTLINK: true,          // Prevent direct linking to download pages
-      REFERRER_CHECK: true,        // Verify requests come from your domain
-      SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minute session timeout
-      ALLOWED_DOMAINS: ['moviesvault.fun'], // Whitelisted domains
-      ENCRYPT_LINKS: false         // Enable if you implement link encryption
-    };
-
-    // ======================
-    // SECURITY UTILITIES
-    // ======================
-    class SecurityManager {
-      constructor() {
-        this.sessionStart = Date.now();
-      }
-
-      // Verify request comes from allowed domain
-      checkReferrer() {
-        if (!SECURITY_CONFIG.REFERRER_CHECK) return true;
-        
-        const referrer = document.referrer;
-        if (!referrer) {
-          console.warn('No referrer detected - may be a direct link');
-          return !SECURITY_CONFIG.ANTI_HOTLINK;
-        }
-
-        return SECURITY_CONFIG.ALLOWED_DOMAINS.some(domain => 
-          referrer.includes(domain)
-        );
-      }
-
-      // Check if session has expired
-      checkSession() {
-        return Date.now() - this.sessionStart < SECURITY_CONFIG.SESSION_TIMEOUT;
-      }
-
-      // Simple content protection
-      protectContent() {
-        // Disable right-click
-        document.addEventListener('contextmenu', (e) => {
-          e.preventDefault();
-          this.showSecurityMessage('Content protection is active');
-        });
-
-        // Disable text selection
-        document.addEventListener('selectstart', (e) => {
-          e.preventDefault();
-        });
-
-        // Block keyboard shortcuts
-        document.addEventListener('keydown', (e) => {
-          // Block F12, Ctrl+Shift+I, Ctrl+U, etc.
-          if (e.key === 'F12' || 
-              (e.ctrlKey && e.shiftKey && e.key === 'I') || 
-              (e.ctrlKey && e.key === 'u')) {
-            e.preventDefault();
-            this.showSecurityMessage('Developer tools are disabled');
-          }
-        });
-      }
-
-      showSecurityMessage(message) {
-        const msg = document.createElement('div');
-        msg.style.position = 'fixed';
-        msg.style.bottom = '20px';
-        msg.style.right = '20px';
-        msg.style.backgroundColor = 'rgba(255,0,0,0.8)';
-        msg.style.color = 'white';
-        msg.style.padding = '10px 20px';
-        msg.style.borderRadius = '5px';
-        msg.style.zIndex = '1000';
-        msg.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-        msg.textContent = message;
-        document.body.appendChild(msg);
-        setTimeout(() => msg.remove(), 3000);
-      }
-    }
-
-    // ======================
-    // MAIN APPLICATION
-    // ======================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // Initialize security
-    const security = new SecurityManager();
-    security.protectContent();
-
-    // Debug logging (console only)
+    // Debug logging function modified to only log to console
     function debugLog(message, type = 'info') {
       const timestamp = new Date().toLocaleTimeString();
       console.log(`[${type.toUpperCase()}] [${timestamp}] ${message}`);
     }
 
-    // Verify security before proceeding
-    function verifySecurity() {
-      if (SECURITY_CONFIG.ANTI_HOTLINK && !security.checkReferrer()) {
-        throw new Error('Direct linking to downloads is not allowed. Please visit from the main site.');
+    debugLog("Initializing MovieVault download system...");
+
+    try {
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
+        authDomain: "movievault-e650e.firebaseapp.com",
+        databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
+        projectId: "movievault-e650e",
+        storageBucket: "movievault-e650e.firebasestorage.app",
+        messagingSenderId: "61140580505",
+        appId: "1:61140580505:web:d3216ca8bd944662a22008"
+      };
+
+      debugLog("Initializing Firebase connection...");
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      debugLog("Firebase initialized successfully", 'success');
+
+      // Parse URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const movieId = urlParams.get('id');
+      debugLog(`URL parameter received: id=${movieId || 'none'}`);
+
+      if (!movieId || !movieId.match(/^.+-.+-.+$/)) {
+        throw new Error("Invalid URL format. Please use: ?id=MovieName-Year-Quality");
       }
 
-      if (!security.checkSession()) {
-        throw new Error('Your session has expired. Please request a new download link.');
+      const [name, year, quality] = movieId.split('-');
+      debugLog(`Parsed parameters: Name="${name}", Year="${year}", Quality="${quality}"`);
+
+      const dbPath = `movies/${name} (${year})/${quality}`;
+      debugLog(`Attempting to fetch from Firebase path: "${dbPath}"`);
+
+      debugLog("Establishing secure connection to database...");
+      const dbRef = ref(db, dbPath);
+      const snapshot = await get(dbRef);
+
+      if (!snapshot.exists()) {
+        throw new Error(`No download links found for ${quality} quality`);
       }
-    }
 
-    async function initApp() {
-      debugLog("Initializing secure download system...");
+      const data = snapshot.val();
+      debugLog("Data retrieved successfully", 'success');
+      debugLog("Data payload: " + JSON.stringify(data, null, 2)); // Log data payload
 
-      try {
-        verifySecurity();
+      // Display content with premium styling
+      document.getElementById('content').innerHTML = `
+        <div class="content-box">
+          <h2 class="movie-title">${name.replace(/-/g, ' ')} <span class="quality-badge">${quality}</span></h2>
+          <p class="movie-year"><i class="fas fa-calendar-alt"></i> ${year}</p>
 
-        // Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
-          authDomain: "movievault-e650e.firebaseapp.com",
-          databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
-          projectId: "movievault-e650e",
-          storageBucket: "movievault-e650e.firebasestorage.app",
-          messagingSenderId: "61140580505",
-          appId: "1:61140580505:web:d3216ca8bd944662a22008"
-        };
+          <div class="links-container">
+            <h3 class="links-title"><i class="fas fa-download"></i> Download Links</h3>
+            ${data.filepress ? `
+              <a href="${data.filepress}" class="download-link filepress-link" target="_blank">
+                <i class="fab fa-google-drive"></i>
+                <span>FilePress (G-Drive Mirror)</span>
+              </a>
+            ` : ''}
 
-        debugLog("Initializing Firebase connection...");
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        debugLog("Firebase initialized successfully", 'success');
+            ${data.neodrive || data.needdive ? `
+              <a href="${data.neodrive || data.needdive}" class="download-link neodrive-link" target="_blank">
+                <i class="fas fa-bolt"></i>
+                <span>NeoDrive (High Speed)</span>
+              </a>
+            ` : ''}
 
-        // Parse URL parameters with security checks
-        const urlParams = new URLSearchParams(window.location.search);
-        const movieId = urlParams.get('id');
-        debugLog(`URL parameter received: id=${movieId || 'none'}`);
-
-        if (!movieId || !movieId.match(/^[a-zA-Z0-9\- ]+-\d{4}-[0-9a-zA-Z]+$/)) {
-          throw new Error("Invalid URL format. Please use: ?id=MovieName-Year-Quality");
-        }
-
-        const [name, year, quality] = movieId.split('-');
-        debugLog(`Parsed parameters: Name="${name}", Year="${year}", Quality="${quality}"`);
-
-        // Validate quality parameter
-        const validQualities = ['480p', '720p', '1080p', '4K', 'Other'];
-        if (!validQualities.includes(quality)) {
-          throw new Error(`Invalid quality format. Allowed: ${validQualities.join(', ')}`);
-        }
-
-        const dbPath = `movies/${name} (${year})/${quality}`;
-        debugLog(`Attempting to fetch from Firebase path: "${dbPath}"`);
-
-        debugLog("Establishing secure connection to database...");
-        const dbRef = ref(db, dbPath);
-        const snapshot = await get(dbRef);
-
-        if (!snapshot.exists()) {
-          throw new Error(`No download links found for ${quality} quality`);
-        }
-
-        const data = snapshot.val();
-        debugLog("Data retrieved successfully", 'success');
-        debugLog("Data payload: " + JSON.stringify({ 
-          filepress: data.filepress ? '***REDACTED***' : null,
-          neodrive: data.neodrive || data.needdive ? '***REDACTED***' : null,
-          backup: data.backup ? '***REDACTED***' : null
-        }, null, 2));
-
-        // Display content with premium styling
-        document.getElementById('content').innerHTML = `
-          <div class="content-box">
-            <h2 class="movie-title">${name.replace(/-/g, ' ')} <span class="quality-badge">${quality}</span></h2>
-            <p class="movie-year"><i class="fas fa-calendar-alt"></i> ${year}</p>
-
-            <div class="links-container">
-              <h3 class="links-title"><i class="fas fa-download"></i> Secure Download Links</h3>
-              ${data.filepress ? `
-                <a href="${this.protectLink(data.filepress)}" class="download-link filepress-link" target="_blank" rel="noopener noreferrer">
-                  <i class="fab fa-google-drive"></i>
-                  <span>FilePress (G-Drive Mirror) - ${this.getLinkInfo(data.filepress)}</span>
-                </a>
-              ` : ''}
-
-              ${data.neodrive || data.needdive ? `
-                <a href="${this.protectLink(data.neodrive || data.needdive)}" class="download-link neodrive-link" target="_blank" rel="noopener noreferrer">
-                  <i class="fas fa-bolt"></i>
-                  <span>NeoDrive (High Speed) - ${this.getLinkInfo(data.neodrive || data.needdive)}</span>
-                </a>
-              ` : ''}
-
-              ${data.backup ? `
-                <a href="${this.protectLink(data.backup)}" class="download-link backup-link" target="_blank" rel="noopener noreferrer">
-                  <i class="fas fa-server"></i>
-                  <span>Backup Server - ${this.getLinkInfo(data.backup)}</span>
-                </a>
-              ` : ''}
-            </div>
+            ${data.backup ? `
+              <a href="${data.backup}" class="download-link backup-link" target="_blank">
+                <i class="fas fa-server"></i>
+                <span>Backup Server</span>
+              </a>
+            ` : ''}
           </div>
-        `;
+        </div>
+      `;
 
-        debugLog("Download page rendered successfully", 'success');
+      debugLog("Download page rendered successfully", 'success');
 
-      } catch (error) {
-        debugLog(`SECURITY ERROR: ${error.message}`, 'error');
-        document.getElementById('content').innerHTML = `
-          <div class="content-box">
-            <div class="error-box">
-              <h3 class="error-title"><i class="fas fa-shield-alt"></i> Security Alert</h3>
-              <p>${error.message}</p>
-              <p style="margin-top: 1rem; font-size: 0.9rem;">
-                <i class="fas fa-info-circle"></i> If you believe this is an error, please contact support.
-              </p>
-            </div>
+    } catch (error) {
+      debugLog(`ERROR: ${error.message}`, 'error');
+      document.getElementById('content').innerHTML = `
+        <div class="content-box">
+          <div class="error-box">
+            <h3 class="error-title"><i class="fas fa-exclamation-triangle"></i> Error Loading Content</h3>
+            <p>${error.message}</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem;">
+              <i class="fas fa-info-circle"></i> Check the browser console for details (F12).
+            </p>
           </div>
-        `;
-      }
+        </div>
+      `;
     }
-
-    // Helper methods for link protection
-    function protectLink(url) {
-      if (!SECURITY_CONFIG.ENCRYPT_LINKS) return url;
-      
-      // In a real implementation, you would encrypt or obfuscate the URL here
-      // This is just a placeholder for demonstration
-      return url;
-    }
-
-    function getLinkInfo(url) {
-      try {
-        const domain = new URL(url).hostname.replace('www.', '');
-        return `(${domain})`;
-      } catch {
-        return '(External Link)';
-      }
-    }
-
-    // Start the application
-    document.addEventListener('DOMContentLoaded', initApp);
   </script>
 </body>
 </html>
+
+
