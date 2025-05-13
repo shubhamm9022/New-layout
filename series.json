@@ -1,22 +1,6 @@
 {
   "series": [
     {
-      "id": 100088,
-      "title": "the last of us",
-      "stream_link": "",
-      "download_links": {},
-      "seasons": {
-        "2": {
-          "download_links": {
-            "4k": "https://adrinolinks.in/1ALGN"
-          }
-        }
-      },
-      "available_qualities": [
-        "4k"
-      ]
-    },
-    {
       "id": 200709,
       "title": "Weak Hero",
       "stream_link": "",
@@ -30,7 +14,8 @@
         },
         "2": {
           "download_links": {
-            "1080p": "https://adrinolinks.in/oO7CN"
+            "1080p": "https://adrinolinks.in/oO7CN",
+            "4k": "https://adrinolinks.in/1ALGN"
           }
         }
       },

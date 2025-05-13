@@ -1,29 +1,21 @@
 {
   "movies": [
     {
+      "id": 974731,
+      "title": "Driver Jamuna",
+      "stream_link": "https://adrinolinks.in/9ur8x",
+      "download_links": {
+        "HD": "https://adrinolinks.in/sW1Cr",
+        "1080p": "https://adrinolinks.in/TGasl"
+      }
+    },
+    {
       "id": 1259024,
       "title": "Good Bad Ugly",
       "stream_link": "https://adrinolinks.in/VCH1r",
       "download_links": {
         "HD": "https://adrinolinks.in/AIfEK",
         "1080p": "https://adrinolinks.in/XVgAq"
-      }
-    },
-    {
-      "id": 931349,
-      "title": "Ash",
-      "stream_link": "https://gplinks.co/vlsAE1",
-      "download_links": {
-        "HD": "https://gplinks.co/vlsAE1",
-        "4K": "https://gplinks.co/vlsAE1"
-      }
-    },
-    {
-      "id": 974573,
-      "title": "Another Simple Favor",
-      "stream_link": "https://gplinks.co/vlsAE1",
-      "download_links": {
-        "4K": "https://gplinks.co/vlsAE1"
       }
     }
   ]
