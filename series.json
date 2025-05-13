@@ -5,8 +5,16 @@
       "title": "the last of us",
       "stream_link": "dfsdf",
       "download_links": {},
-      "seasons": {},
-      "available_qualities": []
+      "seasons": {
+        "1": {
+          "download_links": {
+            "4k": "dd"
+          }
+        }
+      },
+      "available_qualities": [
+        "4k"
+      ]
     },
     {
       "id": 200709,
