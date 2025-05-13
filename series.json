@@ -3,32 +3,41 @@
     {
       "id": 100088,
       "title": "the last of us",
-      "stream_link": "dfsdf",
+      "stream_link": "",
       "download_links": {},
       "seasons": {
-        "1": {
+        "2": {
           "download_links": {
-            "4k": "dd"
-          }
-        },
-        "5": {
-          "download_links": {
-            "720p": "fsdfsdfsd"
+            "4k": "https://adrinolinks.in/1ALGN"
           }
         }
       },
       "available_qualities": [
-        "720p",
         "4k"
       ]
     },
     {
       "id": 200709,
       "title": "Weak Hero",
-      "stream_link": "https://gplinks.co/eqGf5I",
+      "stream_link": "",
       "download_links": {},
-      "seasons": {},
-      "available_qualities": []
+      "seasons": {
+        "1": {
+          "download_links": {
+            "1080p": "https://adrinolinks.in/fgiMQ",
+            "4k": "https://adrinolinks.in/gDjIE"
+          }
+        },
+        "2": {
+          "download_links": {
+            "1080p": "https://adrinolinks.in/oO7CN"
+          }
+        }
+      },
+      "available_qualities": [
+        "1080p",
+        "4k"
+      ]
     }
   ]
 }
