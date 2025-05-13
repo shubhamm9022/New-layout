@@ -189,7 +189,8 @@
         <div class="quality-btn" onclick="selectQuality(event, '720p')">720p</div>
         <div class="quality-btn" onclick="selectQuality(event, '1080p')">1080p</div>
         <div class="quality-btn" onclick="selectQuality(event, '4K')">4K</div>
-         <div class="quality-btn" onclick="selectQuality(event, 'Other')">Other</div> </div>
+         <div class="quality-btn" onclick="selectQuality(event, 'Other')">Other</div>
+      </div>
 
       <div class="form-group">
         <label for="filepress">FilePress Link</label>
@@ -214,19 +215,21 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    // Import update as well as ref and set
     import { getDatabase, ref, set, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
+    // --- YOUR FIREBASE CONFIGURATION ---
     const firebaseConfig = {
-      apiKey: "AIzaSyDv1KgOL_Cs4xV6KuYuk3TD6xqpnY-84", // Replace with your actual API Key
-      authDomain: "movievault-e650e.firebaseapp.com", // Replace with your actual Auth Domain
-      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com", // Replace with your actual Database URL
-      projectId: "movievault-e650e", // Replace with your actual Project ID
-      storageBucket: "movievault-e650e.appspot.com", // Replace with your actual Storage Bucket
-      messagingSenderId: "61140580505", // Replace with your actual Messaging Sender ID
-      appId: "1:61140580505:web:d3216ca8bd944662a22008" // Replace with your actual App ID
+      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
+      authDomain: "movievault-e650e.firebaseapp.com",
+      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
+      projectId: "movievault-e650e",
+      storageBucket: "movievault-e650e.firebasestorage.app",
+      messagingSenderId: "61140580505",
+      appId: "1:61140580505:web:d3216ca8bd944662a22008"
     };
+    // --- END OF YOUR FIREBASE CONFIGURATION ---
+
 
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
@@ -234,9 +237,9 @@
     const auth = getAuth(app);
 
     // Global variable for selected quality
-    let selectedQuality = '480p';
+    let selectedQuality = '480p'; // Default quality
 
-    // Check auth state
+    // Check auth state on page load
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // User is signed in
@@ -255,30 +258,39 @@
       const password = document.getElementById('login-password').value.trim();
       const status = document.getElementById('login-status');
 
+      // Clear previous status message
+      showStatus('', '', status);
+
       if (!email || !password) {
         showStatus('Please enter both email and password', 'error', status);
         return;
       }
 
+      // Attempt to sign in with email and password
       signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-          showStatus('Login successful!', 'success', status);
+          // Login successful - UI will change via onAuthStateChanged listener
+           showStatus('Login successful!', 'success', status);
         })
         .catch((error) => {
           let message = 'Login failed. ';
+          console.error("Firebase Login Error:", error); // Log the error for debugging
           switch(error.code) {
             case 'auth/invalid-email':
-              message += 'Invalid email address.';
+              message += 'Invalid email address format.';
               break;
             case 'auth/user-disabled':
-              message += 'Account disabled.';
+              message += 'This user account has been disabled.';
               break;
             case 'auth/user-not-found':
             case 'auth/wrong-password':
               message += 'Invalid email or password.';
               break;
+             case 'auth/invalid-api-key': // Explicitly handle invalid API key error
+              message += 'Invalid Firebase API Key. Please check your configuration.';
+              break;
             default:
-              message += error.message;
+              message += error.message || 'An unexpected error occurred.';
           }
           showStatus(message, 'error', status);
         });
@@ -287,9 +299,21 @@
     // Logout function
     window.logout = function() {
       signOut(auth).then(() => {
+        // Sign out successful - UI will change via onAuthStateChanged listener
         showStatus('Logged out successfully', 'success');
+        // Clear form fields on logout for security
+        document.getElementById('login-email').value = '';
+        document.getElementById('login-password').value = '';
+        document.getElementById("movieName").value = '';
+        document.getElementById("movieYear").value = '';
+        document.getElementById("filepress").value = '';
+        document.getElementById("neodrive").value = '';
+        document.getElementById("backup").value = '';
+        // Reset quality selection to default
+        selectQuality(null, '480p');
       }).catch((error) => {
-        showStatus('Logout error: ' + error.message, 'error');
+        console.error("Firebase Logout Error:", error); // Log the error
+        showStatus('Logout error: ' + (error.message || 'An unexpected error occurred.'), 'error');
       });
     };
 
@@ -299,7 +323,17 @@
       document.querySelectorAll('.quality-btn').forEach(btn => {
         btn.classList.remove('active');
       });
-      event.target.classList.add('active');
+      // Add active class to the clicked button, if event is available
+      if (event && event.target) {
+         event.target.classList.add('active');
+      } else {
+        // If event is null (e.g., called from logout), find and activate the default button
+        document.querySelectorAll('.quality-btn').forEach(btn => {
+            if (btn.textContent.trim().toLowerCase() === quality.toLowerCase()) {
+                btn.classList.add('active');
+            }
+        });
+      }
     };
 
     // Upload movie function
@@ -309,17 +343,36 @@
       const filepress = document.getElementById("filepress").value.trim();
       const neodrive = document.getElementById("neodrive").value.trim();
       const backup = document.getElementById("backup").value.trim();
+      const status = document.getElementById('status');
+
+      // Clear previous status message
+      showStatus('', '', status);
 
       // Validate required fields
       if (!movieName || !movieYear) {
-        showStatus('Please enter Movie Name and Release Year', 'error');
+        showStatus('Please enter Movie Name and Release Year', 'error', status);
         return;
       }
 
        if (!filepress && !neodrive && !backup) {
-         showStatus('Please provide at least one link (FilePress, NeoDrive, or Backup)', 'error');
+         showStatus('Please provide at least one link (FilePress, NeoDrive, or Backup)', 'error', status);
          return;
        }
+
+       // Basic URL validation (optional but recommended)
+       const urlPattern = /^https?:\/\/.+/;
+       if (filepress && !urlPattern.test(filepress)) {
+            showStatus('Invalid FilePress URL format.', 'error', status);
+            return;
+       }
+        if (neodrive && !urlPattern.test(neodrive)) {
+            showStatus('Invalid NeoDrive URL format.', 'error', status);
+            return;
+            }
+        if (backup && backup && !urlPattern.test(backup)) {
+            showStatus('Invalid Backup URL format.', 'error', status);
+            return;
+        }
 
 
       // Construct the base path for the movie (e.g., movies/Inception (2010))
@@ -327,7 +380,7 @@
 
       // Data for the specific quality level
       const qualityData = {
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString() // Add timestamp for this specific quality upload
       };
 
       // Add links only if they are provided
@@ -338,9 +391,6 @@
 
       // Prepare the updates object for Firebase
       const updates = {};
-      // Set the movie name and year directly under the base path (optional but can be useful)
-      updates[movieBasePath + '/name'] = movieName;
-      updates[movieBasePath + '/year'] = movieYear;
       // Set the quality data under the quality sub-path
       updates[movieBasePath + '/' + selectedQuality] = qualityData;
 
@@ -348,7 +398,7 @@
       // Use update to add/modify data without deleting other qualities
       update(ref(db), updates)
         .then(() => {
-          showStatus(`Quality "${selectedQuality}" uploaded successfully for ${movieName} (${movieYear})!`, 'success');
+          showStatus(`Quality "${selectedQuality}" uploaded successfully for ${movieName} (${movieYear})!`, 'success', status);
           // Clear link fields after successful upload (keep name/year for adding more qualities)
           document.getElementById("filepress").value = '';
           document.getElementById("neodrive").value = '';
@@ -356,34 +406,49 @@
           // Keep the quality selection active
         })
         .catch(error => {
-          showStatus("Error uploading quality: " + error.message, 'error');
+          console.error("Firebase Upload Error:", error); // Log the error
+          showStatus("Error uploading quality: " + (error.message || 'An unexpected error occurred.'), 'error', status);
         });
     };
 
     // Helper function to show status messages
     function showStatus(message, type, element = document.getElementById('status')) {
       element.textContent = message;
-      element.className = type; // This will apply the class like 'success' or 'error'
-      element.classList.remove('hidden');
+      // Remove previous classes before adding the new one
+      element.classList.remove('success', 'error');
+      if (type) { // Only add class if type is provided
+         element.classList.add(type);
+         element.classList.remove('hidden');
+      } else {
+         element.classList.add('hidden'); // Hide if message is empty
+      }
 
-      setTimeout(() => {
-        element.classList.add('hidden');
-      }, 5000);
+
+      // Auto-hide status message after 5 seconds, but not for login errors on auth screen
+      if (element.id === 'status' && message) { // Only auto-hide upload status messages
+         setTimeout(() => {
+           element.classList.add('hidden');
+           element.textContent = ''; // Clear text when hidden
+         }, 5000);
+      }
+       // Login status messages are not auto-hidden here, they clear on next login attempt
     }
 
-    // Block developer tools
+    // Block developer tools (client-side only, easily bypassed)
     document.onkeydown = function(e) {
       if (e.key === "F12" ||
          (e.ctrlKey && e.shiftKey &&
          (e.key === "I" || e.key === "J" || e.key === "C"))) {
         e.preventDefault();
+        // Optional: show a message like alert("Developer tools are disabled.");
         return false;
       }
     };
 
-    // Disable right-click
+    // Disable right-click (client-side only, easily bypassed)
     document.addEventListener('contextmenu', function(e) {
       e.preventDefault();
+       // Optional: show a message like alert("Right-click is disabled.");
     });
   </script>
 </body>
