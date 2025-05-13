@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>MoviesVault: Stream & Download Latest HD Movies & TV Shows</title>
     <meta name="description" content="Watch and download the newest movies and TV series in HD, FHD, and 4K quality on MoviesVault. Stream trending content with high ratings and multiple quality options. Find Bollywood, Hollywood, Hindi, and English content.">
     <meta name="keywords" content="stream movies, watch TV series, HD movies, FHD content, 4K movies, latest releases, trending shows, movie downloads, Bollywood, Hollywood, Hindi movies, English series, filmyzilla, filmyzila, filmyzila.com, bollyflix, bollflix, filmyfly, hdhub4u, olamovies">
@@ -74,7 +73,6 @@
     </script>
 
     <script type="application/ld+json" id="dynamic-itemlist-schema"></script>
-
 
     <style>
       /* RESET & BASE STYLES */
@@ -738,7 +736,7 @@
       <i class="fas fa-bullhorn"></i>
     </div>
     <div class="notice-content">
-      <strong>Important Notice:</strong> "If the site isn't loading, change the DNS and try again. Content is in Uploading Stage pls check site Later !!"
+      <strong>Important Notice:</strong> "If the site isn't loading, change the DNS and try again."
     </div>
   </div>
 
@@ -747,7 +745,7 @@
       <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="inline-flex items-center">
         <a href="#" class="breadcrumb-home" itemprop="item">
           <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+            <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
           </svg>
           <span itemprop="name">Home</span>
         </a>
@@ -808,7 +806,7 @@
 </footer>
 
 <script>
-  // Header functionality (unchanged)
+  // Header functionality
   const hamburger = document.getElementById('hamburger');
   const menu = document.getElementById('menu');
   const searchIcon = document.getElementById('search-icon');
@@ -846,7 +844,7 @@
     });
   });
 
-  // Breadcrumb functionality (unchanged)
+  // Breadcrumb functionality
   const breadcrumbHome = document.querySelector('.breadcrumb-home');
   const breadcrumbMovies = document.querySelector('.breadcrumb-movies');
   const breadcrumbLatest = document.querySelector('.breadcrumb-latest');
@@ -869,18 +867,16 @@
     document.querySelector('nav a:nth-child(2)').classList.add('active');
   });
 
-  // Updated movie/TV series fetching with consistent quality tags and Schema generation
-  const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa'; // Replace with your actual TMDb API key
+  // Updated movie/TV series fetching with quality tags for both
+  const apiKey = 'c4064977d8835c7a9e758c7ccf25d0fa';
   const moviesContainer = document.getElementById('movies-container');
   const loader = document.getElementById('loader');
   const pagination = document.getElementById('pagination');
   const pageNumbers = document.getElementById('page-numbers');
   const prevBtn = document.querySelector('.prev-btn');
   const nextBtn = document.querySelector('.next-btn');
-  const dynamicSchemaScript = document.getElementById('dynamic-itemlist-schema'); // Get the script tag from the head
+  const dynamicSchemaScript = document.getElementById('dynamic-itemlist-schema');
 
-
-  // Quality tag colors (consistent for both movies and series) - Unchanged
   const qualityColors = {
     '720p': '#4CAF50',  // Green
     '1080p': '#2196F3', // Blue
@@ -892,7 +888,7 @@
     'zip': '#6a11cb'    // Purple gradient (for series)
   };
 
-  const starImageUrl = 'star.png'; // Make sure this image exists at the root or provide the correct path
+  const starImageUrl = 'star.png';
   let allMedia = [];
   let currentPage = 1;
   const moviesPerPage = 20;
@@ -904,8 +900,8 @@
 
       // Load both movies and series JSON files
       const [moviesResponse, seriesResponse] = await Promise.all([
-        fetch('movies.json'), // Make sure movies.json exists and is accessible
-        fetch('series.json') // Make sure series.json exists and is accessible
+        fetch('movies.json'),
+        fetch('series.json')
       ]);
 
       const [moviesData, seriesData] = await Promise.all([
@@ -913,13 +909,13 @@
         seriesResponse.json()
       ]);
 
-      // Combine both datasets and ensure each item has a type
+      // Combine both datasets
       const combinedItems = [
         ...(moviesData.movies || []).map(item => ({ ...item, type: 'movie' })),
         ...(seriesData.series || []).map(item => ({ ...item, type: 'tv' }))
       ];
 
-      // Fetch details for each item from TMDb
+      // Fetch details from TMDb
       allMedia = await Promise.all(
         combinedItems.map(async item => {
           try {
@@ -928,17 +924,16 @@
               : `https://api.themoviedb.org/3/movie/${item.id}?api_key=${apiKey}`;
 
             const tmdbResponse = await fetch(endpoint);
-            if (!tmdbResponse.ok) {
-                console.error(`Error fetching ${item.type} ${item.id}: ${tmdbResponse.statusText}`);
-                return null; // Return null for failed fetches
-            }
+            if (!tmdbResponse.ok) return null;
             const tmdbData = await tmdbResponse.json();
 
             return {
               ...tmdbData,
               media_type: item.type,
-              stream_link: item.stream_link, // Assuming these links are in your JSON
-              download_links: item.download_links || {} // Assuming these links are in your JSON
+              stream_link: item.stream_link,
+              download_links: item.download_links || {},
+              seasons: item.seasons || {},
+              available_qualities: item.available_qualities || []
             };
           } catch (error) {
             console.error(`Error fetching ${item.type} ${item.id}:`, error);
@@ -949,9 +944,8 @@
 
       // Filter out failed fetches
       allMedia = allMedia.filter(item => item !== null);
-
       totalPages = Math.ceil(allMedia.length / moviesPerPage);
-      displayMedia(); // This will now also generate schema for the first page
+      displayMedia();
       setupPagination();
 
     } catch (error) {
@@ -962,97 +956,22 @@
     }
   }
 
-  // Function to generate Structured Data for the currently displayed items
-  function generateStructuredData(mediaItems) {
-    if (!dynamicSchemaScript) {
-        console.error("Dynamic schema script tag not found in head.");
-        return; // Exit if the script tag isn't in the head
-    }
-
-    if (mediaItems.length === 0) {
-        dynamicSchemaScript.textContent = ''; // Clear schema if no items
-        return;
-    }
-
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "itemListElement": mediaItems.map((item, index) => {
-        // Use the correct URL structure for your detail pages
-        const itemUrl = `https://moviesvault.fun/detail.html?id=${item.id}&type=${item.media_type}`;
-        // Use absolute URL for image in schema
-        const posterUrl = item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://placehold.co/180x270/2a2a2a/ffffff?text=No+Image';
-        const name = item.title || item.name;
-        const description = item.overview || 'No description available';
-        const datePublished = item.release_date || item.first_air_date;
-        const ratingValue = item.vote_average ? item.vote_average.toFixed(1) : "N/A";
-        const ratingCount = item.vote_count || 0;
-        const genres = item.genres?.map(g => g.name) || [];
-
-        const schema = {
-          "@type": "ListItem",
-          "position": index + 1 + (currentPage - 1) * moviesPerPage, // Correct position based on pagination
-          "item": {
-            "@type": item.media_type === 'tv' ? 'TVSeries' : 'Movie',
-            "name": name,
-            "url": itemUrl,
-            "image": posterUrl,
-            "description": description,
-            "datePublished": datePublished,
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": ratingValue,
-              "bestRating": "10",
-              "ratingCount": ratingCount
-            },
-            "genre": genres
-          }
-        };
-
-        // Add WatchAction schema if streaming link exists
-        if (item.stream_link) {
-          schema.item.potentialAction = {
-             "@type": "WatchAction",
-             "target": {
-                "@type": "EntryPoint",
-                "urlTemplate": item.stream_link,
-                "inLanguage": "en", // Specify language if known
-                "actionPlatform": [
-                  "http://schema.org/DesktopWebPlatform",
-                  "http://schema.org/MobileWebPlatform"
-                ]
-             }
-          };
-        }
-
-        return schema;
-      })
-    };
-
-    // Update the content of the dynamic schema script tag
-    dynamicSchemaScript.textContent = JSON.stringify(structuredData, null, 2); // Use null, 2 for pretty printing (optional)
-  }
-
-
   function displayMedia(filteredMedia = allMedia) {
     moviesContainer.innerHTML = '';
-
     const startIndex = (currentPage - 1) * moviesPerPage;
     const endIndex = startIndex + moviesPerPage;
     const mediaToDisplay = filteredMedia.slice(startIndex, endIndex);
 
     if (mediaToDisplay.length === 0) {
-      moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No content available. Check back later.</p>';
-      // Clear dynamic schema if no media is displayed
+      moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No content available.</p>';
       generateStructuredData([]);
       return;
     }
 
-    mediaToDisplay.forEach((media, index) => {
-      // Use a placeholder image if poster_path is not available
+    mediaToDisplay.forEach(media => {
       const posterPath = media.poster_path || media.backdrop_path
         ? `https://image.tmdb.org/t/p/w500${media.poster_path || media.backdrop_path}`
-        : 'https://placehold.co/180x270/2a2a2a/ffffff?text=No+Image'; // Using a placeholder service
+        : 'https://placehold.co/180x270/2a2a2a/ffffff?text=No+Image';
 
       const title = media.title || media.name || 'No Title';
       const releaseDate = media.release_date || media.first_air_date || '';
@@ -1060,12 +979,33 @@
       const type = media.media_type === 'movie' ? 'Movie' : 'Series';
       const rating = media.vote_average ? media.vote_average.toFixed(1) : 'N/A';
 
+      // Get quality tags - handles both movies and series
+      let qualityTags = [];
+      
+      if (media.media_type === 'movie') {
+        // For movies - use download_links directly
+        if (media.download_links) {
+          qualityTags = Object.keys(media.download_links);
+        }
+      } else {
+        // For series - collect all unique qualities from seasons
+        const allQualities = new Set();
+        Object.values(media.seasons).forEach(season => {
+          if (season.download_links) {
+            Object.keys(season.download_links).forEach(quality => {
+              allQualities.add(quality);
+            });
+          }
+        });
+        qualityTags = Array.from(allQualities);
+      }
+
       const card = document.createElement('div');
       card.className = 'movie-card';
       card.setAttribute('role', 'listitem');
       card.setAttribute('itemscope', '');
-      // Use the correct schema type based on media_type
       card.setAttribute('itemtype', media.media_type === 'movie' ? 'https://schema.org/Movie' : 'https://schema.org/TVSeries');
+      
       card.innerHTML = `
         <div class="poster-wrapper">
           <img class="movie-poster" src="${posterPath}" alt="${title} poster" onload="this.classList.add('loaded')" onerror="this.onerror=null;this.src='https://placehold.co/180x270/2a2a2a/ffffff?text=No+Image';" itemprop="image">
@@ -1078,17 +1018,14 @@
           <div class="title" itemprop="name">${title}</div>
           <div class="tags">
             <div class="tag" itemprop="dateCreated">${formattedDate}</div>
-            ${media.download_links ? Object.keys(media.download_links)
-              .map(quality => {
-                // Normalize quality names for consistent styling
-                const normalizedQuality = quality.toLowerCase().replace(' ', '');
-                const tagClass = normalizedQuality === '4k' ? 'uhd' :
-                               normalizedQuality === '1080p' ? 'fhd' :
-                               normalizedQuality === '720p' ? 'hd' :
-                               normalizedQuality;
-                return `<div class="tag ${tagClass}">${quality}</div>`;
-              })
-              .join('') : ''}
+            ${qualityTags.map(quality => {
+              const normalizedQuality = quality.toLowerCase().replace(' ', '');
+              const tagClass = normalizedQuality === '4k' ? 'uhd' :
+                             normalizedQuality === '1080p' ? 'fhd' :
+                             normalizedQuality === '720p' ? 'hd' :
+                             normalizedQuality;
+              return `<div class="tag ${tagClass}">${quality}</div>`;
+            }).join('')}
             <div class="tag">${type}</div>
             ${media.media_type === 'tv' ? '<div class="tag zip">ZIP</div>' : ''}
           </div>
@@ -1099,38 +1036,67 @@
       `;
 
       card.addEventListener('click', () => {
-        // Store relevant data in sessionStorage or pass via URL parameters
         sessionStorage.setItem('currentMedia', JSON.stringify({
           id: media.id,
           type: media.media_type,
           title: title,
           poster: posterPath,
-          overview: media.overview, // Pass overview for detail page
-          release_date: releaseDate, // Pass release date
-          vote_average: media.vote_average, // Pass rating
-          genres: media.genres, // Pass genres
+          overview: media.overview,
+          release_date: releaseDate,
+          vote_average: media.vote_average,
+          genres: media.genres,
           stream_link: media.stream_link,
-          download_links: media.download_links
+          download_links: media.download_links,
+          seasons: media.seasons
         }));
-        // Navigate to the detail page with ID and type
         window.location.href = `detail.html?id=${media.id}&type=${media.media_type}`;
       });
 
       moviesContainer.appendChild(card);
     });
 
-    // Regenerate schema for the currently displayed items
     generateStructuredData(mediaToDisplay);
+  }
+
+  function generateStructuredData(mediaItems) {
+    if (!dynamicSchemaScript) return;
+    
+    if (mediaItems.length === 0) {
+      dynamicSchemaScript.textContent = '';
+      return;
+    }
+
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "itemListElement": mediaItems.map((item, index) => ({
+        "@type": "ListItem",
+        "position": index + 1 + (currentPage - 1) * moviesPerPage,
+        "item": {
+          "@type": item.media_type === 'tv' ? 'TVSeries' : 'Movie',
+          "name": item.title || item.name,
+          "url": `https://moviesvault.fun/detail.html?id=${item.id}&type=${item.media_type}`,
+          "image": item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://placehold.co/180x270/2a2a2a/ffffff?text=No+Image',
+          "description": item.overview || 'No description available',
+          "datePublished": item.release_date || item.first_air_date,
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": item.vote_average ? item.vote_average.toFixed(1) : "N/A",
+            "bestRating": "10",
+            "ratingCount": item.vote_count || 0
+          },
+          "genre": item.genres?.map(g => g.name) || []
+        }
+      }))
+    };
+
+    dynamicSchemaScript.textContent = JSON.stringify(structuredData);
   }
 
   function formatDate(dateString) {
     if (!dateString) return 'Unknown';
     const date = new Date(dateString);
-    // Check if the date is valid
-    if (isNaN(date.getTime())) {
-        return 'Invalid Date';
-    }
-    return date.toLocaleDateString('en-US', {
+    return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
@@ -1155,7 +1121,7 @@
       pageBtn.setAttribute('aria-label', `Page ${i}`);
       pageBtn.addEventListener('click', () => {
         currentPage = i;
-        displayMedia(); // This will trigger schema update
+        displayMedia();
         setupPagination();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
@@ -1163,10 +1129,11 @@
     }
   }
 
+  // Event listeners
   prevBtn.addEventListener('click', () => {
     if (currentPage > 1) {
       currentPage--;
-      displayMedia(); // This will trigger schema update
+      displayMedia();
       setupPagination();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1175,7 +1142,7 @@
   nextBtn.addEventListener('click', () => {
     if (currentPage < totalPages) {
       currentPage++;
-      displayMedia(); // This will trigger schema update
+      displayMedia();
       setupPagination();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -1185,58 +1152,36 @@
     const query = searchInput.value.toLowerCase();
     const filteredMedia = allMedia.filter(media => {
       const title = (media.title || media.name || '').toLowerCase();
-      // Also search in genres or other relevant fields if available
       const genres = media.genres?.map(g => g.name.toLowerCase()).join(' ');
       return title.includes(query) || (genres && genres.includes(query));
     });
 
     totalPages = Math.ceil(filteredMedia.length / moviesPerPage);
-    currentPage = 1; // Reset to first page on search
-    displayMedia(filteredMedia); // This will trigger schema update
+    currentPage = 1;
+    displayMedia(filteredMedia);
     setupPagination();
   });
 
   // Initialize
   document.addEventListener('DOMContentLoaded', () => {
     fetchMedia();
-
-    // Handle search query from URL on page load
     const urlParams = new URLSearchParams(window.location.search);
     const searchQuery = urlParams.get('q');
     if (searchQuery) {
-      searchInput.value = searchQuery; // Set search input value
-      // Trigger search filtering after media is loaded
-      // A better approach would be to pass the search query to fetchMedia and filter server-side or after allMedia is populated
-      // For now, we'll rely on the input event listener which is triggered by setting the value, or manually trigger it.
-      // searchInput.dispatchEvent(new Event('input')); // Manually trigger input event if setting value doesn't
+      searchInput.value = searchQuery;
+      searchInput.dispatchEvent(new Event('input'));
     }
   });
 
-  // Disable right-click
+  // Security measures
   document.addEventListener('contextmenu', e => e.preventDefault());
-
-  // Block F12, Ctrl+Shift+I/J/C/U/S
   document.onkeydown = function(e) {
-    // Check for F12
-    if (e.key === "F12") {
+    if (e.key === "F12" || 
+        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key)) ||
+        (e.ctrlKey && ["U", "S"].includes(e.key))) {
       e.preventDefault();
       return false;
     }
-    // Check for Ctrl+Shift+I, J, C
-    if (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) {
-      e.preventDefault();
-      return false;
-    }
-    // Check for Ctrl+U (View Source)
-     if (e.ctrlKey && e.key === "U") {
-        e.preventDefault();
-        return false;
-     }
-     // Check for Ctrl+S (Save Page)
-     if (e.ctrlKey && e.key === "S") {
-        e.preventDefault();
-        return false;
-     }
   };
 </script>
 </body>
