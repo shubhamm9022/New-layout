@@ -1042,82 +1042,104 @@
     const mediaToDisplay = filteredMedia.slice(startIndex, endIndex);
 
     if (mediaToDisplay.length === 0) {
-      moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No content available. Check back later.</p>';
-      // Clear dynamic schema if no media is displayed
-      generateStructuredData([]);
-      return;
+        moviesContainer.innerHTML = '<p style="color: white; grid-column: 1/-1; text-align: center;">No content available. Check back later.</p>';
+        generateStructuredData([]);
+        return;
     }
 
     mediaToDisplay.forEach((media, index) => {
-      // Use a placeholder image if poster_path is not available
-      const posterPath = media.poster_path || media.backdrop_path
-        ? `https://image.tmdb.org/t/p/w500${media.poster_path || media.backdrop_path}`
-        : 'https://placehold.co/180x270/2a2a2a/ffffff?text=No+Image'; // Using a placeholder service
+        const posterPath = media.poster_path || media.backdrop_path
+            ? `https://image.tmdb.org/t/p/w500${media.poster_path || media.backdrop_path}`
+            : 'https://placehold.co/180x270/2a2a2a/ffffff?text=No+Image';
 
-      const title = media.title || media.name || 'No Title';
-      const releaseDate = media.release_date || media.first_air_date || '';
-      const formattedDate = formatDate(releaseDate);
-      const type = media.media_type === 'movie' ? 'Movie' : 'Series';
-      const rating = media.vote_average ? media.vote_average.toFixed(1) : 'N/A';
+        const title = media.title || media.name || 'No Title';
+        const releaseDate = media.release_date || media.first_air_date || '';
+        const formattedDate = formatDate(releaseDate);
+        const type = media.media_type === 'movie' ? 'Movie' : 'Series';
+        const rating = media.vote_average ? media.vote_average.toFixed(1) : 'N/A';
 
-      const card = document.createElement('div');
-      card.className = 'movie-card';
-      card.setAttribute('role', 'listitem');
-      card.setAttribute('itemscope', '');
-      // Use the correct schema type based on media_type
-      card.setAttribute('itemtype', media.media_type === 'movie' ? 'https://schema.org/Movie' : 'https://schema.org/TVSeries');
-      card.innerHTML = `
-        <div class="poster-wrapper">
-          <img class="movie-poster" src="${posterPath}" alt="${title} poster" onload="this.classList.add('loaded')" onerror="this.onerror=null;this.src='https://placehold.co/180x270/2a2a2a/ffffff?text=No+Image';" itemprop="image">
-          <div class="rating-star">
-            <img src="${starImageUrl}" alt="star rating icon">
-            ${rating}
-          </div>
-        </div>
-        <div class="movie-info">
-          <div class="title" itemprop="name">${title}</div>
-          <div class="tags">
-            <div class="tag" itemprop="dateCreated">${formattedDate}</div>
-            ${media.download_links ? Object.keys(media.download_links)
-              .map(quality => {
-                // Normalize quality names for consistent styling
-                const normalizedQuality = quality.toLowerCase().replace(' ', '');
-                const tagClass = normalizedQuality === '4k' ? 'uhd' :
-                               normalizedQuality === '1080p' ? 'fhd' :
-                               normalizedQuality === '720p' ? 'hd' :
-                               normalizedQuality;
-                return `<div class="tag ${tagClass}">${quality}</div>`;
-              })
-              .join('') : ''}
-            <div class="tag">${type}</div>
-            ${media.media_type === 'tv' ? '<div class="tag zip">ZIP</div>' : ''}
-          </div>
-          <meta itemprop="description" content="${media.overview || 'No description available'}">
-          <meta itemprop="aggregateRating" content="${rating}">
-          <meta itemprop="genre" content="${media.genres?.map(g => g.name).join(', ') || ''}">
-        </div>
-      `;
+        // Get quality tags - modified to handle both movies and series
+        let qualityTags = [];
+        
+        // For movies - check download_links directly
+        if (media.media_type === 'movie' && media.download_links) {
+            qualityTags = Object.keys(media.download_links);
+        }
+        
+        // For series - check seasons for available qualities
+        if (media.media_type === 'tv' && media.seasons) {
+            const allQualities = new Set();
+            
+            // Loop through all seasons to collect unique qualities
+            Object.values(media.seasons).forEach(season => {
+                if (season.download_links) {
+                    Object.keys(season.download_links).forEach(quality => {
+                        allQualities.add(quality);
+                    });
+                }
+            });
+            
+            qualityTags = Array.from(allQualities);
+        }
 
-      card.addEventListener('click', () => {
-        // Store relevant data in sessionStorage or pass via URL parameters
-        sessionStorage.setItem('currentMedia', JSON.stringify({
-          id: media.id,
-          type: media.media_type,
-          title: title,
-          poster: posterPath,
-          overview: media.overview, // Pass overview for detail page
-          release_date: releaseDate, // Pass release date
-          vote_average: media.vote_average, // Pass rating
-          genres: media.genres, // Pass genres
-          stream_link: media.stream_link,
-          download_links: media.download_links
-        }));
-        // Navigate to the detail page with ID and type
-        window.location.href = `detail.html?id=${media.id}&type=${media.media_type}`;
-      });
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.setAttribute('role', 'listitem');
+        card.setAttribute('itemscope', '');
+        card.setAttribute('itemtype', media.media_type === 'movie' ? 'https://schema.org/Movie' : 'https://schema.org/TVSeries');
+        
+        card.innerHTML = `
+            <div class="poster-wrapper">
+                <img class="movie-poster" src="${posterPath}" alt="${title} poster" onload="this.classList.add('loaded')" onerror="this.onerror=null;this.src='https://placehold.co/180x270/2a2a2a/ffffff?text=No+Image';" itemprop="image">
+                <div class="rating-star">
+                    <img src="${starImageUrl}" alt="star rating icon">
+                    ${rating}
+                </div>
+            </div>
+            <div class="movie-info">
+                <div class="title" itemprop="name">${title}</div>
+                <div class="tags">
+                    <div class="tag" itemprop="dateCreated">${formattedDate}</div>
+                    ${qualityTags.map(quality => {
+                        // Normalize quality names for consistent styling
+                        const normalizedQuality = quality.toLowerCase().replace(' ', '');
+                        const tagClass = normalizedQuality === '4k' ? 'uhd' :
+                                       normalizedQuality === '1080p' ? 'fhd' :
+                                       normalizedQuality === '720p' ? 'hd' :
+                                       normalizedQuality;
+                        return `<div class="tag ${tagClass}">${quality}</div>`;
+                    }).join('')}
+                    <div class="tag">${type}</div>
+                    ${media.media_type === 'tv' ? '<div class="tag zip">ZIP</div>' : ''}
+                </div>
+                <meta itemprop="description" content="${media.overview || 'No description available'}">
+                <meta itemprop="aggregateRating" content="${rating}">
+                <meta itemprop="genre" content="${media.genres?.map(g => g.name).join(', ') || ''}">
+            </div>
+        `;
 
-      moviesContainer.appendChild(card);
+        card.addEventListener('click', () => {
+            sessionStorage.setItem('currentMedia', JSON.stringify({
+                id: media.id,
+                type: media.media_type,
+                title: title,
+                poster: posterPath,
+                overview: media.overview,
+                release_date: releaseDate,
+                vote_average: media.vote_average,
+                genres: media.genres,
+                stream_link: media.stream_link,
+                download_links: media.download_links,
+                seasons: media.seasons // Include seasons data for TV shows
+            }));
+            window.location.href = `detail.html?id=${media.id}&type=${media.media_type}`;
+        });
+
+        moviesContainer.appendChild(card);
     });
+
+    generateStructuredData(mediaToDisplay);
+  }
 
     // Regenerate schema for the currently displayed items
     generateStructuredData(mediaToDisplay);
