@@ -690,7 +690,6 @@
         }
 
         .breadcrumb .separator {
-          color: rgba(255, 255, 255, 0.4);
           margin: 0 6px;
         }
 
@@ -739,7 +738,7 @@
       <i class="fas fa-bullhorn"></i>
     </div>
     <div class="notice-content">
-      <strong>Important Notice:</strong> "If the site isn't loading, change the DNS and try again. Content is in Uploading Stage pls check site Later !!"
+      <strong>Important Notice:</strong> "If the site isn't loading, change the DNS and try again."
     </div>
   </div>
 
@@ -937,12 +936,17 @@
 
             return {
               ...tmdbData,
+              // Include properties from local JSON that might not be in TMDb API response directly
+              // or are needed for logic (like stream_link, download_links, available_qualities)
               media_type: item.type,
-              stream_link: item.stream_link, // Assuming these links are in your JSON
-              download_links: item.download_links || {}, // Assuming these links are in your JSON
-              seasons: item.seasons || {}, // Seasons data for TV series
-              available_qualities: item.available_qualities || [] // Consolidated qualities for series - ADDED THIS LINE
+              stream_link: item.stream_link,
+              download_links: item.download_links || {}, // Ensure it's an object
+              available_qualities: item.available_qualities || [] // Ensure it's an array
             };
+          } catch (error) {
+            console.error(`Error fetching ${item.type} ${item.id}:`, error);
+            return null;
+          }
         })
       );
 
@@ -1059,6 +1063,27 @@
       const type = media.media_type === 'movie' ? 'Movie' : 'Series';
       const rating = media.vote_average ? media.vote_average.toFixed(1) : 'N/A';
 
+      // --- Start: Modified logic to use available_qualities ---
+      const qualityTagsHTML = (Array.isArray(media.available_qualities) && media.available_qualities.length > 0)
+        ? media.available_qualities
+          .map(quality => {
+            // Normalize quality names for consistent styling
+            const normalizedQuality = quality.toLowerCase().replace(' ', '');
+            // Map common quality names to specific classes
+            const tagClass = normalizedQuality === '4k' ? 'uhd' :
+                           normalizedQuality === '1080p' ? 'fhd' :
+                           normalizedQuality === '720p' ? 'hd' :
+                           // Add other specific mappings if needed, otherwise use normalized name
+                           normalizedQuality; // e.g., 'fhd' for 'FHD', 'hd' for 'HD', 'hdr' for 'HDR', 'cam' for 'CAM'
+
+            return `<div class="tag ${tagClass}">${quality}</div>`;
+          })
+          .join('')
+        : ''; // If available_qualities is not an array or is empty, generate no tags
+
+      // --- End: Modified logic ---
+
+
       const card = document.createElement('div');
       card.className = 'movie-card';
       card.setAttribute('role', 'listitem');
@@ -1077,37 +1102,7 @@
           <div class="title" itemprop="name">${title}</div>
           <div class="tags">
             <div class="tag" itemprop="dateCreated">${formattedDate}</div>
-            ${
-              // --- MODIFIED SECTION START ---
-              // Check if it's a TV series AND has available qualities
-              media.media_type === 'tv' && media.available_qualities?.length > 0
-                ? media.available_qualities // If yes, use the available_qualities array
-                  .map(quality => {
-                    // Normalize quality names for consistent styling
-                    const normalizedQuality = quality.toLowerCase().replace(' ', '');
-                    const tagClass = normalizedQuality === '4k' ? 'uhd' :
-                                   normalizedQuality === '1080p' ? 'fhd' :
-                                   normalizedQuality === '720p' ? 'hd' :
-                                   normalizedQuality;
-                    return `<div class="tag ${tagClass}">${quality}</div>`;
-                  })
-                  .join('')
-              // If not a TV series OR no available qualities, check main download links (for movies)
-              : media.download_links && Object.keys(media.download_links).length > 0
-                ? Object.keys(media.download_links) // Use keys from main download links object
-                  .map(quality => {
-                    // Normalize quality names for consistent styling
-                    const normalizedQuality = quality.toLowerCase().replace(' ', '');
-                    const tagClass = normalizedQuality === '4k' ? 'uhd' :
-                                   normalizedQuality === '1080p' ? 'fhd' :
-                                   normalizedQuality === '720p' ? 'hd' :
-                                   normalizedQuality;
-                    return `<div class="tag ${tagClass}">${quality}</div>`;
-                  })
-                  .join('')
-              : '' // If no download links either, generate empty string
-              // --- MODIFIED SECTION END ---
-            }
+            ${qualityTagsHTML} // Insert the generated quality tags here
             <div class="tag">${type}</div>
             ${media.media_type === 'tv' ? '<div class="tag zip">ZIP</div>' : ''}
           </div>
@@ -1127,11 +1122,10 @@
           overview: media.overview, // Pass overview for detail page
           release_date: releaseDate, // Pass release date
           vote_average: media.vote_average, // Pass rating
-          genres: media.genres, // Pass genres
+          genres: media.genres, // Pass genres (Note: TMDb genres are used in Schema, local might be different)
           stream_link: media.stream_link,
-          download_links: media.download_links, // Main downloads
-          seasons: media.seasons, // Seasons data for TV
-          available_qualities: media.available_qualities // Consolidated qualities
+          download_links: media.download_links,
+          available_qualities: media.available_qualities // Make sure to pass this too
         }));
         // Navigate to the detail page with ID and type
         window.location.href = `detail.html?id=${media.id}&type=${media.media_type}`;
@@ -1206,12 +1200,9 @@
     const query = searchInput.value.toLowerCase();
     const filteredMedia = allMedia.filter(media => {
       const title = (media.title || media.name || '').toLowerCase();
-      // Also search in genres or other relevant fields if available
+      // Also search in genres or other relevant fields if available (using TMDb genres here)
       const genres = media.genres?.map(g => g.name.toLowerCase()).join(' ');
-      // Include available qualities in search
-      const qualities = media.available_qualities?.map(q => q.toLowerCase()).join(' ');
-
-      return title.includes(query) || (genres && genres.includes(query)) || (qualities && qualities.includes(query));
+      return title.includes(query) || (genres && genres.includes(query));
     });
 
     totalPages = Math.ceil(filteredMedia.length / moviesPerPage);
