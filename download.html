@@ -67,11 +67,9 @@
   </div>
 
   <script type="module">
-    // Import the functions you need from the SDKs you need
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // Your web app's Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
       authDomain: "movievault-e650e.firebaseapp.com",
@@ -82,40 +80,45 @@
       appId: "1:61140580505:web:d3216ca8bd944662a22008"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Get URL parameters (simple format: ?id=movieId-quality)
+    // Get URL parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const movieId = urlParams.get('id'); // Format: "GoodBadUgly-2025-720p"
+    const movieId = urlParams.get('id');
     
-    // Validate ID format
     if (!movieId || !movieId.match(/^.+-.+-.+$/)) {
-      showError("Invalid movie URL format. Expected: ?id=MovieName-Year-Quality");
+      showError("Invalid URL format. Use: ?id=MovieName-Year-Quality");
       return;
     }
 
-    // Parse movie details
     const [name, year, quality] = movieId.split('-');
     document.getElementById('movie-title').textContent = `${name} (${year}) - ${quality}`;
 
-    // Fetch data from Firebase
     async function fetchMovieData() {
       try {
+        // Correct path structure for your database
         const dbRef = ref(db, `movies/${name} (${year})/${quality}`);
         const snapshot = await get(dbRef);
         
         if (!snapshot.exists()) {
-          showError("This quality is not available for the selected movie");
+          showError("Requested quality not available");
           return;
         }
 
         const data = snapshot.val();
-        displayLinks(data);
+        
+        // Handle the typo in your database (needdive vs neodrive)
+        const neodriveLink = data.needdive || data.neodrive;
+        
+        displayLinks({
+          filepress: data.filepress,
+          neodrive: neodriveLink,
+          backup: data.backup
+        });
       } catch (error) {
-        console.error("Error fetching data:", error);
-        showError("Failed to load movie data. Please try again.");
+        console.error("Error:", error);
+        showError("Failed to load data. Try again later.");
       }
     }
 
@@ -124,17 +127,17 @@
       container.innerHTML = '';
       
       if (data.filepress) {
-        container.innerHTML += `<a href="${data.filepress}" class="btn" target="_blank"><i class="fas fa-download"></i> FilePress Download</a>`;
+        container.innerHTML += `<a href="${data.filepress}" class="btn" target="_blank"><i class="fas fa-download"></i> FilePress</a>`;
       }
       if (data.neodrive) {
-        container.innerHTML += `<a href="${data.neodrive}" class="btn" target="_blank"><i class="fas fa-download"></i> NeoDrive Download</a>`;
+        container.innerHTML += `<a href="${data.neodrive}" class="btn" target="_blank"><i class="fas fa-download"></i> NeoDrive</a>`;
       }
       if (data.backup) {
-        container.innerHTML += `<a href="${data.backup}" class="btn" target="_blank"><i class="fas fa-download"></i> Backup Download</a>`;
+        container.innerHTML += `<a href="${data.backup}" class="btn" target="_blank"><i class="fas fa-download"></i> Backup</a>`;
       }
       
       if (container.innerHTML === '') {
-        showError("No download links available for this quality");
+        showError("No active download links");
       }
     }
 
@@ -143,7 +146,6 @@
       container.innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> ${message}</div>`;
     }
 
-    // Start fetching data
     fetchMovieData();
   </script>
 </body>
