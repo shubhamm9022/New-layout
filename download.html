@@ -2,151 +2,93 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Movie Download</title>
+  <title>Movie Download Debug</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    :root {
-      --primary: #4361ee;
-      --dark: #1a1a2e;
-      --light: #ffffff;
-      --danger: #ff4444;
-    }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--dark);
-      color: var(--light);
-      padding: 20px;
-      text-align: center;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .btn {
-      display: block;
-      padding: 12px;
-      margin: 10px auto;
-      background: var(--primary);
-      color: white;
-      text-decoration: none;
-      border-radius: 5px;
-      max-width: 300px;
-    }
-    .error {
-      color: var(--danger);
-      margin: 20px 0;
-    }
-    .loading {
-      margin: 30px 0;
-    }
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(255,255,255,0.1);
-      border-top: 4px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .debug-info { background: #f0f0f0; padding: 15px; margin: 10px 0; border-radius: 5px; }
+    .error { color: red; }
+    .success { color: green; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1 id="movie-title">Loading...</h1>
-    <div id="links-container">
-      <div class="loading">
-        <div class="spinner"></div>
-      </div>
-    </div>
-  </div>
+  <h1>Movie Download Debug</h1>
+  <div id="debug-console" class="debug-info"></div>
+  <div id="content"></div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
-      authDomain: "movievault-e650e.firebaseapp.com",
-      databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
-      projectId: "movievault-e650e",
-      storageBucket: "movievault-e650e.firebasestorage.app",
-      messagingSenderId: "61140580505",
-      appId: "1:61140580505:web:d3216ca8bd944662a22008"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const movieId = urlParams.get('id');
-    
-    if (!movieId || !movieId.match(/^.+-.+-.+$/)) {
-      showError("Invalid URL format. Use: ?id=MovieName-Year-Quality");
-      return;
+    // Debug logging function
+    function debugLog(message, type = 'info') {
+      const consoleDiv = document.getElementById('debug-console');
+      consoleDiv.innerHTML += `<p class="${type}">${new Date().toLocaleTimeString()}: ${message}</p>`;
+      console.log(message);
     }
 
-    const [name, year, quality] = movieId.split('-');
-    document.getElementById('movie-title').textContent = `${name} (${year}) - ${quality}`;
+    debugLog("Starting script execution...");
 
-    async function fetchMovieData() {
-      try {
-        // Correct path structure for your database
-        const dbRef = ref(db, `movies/${name} (${year})/${quality}`);
-        const snapshot = await get(dbRef);
-        
-        if (!snapshot.exists()) {
-          showError("Requested quality not available");
-          return;
-        }
+    try {
+      const firebaseConfig = {
+        apiKey: "AIzaSyDv1KgOL_CsLs4xV6KuYuk3TD6xqpnY-84",
+        authDomain: "movievault-e650e.firebaseapp.com",
+        databaseURL: "https://movievault-e650e-default-rtdb.firebaseio.com",
+        projectId: "movievault-e650e",
+        storageBucket: "movievault-e650e.firebasestorage.app",
+        messagingSenderId: "61140580505",
+        appId: "1:61140580505:web:d3216ca8bd944662a22008"
+      };
 
-        const data = snapshot.val();
-        
-        // Handle the typo in your database (needdive vs neodrive)
-        const neodriveLink = data.needdive || data.neodrive;
-        
-        displayLinks({
-          filepress: data.filepress,
-          neodrive: neodriveLink,
-          backup: data.backup
-        });
-      } catch (error) {
-        console.error("Error:", error);
-        showError("Failed to load data. Try again later.");
+      debugLog("Initializing Firebase...");
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+      debugLog("Firebase initialized successfully", 'success');
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const movieId = urlParams.get('id');
+      debugLog(`URL Parameter 'id': ${movieId}`);
+
+      if (!movieId || !movieId.match(/^.+-.+-.+$/)) {
+        throw new Error("Invalid URL format. Use: ?id=MovieName-Year-Quality");
       }
-    }
 
-    function displayLinks(data) {
-      const container = document.getElementById('links-container');
-      container.innerHTML = '';
+      const [name, year, quality] = movieId.split('-');
+      debugLog(`Parsed: Name=${name}, Year=${year}, Quality=${quality}`);
+
+      const dbPath = `movies/${name} (${year})/${quality}`;
+      debugLog(`Attempting to fetch from Firebase path: ${dbPath}`);
+
+      const dbRef = ref(db, dbPath);
+      const snapshot = await get(dbRef);
       
-      if (data.filepress) {
-        container.innerHTML += `<a href="${data.filepress}" class="btn" target="_blank"><i class="fas fa-download"></i> FilePress</a>`;
+      if (!snapshot.exists()) {
+        throw new Error("No data found at this path");
       }
-      if (data.neodrive) {
-        container.innerHTML += `<a href="${data.neodrive}" class="btn" target="_blank"><i class="fas fa-download"></i> NeoDrive</a>`;
-      }
-      if (data.backup) {
-        container.innerHTML += `<a href="${data.backup}" class="btn" target="_blank"><i class="fas fa-download"></i> Backup</a>`;
-      }
-      
-      if (container.innerHTML === '') {
-        showError("No active download links");
-      }
-    }
 
-    function showError(message) {
-      const container = document.getElementById('links-container');
-      container.innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> ${message}</div>`;
-    }
+      const data = snapshot.val();
+      debugLog("Retrieved data:", 'success');
+      debugLog(JSON.stringify(data, null, 2));
 
-    fetchMovieData();
+      // Display content
+      document.getElementById('content').innerHTML = `
+        <h2>${name} (${year}) - ${quality}</h2>
+        <h3>Download Links:</h3>
+        ${data.filepress ? `<p><a href="${data.filepress}" target="_blank">FilePress</a></p>` : ''}
+        ${data.neodrive ? `<p><a href="${data.neodrive}" target="_blank">NeoDrive</a></p>` : ''}
+        ${data.backup ? `<p><a href="${data.backup}" target="_blank">Backup</a></p>` : ''}
+      `;
+
+    } catch (error) {
+      debugLog(`ERROR: ${error.message}`, 'error');
+      document.getElementById('content').innerHTML = `
+        <div class="error">
+          <h2>Error Loading Content</h2>
+          <p>${error.message}</p>
+          <p>Check console for details</p>
+        </div>
+      `;
+    }
   </script>
 </body>
 </html>
