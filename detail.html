@@ -1101,8 +1101,7 @@
 			<p style="color: white; text-align: center; grid-column: 1/-1;">Loading similar content...</p>
 		</div>
 	</div>
-
-	<script>
+<script>
   // Improved version with better error handling and data loading
   const urlParams = new URLSearchParams(window.location.search);
   const mediaId = urlParams.get('id');
@@ -1283,7 +1282,7 @@
       }
 
       // Load similar content from our local JSON files
-      loadSimilarContent(combinedContent, mediaItem);
+      loadSimilarContent(combinedContent);
 
     } catch (error) {
       console.error('Error loading content links from JSON:', error);
@@ -1293,29 +1292,23 @@
   }
 
   // --- Load Similar Content (from our local JSON files) ---
-  async function loadSimilarContent(allContent, currentItem) {
+  async function loadSimilarContent(allContent) {
     try {
       // Clear initial loading text
       similarMoviesElement.innerHTML = '';
 
-      // Find similar content based on genres (simple matching)
-      const currentGenres = currentItem.genres || [];
-      const similarItems = allContent.filter(item => {
-        // Don't show the current item
-        if (item.id === currentItem.id && item.type === currentItem.type) return false;
-        
-        // Match at least one genre
-        const itemGenres = item.genres || [];
-        return currentGenres.some(genre => itemGenres.includes(genre));
-      });
+      // Filter out the current item
+      const filteredContent = allContent.filter(item => 
+        !(item.id == mediaId && item.type === mediaType)
+      );
 
-      if (similarItems.length === 0) {
+      if (filteredContent.length === 0) {
         similarMoviesElement.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">No similar content found in local database</p>';
         return;
       }
 
-      // Display first 6 similar items (random selection if more than 6)
-      const shuffled = similarItems.sort(() => 0.5 - Math.random());
+      // Shuffle the array and pick first 6 items
+      const shuffled = [...filteredContent].sort(() => 0.5 - Math.random());
       const selected = shuffled.slice(0, 6);
 
       for (const item of selected) {
@@ -1342,7 +1335,7 @@
 
           // Get available qualities from our local data
           const qualityTags = item.available_qualities?.map(quality => {
-            const tagClass = quality.toLowerCase() === '4k' ? 'uhd' :
+            const tagClass = quality.toLowerCase() === '4k' ? '_4k' :
                            quality.toLowerCase() === '1080p' ? 'fhd' :
                            quality.toLowerCase() === '720p' ? 'hd' :
                            quality.toLowerCase();
@@ -1572,6 +1565,6 @@
       return false;
     }
   };
-</script>
+	      </script>
 </body>
 </html>
