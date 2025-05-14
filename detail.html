@@ -1317,7 +1317,7 @@
 					const qualityTags = item.available_qualities?.map(quality => {
 						const tagClass = quality.toLowerCase().replace(' ', '-') === '4k' ? '_4k' : // Use _4k as in index
 										 quality.toLowerCase().replace(' ', '-') === '1080p' ? 'fhd' :
-										 quality.toLowerCase().replace(' ', '-') === '720p' ? 'hd' :
+										 quality.toLowerCase().replace(' ', '-') === '720p' ? '720p' :
 										 quality.toLowerCase().replace(' ', '-');
 						return `<div class="tag ${tagClass}">${quality}</div>`;
 					}).join('') || '';
