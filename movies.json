@@ -1,6 +1,41 @@
 {
   "movies": [
     {
+      "id": 668489,
+      "title": "Havoc",
+      "stream_link": "",
+      "download_links": {
+        "1080p": "https://adrinolinks.in/eFl0f"
+      }
+    },
+    {
+      "id": 1257693,
+      "title": "Odela",
+      "stream_link": "https://adrinolinks.in/SKlmo",
+      "download_links": {
+        "1080p": "https://adrinolinks.in/eRwJL"
+      }
+    },
+    {
+      "id": 1241725,
+      "title": "Jack",
+      "stream_link": "https://adrinolinks.in/sxUPX",
+      "download_links": {
+        "HD": "https://adrinolinks.in/SK9T7",
+        "1080p": "https://adrinolinks.in/KNbmG"
+      }
+    },
+    {
+      "id": 1272121,
+      "title": "Maranamass",
+      "stream_link": "https://adrinolinks.in/1OkwA",
+      "download_links": {
+        "HD": "https://adrinolinks.in/8xLCs",
+        "1080p": "https://adrinolinks.in/PXdHM",
+        "4K": "https://adrinolinks.in/Dxg3w"
+      }
+    },
+    {
       "id": 974731,
       "title": "Driver Jamuna",
       "stream_link": "https://adrinolinks.in/9ur8x",
