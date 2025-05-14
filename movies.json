@@ -1,6 +1,16 @@
 {
   "movies": [
     {
+      "id": 950387,
+      "title": "A Minecraft Movie",
+      "stream_link": "",
+      "download_links": {
+        "HD": "https://adrinolinks.in/Srtwb",
+        "1080p": "https://adrinolinks.in/8QRUL",
+        "4K": "https://adrinolinks.in/xQbyh"
+      }
+    },
+    {
       "id": 607100,
       "title": "Hippi",
       "stream_link": "",
