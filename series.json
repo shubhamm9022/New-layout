@@ -1,6 +1,24 @@
 {
   "series": [
     {
+      "id": 255779,
+      "title": "Bet",
+      "stream_link": "",
+      "download_links": {},
+      "seasons": {
+        "1": {
+          "download_links": {
+            "720p": "https://adrinolinks.in/sKor8",
+            "1080p": "https://adrinolinks.in/VXPge"
+          }
+        }
+      },
+      "available_qualities": [
+        "720p",
+        "1080p"
+      ]
+    },
+    {
       "id": 200709,
       "title": "Weak Hero",
       "stream_link": "",
