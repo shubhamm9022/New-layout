@@ -1,109 +1,106 @@
+# Premium Cinematic Media Catalog (Single File)
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-<title>MoviesVault - Stream Latest Movies & TV Shows</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CineSphere — Premium Entertainment Catalog</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
 <style>
-
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
 }
 
-html{
-scroll-behavior:smooth;
+:root{
+--bg:#070b14;
+--card:#101827;
+--soft:#172235;
+--text:#ffffff;
+--muted:#a7b2c7;
+--primary:#7c4dff;
+--secondary:#00d4ff;
+--accent:#ff4ecd;
+--border:rgba(255,255,255,.08);
+--shadow:0 20px 60px rgba(0,0,0,.5);
 }
 
 body{
-font-family:'Poppins',sans-serif;
+font-family:'Inter',sans-serif;
 background:
-radial-gradient(circle at top,#1a1a2e,#0d0d0d 60%);
-color:white;
+radial-gradient(circle at top left,#18223f 0%,transparent 30%),
+radial-gradient(circle at top right,#281b47 0%,transparent 25%),
+linear-gradient(to bottom,#070b14,#08111f);
+color:var(--text);
 overflow-x:hidden;
 }
 
-/* SCROLLBAR */
-
-::-webkit-scrollbar{
-width:8px;
+body::-webkit-scrollbar{
+width:10px;
 }
 
-::-webkit-scrollbar-thumb{
-background:linear-gradient(#ff4d4d,#f9cb28);
-border-radius:10px;
+body::-webkit-scrollbar-thumb{
+background:linear-gradient(var(--primary),var(--accent));
+border-radius:20px;
 }
-
-/* HEADER */
 
 header{
 position:fixed;
 top:0;
 left:0;
 width:100%;
-height:75px;
-padding:0 5%;
+z-index:1000;
+padding:18px 5%;
 display:flex;
-justify-content:space-between;
 align-items:center;
-z-index:999;
-transition:.4s;
-background:rgba(10,10,10,.4);
-backdrop-filter:blur(14px);
-border-bottom:1px solid rgba(255,255,255,.08);
-}
-
-header.scrolled{
-background:rgba(0,0,0,.9);
+justify-content:space-between;
+backdrop-filter:blur(18px);
+background:rgba(7,11,20,.65);
+border-bottom:1px solid var(--border);
 }
 
 .logo{
 display:flex;
 align-items:center;
-gap:12px;
-text-decoration:none;
-}
-
-.logo img{
-width:52px;
-height:52px;
-object-fit:cover;
-border-radius:12px;
-}
-
-.logo h2{
+gap:14px;
+font-weight:800;
 font-size:1.4rem;
-font-weight:700;
-background:linear-gradient(90deg,#ff4d4d,#f9cb28);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+letter-spacing:.5px;
+}
+
+.logo-icon{
+width:48px;
+height:48px;
+border-radius:16px;
+background:linear-gradient(135deg,var(--primary),var(--accent));
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 10px 30px rgba(124,77,255,.5);
 }
 
 nav{
 display:flex;
-gap:30px;
+gap:26px;
 }
 
 nav a{
 text-decoration:none;
-color:rgba(255,255,255,.8);
-font-weight:500;
-position:relative;
+color:var(--muted);
+font-weight:600;
 transition:.3s;
+position:relative;
 }
 
 nav a:hover{
-color:white;
+color:#fff;
 }
 
 nav a::after{
@@ -113,7 +110,7 @@ left:0;
 bottom:-8px;
 width:0;
 height:2px;
-background:linear-gradient(90deg,#ff4d4d,#f9cb28);
+background:linear-gradient(90deg,var(--primary),var(--secondary));
 transition:.3s;
 }
 
@@ -121,833 +118,649 @@ nav a:hover::after{
 width:100%;
 }
 
-.right-icons{
+.header-actions{
 display:flex;
 align-items:center;
-gap:15px;
+gap:14px;
 }
 
 .icon-btn{
 width:42px;
 height:42px;
-border-radius:50%;
+border-radius:14px;
+border:1px solid var(--border);
+background:rgba(255,255,255,.04);
 display:flex;
-justify-content:center;
 align-items:center;
+justify-content:center;
+color:#fff;
 cursor:pointer;
 transition:.3s;
-background:rgba(255,255,255,.08);
 }
 
 .icon-btn:hover{
-background:rgba(255,255,255,.15);
 transform:translateY(-3px);
+background:linear-gradient(135deg,var(--primary),var(--accent));
 }
-
-.icon-btn i{
-font-size:17px;
-}
-
-/* HERO */
 
 .hero{
-position:relative;
-height:100vh;
+min-height:100vh;
 display:flex;
 align-items:center;
-padding:0 5%;
-overflow:hidden;
+padding:120px 5% 80px;
+position:relative;
 }
 
-.hero img{
+.hero::before{
+content:'';
 position:absolute;
 inset:0;
-width:100%;
-height:100%;
-object-fit:cover;
-}
-
-.hero-overlay{
-position:absolute;
-inset:0;
-background:
-linear-gradient(to right,rgba(0,0,0,.92),rgba(0,0,0,.3)),
-linear-gradient(to top,#0d0d0d,transparent);
+background:url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1600&auto=format&fit=crop') center/cover;
+opacity:.15;
 }
 
 .hero-content{
 position:relative;
-z-index:2;
-max-width:650px;
+max-width:720px;
 }
 
 .hero-badge{
-display:inline-block;
-padding:8px 16px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(10px);
-border-radius:30px;
-font-size:.9rem;
-margin-bottom:20px;
-border:1px solid rgba(255,255,255,.1);
+display:inline-flex;
+align-items:center;
+gap:10px;
+padding:10px 18px;
+border-radius:999px;
+background:rgba(255,255,255,.08);
+border:1px solid var(--border);
+margin-bottom:24px;
 }
 
 .hero h1{
-font-size:4.5rem;
-line-height:1.1;
-margin-bottom:20px;
+font-size:clamp(3rem,7vw,6rem);
+line-height:1;
+margin-bottom:24px;
 font-weight:800;
+}
+
+.gradient-text{
+background:linear-gradient(90deg,var(--secondary),var(--accent));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
 .hero p{
 font-size:1.1rem;
 line-height:1.8;
-color:rgba(255,255,255,.75);
-margin-bottom:35px;
+color:var(--muted);
+margin-bottom:36px;
+max-width:650px;
 }
 
 .hero-buttons{
 display:flex;
-gap:15px;
+flex-wrap:wrap;
+gap:18px;
 }
 
-.hero-buttons button{
-padding:14px 28px;
+.btn{
+padding:16px 28px;
 border:none;
-border-radius:12px;
+border-radius:16px;
+font-weight:700;
 cursor:pointer;
-font-size:1rem;
-font-weight:600;
 transition:.35s;
-}
-
-.watch-btn{
-background:white;
-color:black;
-}
-
-.info-btn{
-background:rgba(255,255,255,.12);
-color:white;
-backdrop-filter:blur(10px);
-}
-
-.hero-buttons button:hover{
-transform:translateY(-5px);
-}
-
-/* MAIN */
-
-main{
-padding:40px 5%;
-}
-
-/* SEARCH */
-
-.search-container{
-display:flex;
-justify-content:center;
-margin-bottom:40px;
-}
-
-.search-box{
-width:100%;
-max-width:650px;
-position:relative;
-}
-
-.search-box input{
-width:100%;
-padding:18px 22px 18px 55px;
-background:rgba(255,255,255,.07);
-border:1px solid rgba(255,255,255,.08);
-outline:none;
-border-radius:18px;
-color:white;
 font-size:1rem;
-backdrop-filter:blur(10px);
 }
 
-.search-box i{
-position:absolute;
-left:20px;
-top:50%;
-transform:translateY(-50%);
-color:rgba(255,255,255,.6);
-}
-
-/* FILTERS */
-
-.genre-filters{
-display:flex;
-gap:12px;
-overflow-x:auto;
-padding-bottom:10px;
-margin-bottom:40px;
-}
-
-.genre-filters::-webkit-scrollbar{
-display:none;
-}
-
-.genre{
-padding:10px 20px;
-border-radius:30px;
-border:none;
-cursor:pointer;
-font-weight:500;
-background:rgba(255,255,255,.08);
+.btn-primary{
+background:linear-gradient(135deg,var(--primary),var(--accent));
 color:white;
-transition:.3s;
-white-space:nowrap;
+box-shadow:0 10px 30px rgba(124,77,255,.4);
 }
 
-.genre.active{
-background:linear-gradient(90deg,#ff4d4d,#f9cb28);
+.btn-primary:hover{
+transform:translateY(-4px) scale(1.02);
 }
 
-.genre:hover{
-transform:translateY(-3px);
+.btn-secondary{
+background:rgba(255,255,255,.05);
+color:white;
+border:1px solid var(--border);
 }
 
-/* SECTION TITLE */
+.btn-secondary:hover{
+background:rgba(255,255,255,.12);
+}
 
-.section-title{
+.section{
+padding:40px 5% 80px;
+}
+
+.section-header{
 display:flex;
 align-items:center;
 justify-content:space-between;
-margin-bottom:25px;
+margin-bottom:28px;
 }
 
-.section-title h2{
-font-size:1.8rem;
-font-weight:700;
+.section-title{
+font-size:2rem;
+font-weight:800;
 }
 
-.section-title a{
-text-decoration:none;
-color:#f9cb28;
+.search-bar{
+width:100%;
+max-width:420px;
+position:relative;
 }
 
-/* MOVIES GRID */
+.search-bar input{
+width:100%;
+padding:16px 50px 16px 18px;
+border-radius:18px;
+background:rgba(255,255,255,.05);
+border:1px solid var(--border);
+outline:none;
+color:white;
+font-size:1rem;
+}
 
-.movies-grid{
+.search-bar i{
+position:absolute;
+right:18px;
+top:50%;
+transform:translateY(-50%);
+color:var(--muted);
+}
+
+.filters{
+display:flex;
+flex-wrap:wrap;
+gap:14px;
+margin-bottom:35px;
+}
+
+.filter-chip{
+padding:12px 20px;
+border-radius:999px;
+background:rgba(255,255,255,.05);
+border:1px solid var(--border);
+font-weight:600;
+cursor:pointer;
+transition:.3s;
+}
+
+.filter-chip:hover,
+.filter-chip.active{
+background:linear-gradient(135deg,var(--primary),var(--accent));
+}
+
+.grid{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
 gap:28px;
 }
 
-/* CARD */
-
-.movie-card{
-position:relative;
-border-radius:24px;
+.card{
+background:rgba(255,255,255,.04);
+border:1px solid var(--border);
+border-radius:28px;
 overflow:hidden;
-background:rgba(255,255,255,.05);
-backdrop-filter:blur(14px);
-border:1px solid rgba(255,255,255,.08);
-transition:.4s;
-cursor:pointer;
-}
-
-.movie-card:hover{
-transform:translateY(-10px) scale(1.03);
-box-shadow:
-0 20px 40px rgba(0,0,0,.5),
-0 0 25px rgba(255,77,77,.2);
-}
-
-.poster{
 position:relative;
+transition:.45s;
+backdrop-filter:blur(12px);
+}
+
+.card:hover{
+transform:translateY(-10px) scale(1.02);
+box-shadow:var(--shadow);
+}
+
+.card-image{
 height:340px;
 overflow:hidden;
+position:relative;
 }
 
-.poster img{
+.card-image img{
 width:100%;
 height:100%;
 object-fit:cover;
-transition:.4s;
+transition:1s;
 }
 
-.movie-card:hover .poster img{
+.card:hover .card-image img{
 transform:scale(1.08);
 }
 
 .overlay{
 position:absolute;
 inset:0;
-background:rgba(0,0,0,.55);
-display:flex;
-justify-content:center;
-align-items:center;
-opacity:0;
-transition:.4s;
-}
-
-.movie-card:hover .overlay{
-opacity:1;
-}
-
-.play-btn{
-width:70px;
-height:70px;
-border-radius:50%;
-border:none;
-background:rgba(255,255,255,.15);
-backdrop-filter:blur(10px);
-color:white;
-font-size:1.5rem;
-cursor:pointer;
-transition:.3s;
-}
-
-.play-btn:hover{
-transform:scale(1.1);
+background:linear-gradient(to top,rgba(0,0,0,.85),transparent 60%);
 }
 
 .rating{
 position:absolute;
-top:15px;
-right:15px;
-padding:6px 12px;
-background:rgba(0,0,0,.7);
-border-radius:30px;
-font-size:.9rem;
-font-weight:600;
+top:18px;
+right:18px;
+padding:8px 14px;
+border-radius:999px;
+background:rgba(0,0,0,.55);
 backdrop-filter:blur(10px);
+font-weight:700;
+font-size:.9rem;
 }
 
-.movie-info{
-padding:18px;
+.card-content{
+padding:22px;
 }
 
-.movie-title{
-font-size:1rem;
-font-weight:600;
+.card-content h3{
+font-size:1.15rem;
 margin-bottom:10px;
-line-height:1.5;
+}
+
+.meta{
+display:flex;
+justify-content:space-between;
+color:var(--muted);
+font-size:.92rem;
+margin-bottom:18px;
 }
 
 .tags{
 display:flex;
 flex-wrap:wrap;
-gap:8px;
-margin-bottom:12px;
+gap:10px;
+margin-bottom:20px;
 }
 
 .tag{
-padding:5px 10px;
-border-radius:8px;
-font-size:.75rem;
+padding:8px 14px;
+border-radius:999px;
+background:rgba(255,255,255,.06);
+font-size:.82rem;
 font-weight:600;
 }
 
-.hd{
-background:#4CAF50;
-}
-
-.fhd{
-background:#2196F3;
-}
-
-.uhd{
-background:#9C27B0;
-}
-
-.imdb{
-background:#f5c518;
-color:black;
-}
-
-.desc{
-font-size:.88rem;
-line-height:1.7;
-color:rgba(255,255,255,.7);
-}
-
-/* PAGINATION */
-
-.pagination{
+.card-actions{
 display:flex;
-justify-content:center;
 gap:12px;
-margin-top:50px;
 }
 
-.page-btn{
-width:45px;
-height:45px;
-border-radius:12px;
+.small-btn{
+flex:1;
+padding:12px;
 border:none;
+border-radius:14px;
+font-weight:700;
 cursor:pointer;
-background:rgba(255,255,255,.08);
-color:white;
-font-weight:600;
 transition:.3s;
 }
 
-.page-btn.active{
-background:linear-gradient(90deg,#ff4d4d,#f9cb28);
+.watch-btn{
+background:linear-gradient(135deg,var(--primary),var(--accent));
+color:#fff;
 }
 
-.page-btn:hover{
+.info-btn{
+background:rgba(255,255,255,.05);
+color:#fff;
+border:1px solid var(--border);
+}
+
+.small-btn:hover{
 transform:translateY(-3px);
 }
 
-/* FOOTER */
+.feature-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:25px;
+margin-top:25px;
+}
+
+.feature-card{
+padding:30px;
+background:rgba(255,255,255,.04);
+border:1px solid var(--border);
+border-radius:28px;
+transition:.4s;
+}
+
+.feature-card:hover{
+transform:translateY(-8px);
+background:rgba(255,255,255,.07);
+}
+
+.feature-icon{
+width:70px;
+height:70px;
+border-radius:20px;
+background:linear-gradient(135deg,var(--primary),var(--secondary));
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:1.6rem;
+margin-bottom:20px;
+}
+
+.feature-card h3{
+margin-bottom:12px;
+font-size:1.2rem;
+}
+
+.feature-card p{
+line-height:1.7;
+color:var(--muted);
+}
 
 footer{
-margin-top:80px;
-padding:40px 5%;
+padding:50px 5%;
 text-align:center;
-background:#080808;
-border-top:1px solid rgba(255,255,255,.08);
+border-top:1px solid var(--border);
+background:rgba(255,255,255,.03);
 }
 
 footer p{
-color:rgba(255,255,255,.6);
-margin-top:10px;
+color:var(--muted);
+line-height:1.8;
 }
 
-/* MOBILE */
+.mobile-toggle{
+display:none;
+}
 
 @media(max-width:900px){
-
-.hero h1{
-font-size:3rem;
-}
-
-.movies-grid{
-grid-template-columns:repeat(auto-fill,minmax(170px,1fr));
-}
-
-.poster{
-height:260px;
-}
-
-}
-
-@media(max-width:768px){
-
 nav{
 display:none;
 }
 
+.mobile-toggle{
+display:flex;
+}
+
 .hero{
-height:90vh;
-}
-
-.hero h1{
-font-size:2.4rem;
-}
-
-.hero p{
-font-size:.95rem;
+text-align:center;
+justify-content:center;
 }
 
 .hero-buttons{
+justify-content:center;
+}
+
+.section-header{
 flex-direction:column;
 align-items:flex-start;
-}
-
-.movies-grid{
-grid-template-columns:repeat(2,1fr);
 gap:18px;
 }
-
-.poster{
-height:240px;
 }
 
-.movie-info{
-padding:14px;
+@media(max-width:600px){
+.hero h1{
+font-size:3rem;
 }
 
+.grid{
+grid-template-columns:1fr;
 }
 
-/* ANIMATION */
-
-.reveal{
-opacity:0;
-transform:translateY(60px);
-transition:1s;
+.card-image{
+height:300px;
 }
-
-.reveal.active{
-opacity:1;
-transform:translateY(0);
 }
-
 </style>
 </head>
 <body>
 
-<header id="header">
-
-<a href="#" class="logo">
-<img src="https://i.ibb.co/7QpKsCX/logo.png">
-<h2>MoviesVault</h2>
-</a>
+<header>
+<div class="logo">
+<div class="logo-icon">
+<i class="fa-solid fa-film"></i>
+</div>
+<span>CineSphere</span>
+</div>
 
 <nav>
 <a href="#">Home</a>
-<a href="#">Movies</a>
-<a href="#">TV Shows</a>
-<a href="#">Trending</a>
+<a href="#catalog">Catalog</a>
+<a href="#trending">Trending</a>
+<a href="#features">Features</a>
 </nav>
 
-<div class="right-icons">
-
-<div class="icon-btn">
-<i class="fas fa-search"></i>
+<div class="header-actions">
+<button class="icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+<button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
+<button class="icon-btn mobile-toggle"><i class="fa-solid fa-bars"></i></button>
 </div>
-
-<div class="icon-btn">
-<i class="fab fa-telegram"></i>
-</div>
-
-</div>
-
 </header>
 
-<!-- HERO -->
-
 <section class="hero">
-
-<img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=2070&auto=format&fit=crop">
-
-<div class="hero-overlay"></div>
-
-<div class="hero-content reveal">
-
+<div class="hero-content">
 <div class="hero-badge">
-🔥 #1 Trending Platform
+<i class="fa-solid fa-sparkles"></i>
+<span>Premium Entertainment Experience</span>
 </div>
 
 <h1>
-Unlimited Movies,<br>
-TV Shows & More
+Discover The <span class="gradient-text">Future</span> Of Cinema
 </h1>
 
 <p>
-Watch latest Hollywood, Bollywood and TV series in HD,
-FHD & 4K quality with a premium streaming experience.
+A modern cinematic catalog experience with immersive visuals, dynamic layouts, elegant animations, trending showcases, and a premium user interface.
 </p>
 
 <div class="hero-buttons">
-
-<button class="watch-btn">
-<i class="fas fa-play"></i>
-Watch Now
+<button class="btn btn-primary">
+<i class="fa-solid fa-play"></i>
+ Explore Now
 </button>
 
-<button class="info-btn">
-<i class="fas fa-info-circle"></i>
-More Info
+<button class="btn btn-secondary">
+<i class="fa-solid fa-circle-info"></i>
+ Learn More
 </button>
-
 </div>
-
 </div>
-
 </section>
 
-<!-- MAIN -->
+<section class="section" id="catalog">
+<div class="section-header">
+<h2 class="section-title">Trending Collection</h2>
 
-<main>
-
-<!-- SEARCH -->
-
-<div class="search-container reveal">
-
-<div class="search-box">
-
-<i class="fas fa-search"></i>
-
-<input type="text" id="searchInput" placeholder="Search movies, series, genres...">
-
+<div class="search-bar">
+<input type="text" placeholder="Search movies, shows, genres..." id="searchInput">
+<i class="fa-solid fa-magnifying-glass"></i>
+</div>
 </div>
 
+<div class="filters">
+<div class="filter-chip active">All</div>
+<div class="filter-chip">Action</div>
+<div class="filter-chip">Sci‑Fi</div>
+<div class="filter-chip">Drama</div>
+<div class="filter-chip">Thriller</div>
+<div class="filter-chip">Fantasy</div>
 </div>
 
-<!-- FILTERS -->
+<div class="grid" id="movieGrid">
+</div>
+</section>
 
-<div class="genre-filters reveal">
-
-<button class="genre active">All</button>
-<button class="genre">Action</button>
-<button class="genre">Comedy</button>
-<button class="genre">Drama</button>
-<button class="genre">Sci-Fi</button>
-<button class="genre">Horror</button>
-<button class="genre">Anime</button>
-<button class="genre">Thriller</button>
-
+<section class="section" id="features">
+<div class="section-header">
+<h2 class="section-title">Premium Features</h2>
 </div>
 
-<!-- TITLE -->
-
-<div class="section-title reveal">
-
-<h2>🔥 Latest Releases</h2>
-
-<a href="#">View All</a>
-
+<div class="feature-grid">
+<div class="feature-card">
+<div class="feature-icon">
+<i class="fa-solid fa-bolt"></i>
+</div>
+<h3>Lightning Fast UI</h3>
+<p>Optimized responsive experience with smooth animations and cinematic transitions across all devices.</p>
 </div>
 
-<!-- MOVIES -->
-
-<div class="movies-grid" id="moviesGrid">
-
+<div class="feature-card">
+<div class="feature-icon">
+<i class="fa-solid fa-layer-group"></i>
+</div>
+<h3>Modern Glassmorphism</h3>
+<p>Elegant frosted UI components with layered depth, premium gradients, and futuristic visuals.</p>
 </div>
 
-<!-- PAGINATION -->
-
-<div class="pagination">
-
-<button class="page-btn active">1</button>
-<button class="page-btn">2</button>
-<button class="page-btn">3</button>
-<button class="page-btn">
-<i class="fas fa-chevron-right"></i>
-</button>
-
+<div class="feature-card">
+<div class="feature-icon">
+<i class="fa-solid fa-heart"></i>
 </div>
-
-</main>
-
-<!-- FOOTER -->
+<h3>Watchlist System</h3>
+<p>Save favorites locally using localStorage and create your own personalized entertainment collection.</p>
+</div>
+</div>
+</section>
 
 <footer>
-
-<h2>MoviesVault</h2>
-
 <p>
-Watch and download latest HD movies and TV series.
+© 2026 CineSphere — Premium Entertainment Showcase UI.
 </p>
-
 <p>
-© 2026 MoviesVault — All Rights Reserved.
+Built for educational UI/UX and frontend learning purposes.
 </p>
-
 </footer>
 
 <script>
-
-/* SAMPLE MOVIES */
-
-const movies = [
-
+const demoMovies = [
 {
-title:"Avengers Endgame",
-image:"https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
-rating:"8.4",
-quality:"4K",
-genre:"Action",
-desc:"Superheroes unite to reverse the chaos caused by Thanos."
+name:'Interstellar',
+image:'https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg',
+rating:'8.9',
+year:'2014',
+genre:'Sci‑Fi'
 },
-
 {
-title:"The Batman",
-image:"https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",
-rating:"8.1",
-quality:"1080p",
-genre:"Action",
-desc:"Batman uncovers corruption in Gotham City."
+name:'The Batman',
+image:'https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg',
+rating:'8.2',
+year:'2022',
+genre:'Action'
 },
-
 {
-title:"Stranger Things",
-image:"https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg",
-rating:"8.7",
-quality:"HD",
-genre:"Sci-Fi",
-desc:"Mysteries unfold in Hawkins town."
+name:'Dune',
+image:'https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg',
+rating:'8.4',
+year:'2021',
+genre:'Adventure'
 },
-
 {
-title:"Interstellar",
-image:"https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-rating:"8.6",
-quality:"4K",
-genre:"Sci-Fi",
-desc:"A space journey to save humanity."
+name:'Joker',
+image:'https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg',
+rating:'8.5',
+year:'2019',
+genre:'Drama'
 },
-
 {
-title:"Joker",
-image:"https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
-rating:"8.5",
-quality:"1080p",
-genre:"Drama",
-desc:"The rise of Gotham's iconic villain."
+name:'Avatar',
+image:'https://image.tmdb.org/t/p/w500/kyeqWdyUXW608qlYkRqosgbbJyK.jpg',
+rating:'8.1',
+year:'2009',
+genre:'Fantasy'
 },
-
 {
-title:"Money Heist",
-image:"https://image.tmdb.org/t/p/w500/reEMJA1uzscCbkpeRJeTT2bjqUp.jpg",
-rating:"8.3",
-quality:"HD",
-genre:"Thriller",
-desc:"A criminal mastermind executes a huge heist."
+name:'Inception',
+image:'https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg',
+rating:'8.8',
+year:'2010',
+genre:'Thriller'
 }
-
 ];
 
-/* RENDER MOVIES */
+const grid = document.getElementById('movieGrid');
+const searchInput = document.getElementById('searchInput');
 
-const moviesGrid = document.getElementById("moviesGrid");
+function renderMovies(items){
+grid.innerHTML='';
 
-function renderMovies(data){
+items.forEach(movie=>{
+const card = document.createElement('div');
+card.className='card';
 
-moviesGrid.innerHTML="";
-
-data.forEach(movie=>{
-
-moviesGrid.innerHTML += `
-
-<div class="movie-card reveal">
-
-<div class="poster">
-
-<img src="${movie.image}" loading="lazy">
-
-<div class="overlay">
-
-<button class="play-btn">
-<i class="fas fa-play"></i>
-</button>
-
-</div>
-
+card.innerHTML=`
+<div class="card-image">
+<img src="${movie.image}" alt="${movie.name}">
+<div class="overlay"></div>
 <div class="rating">
 ⭐ ${movie.rating}
 </div>
-
 </div>
 
-<div class="movie-info">
+<div class="card-content">
+<h3>${movie.name}</h3>
 
-<div class="movie-title">
-${movie.title}
+<div class="meta">
+<span>${movie.year}</span>
+<span>${movie.genre}</span>
 </div>
 
 <div class="tags">
-
-<div class="tag ${movie.quality === '4K' ? 'uhd':'fhd'}">
-${movie.quality}
+<div class="tag">HD</div>
+<div class="tag">Trending</div>
+<div class="tag">Popular</div>
 </div>
 
-<div class="tag imdb">
-IMDb ${movie.rating}
-</div>
+<div class="card-actions">
+<button class="small-btn watch-btn">
+<i class="fa-solid fa-play"></i>
+ Explore
+</button>
 
+<button class="small-btn info-btn">
+<i class="fa-solid fa-bookmark"></i>
+ Save
+</button>
 </div>
-
-<div class="desc">
-${movie.desc}
 </div>
-
-</div>
-
-</div>
-
 `;
 
+grid.appendChild(card);
 });
-
-activateReveal();
-
 }
 
-renderMovies(movies);
+renderMovies(demoMovies);
 
-/* SEARCH */
+searchInput.addEventListener('input',e=>{
+const value = e.target.value.toLowerCase();
 
-const searchInput = document.getElementById("searchInput");
-
-searchInput.addEventListener("input", ()=>{
-
-const value = searchInput.value.toLowerCase();
-
-const filtered = movies.filter(movie=>
-
-movie.title.toLowerCase().includes(value) ||
+const filtered = demoMovies.filter(movie=>
+movie.name.toLowerCase().includes(value) ||
 movie.genre.toLowerCase().includes(value)
-
 );
 
 renderMovies(filtered);
-
 });
 
-/* FILTERS */
+const chips = document.querySelectorAll('.filter-chip');
 
-const genreButtons = document.querySelectorAll(".genre");
+chips.forEach(chip=>{
+chip.addEventListener('click',()=>{
+chips.forEach(c=>c.classList.remove('active'));
+chip.classList.add('active');
 
-genreButtons.forEach(btn=>{
+const genre = chip.textContent.toLowerCase();
 
-btn.addEventListener("click", ()=>{
-
-genreButtons.forEach(b=>b.classList.remove("active"));
-
-btn.classList.add("active");
-
-const genre = btn.innerText;
-
-if(genre === "All"){
-renderMovies(movies);
+if(genre==='all'){
+renderMovies(demoMovies);
+return;
 }
-else{
 
-const filtered = movies.filter(movie=>
-movie.genre === genre
+const filtered = demoMovies.filter(movie=>
+movie.genre.toLowerCase().includes(genre)
 );
 
 renderMovies(filtered);
-
-}
-
 });
-
 });
-
-/* HEADER SCROLL */
-
-const header = document.getElementById("header");
-
-window.addEventListener("scroll",()=>{
-
-header.classList.toggle("scrolled",window.scrollY > 50);
-
-});
-
-/* REVEAL ANIMATION */
-
-function activateReveal(){
-
-const reveals = document.querySelectorAll(".reveal");
-
-const observer = new IntersectionObserver(entries=>{
-
-entries.forEach(entry=>{
-
-if(entry.isIntersecting){
-entry.target.classList.add("active");
-}
-
-});
-
-},{threshold:.1});
-
-reveals.forEach(r=>observer.observe(r));
-
-}
-
-activateReveal();
-
 </script>
 
 </body>
 </html>
+```
